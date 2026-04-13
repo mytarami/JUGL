@@ -1174,37 +1174,6 @@ function renderInventory() {
 
 function setInvFilter(cat) { invFilter = cat; renderInventory(); }
 
-function openItemDetail(id) {
-  const item = invItems.find(i => i.id === id);
-  if (!item) return;
-  const margin = item.price && item.cost ? Math.round(((item.price - item.cost) / item.price) * 100) : null;
-  document.getElementById('item-detail-body').innerHTML = `
-    <div class="item-detail-img">
-      ${item.photoURL
-        ? `<img src="${item.photoURL}" alt="${item.name}">`
-        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:64px">${CAT_EMOJI[item.cat]||'💎'}</div>`}
-    </div>
-    <div class="item-detail-body">
-      <div class="item-detail-name">${item.name}</div>
-      <div class="item-detail-price">₹${(item.price||0).toLocaleString('en-IN')}</div>
-      <div style="margin-top:20px">
-        <div class="item-detail-row"><span class="item-detail-lbl">Category</span><span class="item-detail-val">${item.cat} · ${item.sub||'—'}</span></div>
-        <div class="item-detail-row"><span class="item-detail-lbl">SKU</span><span class="item-detail-val" style="font-family:monospace;font-size:13px">${item.sku||'—'}</span></div>
-        <div class="item-detail-row"><span class="item-detail-lbl">Cost price</span><span class="item-detail-val">₹${(item.cost||0).toLocaleString('en-IN')}${margin!==null?` <span style="font-size:11px;color:var(--green);font-weight:500">${margin}% margin</span>`:''}</span></div>
-        ${item.notes ? `<div class="item-detail-row"><span class="item-detail-lbl">Notes</span><span class="item-detail-val" style="font-size:13px;color:var(--text-secondary)">${item.notes}</span></div>` : ''}
-        <div class="item-detail-row">
-          <span class="item-detail-lbl">Quantity</span>
-          <div class="qty-control">
-            <button class="qty-btn" onclick="adjustQty(-1)">−</button>
-            <div class="qty-val" id="detail-qty">${item.qty||0}</div>
-            <button class="qty-btn" onclick="adjustQty(1)">+</button>
-          </div>
-        </div>
-      </div>
-      <button class="delete-btn" onclick="deleteItem('${item.id}')">🗑 Delete item</button>
-    </div>`;
-  openSheet('sheet-item-detail');
-}
 
 let _detailItemId = null;
 function openItemDetail(id) {
