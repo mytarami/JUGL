@@ -364,13 +364,50 @@ window.endEventConfirmed = async function() {
   if (t) { t.textContent = 'Event ended — saved to history'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 };
 
-window.openEditEvent = function() {
-  if (window._openEditEvent) window._openEditEvent();
-  else setTimeout(function() { if (window._openEditEvent) window._openEditEvent(); }, 500);
+window.openEditEvent = async function() {
+  if (!window.DB) { alert('App still loading, please wait'); return; }
+  var evts = await window.DB.getEvents();
+  var live = evts.find(function(e){ return e.status==='active'||e.status==='live'; });
+  if (!live) { alert('No active event found'); return; }
+  var el = function(id){ return document.getElementById(id); };
+  if(el('edit-ev-name'))     el('edit-ev-name').value     = live.name      || '';
+  if(el('edit-ev-date'))     el('edit-ev-date').value     = live.date      || '';
+  if(el('edit-ev-venue'))    el('edit-ev-venue').value    = live.venue     || live.location || '';
+  if(el('edit-ev-organiser'))el('edit-ev-organiser').value= live.organiser || '';
+  if(el('edit-ev-rent'))     el('edit-ev-rent').value     = live.stallCost || live.stallRent || 0;
+  window.openSheet('sheet-edit-event');
 };
-window.deleteActiveEvent = function() {
-  if (window._deleteActiveEvent) window._deleteActiveEvent();
-  else setTimeout(function() { if (window._deleteActiveEvent) window._deleteActiveEvent(); }, 500);
+window.saveEditEvent = async function() {
+  if (!window.DB) { alert('App still loading'); return; }
+  var name     = document.getElementById('edit-ev-name').value.trim();
+  var date     = document.getElementById('edit-ev-date').value;
+  var venue    = document.getElementById('edit-ev-venue').value.trim();
+  var organiser= document.getElementById('edit-ev-organiser').value.trim();
+  var rent     = parseFloat(document.getElementById('edit-ev-rent').value) || 0;
+  if (!name) { alert('Event name required'); return; }
+  var arr  = await window.DB.getEvents();
+  var live = arr.find(function(e){ return e.status==='active'||e.status==='live'; });
+  if (!live) return;
+  live.name=name; live.date=date; live.venue=venue; live.location=venue;
+  live.organiser=organiser; live.stallCost=rent; live.stallRent=rent;
+  await window.DB.saveEvents(arr);
+  window.forceCloseSheet('sheet-edit-event');
+  if (window.renderEvents) await window.renderEvents();
+  if (window.renderLive) await window.renderLive();
+  var t=document.getElementById('toast');
+  if(t){t.textContent='✓ Event updated';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+};
+window.deleteActiveEvent = async function() {
+  if (!window.DB) { alert('App still loading'); return; }
+  if (!confirm('Delete this live event and all its sales? Cannot be undone.')) return;
+  var arr  = await window.DB.getEvents();
+  var live = arr.find(function(e){ return e.status==='active'||e.status==='live'; });
+  if (!live) return;
+  await window.DB.deleteEvent(live.id);
+  if (window.renderEvents) await window.renderEvents();
+  if (window.renderDashboard) window.renderDashboard();
+  var t=document.getElementById('toast');
+  if(t){t.textContent='Event deleted';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
 };
 window.switchTab = async function(tab) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -2164,54 +2201,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ── EDIT / DELETE LIVE EVENT ──────────────────────────────────────
-window._openEditEvent = window.openEditEvent = async function() {
-  if (!window.DB) { showToast('App still loading'); return; }
-  const live = (await window.DB.getEvents()).find(e => e.status === 'active' || e.status === 'live');
-  if (!live) { showToast('No active event'); return; }
-  // Pre-fill form
-  document.getElementById('edit-ev-name').value     = live.name || '';
-  document.getElementById('edit-ev-date').value     = live.date || '';
-  document.getElementById('edit-ev-venue').value    = live.venue || live.location || '';
-  document.getElementById('edit-ev-organiser').value= live.organiser || '';
-  document.getElementById('edit-ev-rent').value     = live.stallCost || live.stallRent || 0;
-  openSheet('sheet-edit-event');
-};
+// openEditEvent defined in early script
 
-window.saveEditEvent = async function() {
-  if (!window.DB) { showToast('App still loading'); return; }
-  const name     = document.getElementById('edit-ev-name').value.trim();
-  const date     = document.getElementById('edit-ev-date').value;
-  const venue    = document.getElementById('edit-ev-venue').value.trim();
-  const organiser= document.getElementById('edit-ev-organiser').value.trim();
-  const rent     = parseFloat(document.getElementById('edit-ev-rent').value) || 0;
-  if (!name) { showToast('Event name required'); return; }
-  const arr  = await window.DB.getEvents();
-  const live = arr.find(e => e.status === 'active' || e.status === 'live');
-  if (!live) return;
-  live.name      = name;
-  live.date      = date;
-  live.venue     = venue;
-  live.location  = venue;
-  live.organiser = organiser;
-  live.stallCost = rent;
-  live.stallRent = rent;
-  await window.DB.saveEvents(arr);
-  forceCloseSheet('sheet-edit-event');
-  if (window.renderEvents) await window.renderEvents();
-  showToast('✓ Event updated');
-};
+// saveEditEvent defined in early script
 
-window._deleteActiveEvent = window.deleteActiveEvent = async function() {
-  if (!window.DB) { showToast('App still loading'); return; }
-  if (!confirm('Delete this live event and all its sales? This cannot be undone.')) return;
-  const arr  = await window.DB.getEvents();
-  const live = arr.find(e => e.status === 'active' || e.status === 'live');
-  if (!live) return;
-  await window.DB.deleteEvent(live.id);
-  if (window.renderEvents) await window.renderEvents();
-  if (window.renderDashboard) window.renderDashboard();
-  showToast('Event deleted');
-};
+// deleteActiveEvent defined in early script
 
 </script>
 </body>
