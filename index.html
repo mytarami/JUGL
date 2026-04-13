@@ -248,7 +248,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .lec-dot{width:8px;height:8px;border-radius:50%;background:#6DB070;animation:pulse-dot 1.5s ease-in-out infinite;flex-shrink:0}
 .lec-live-lbl{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#6DB070}
 .lec-end-btn{font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
-.lec-end-btn:active{background:rgba(224,118,118,0.3);color:var(--rose)}
+.lec-end-btn:active{background:rgba(255,255,255,0.15)}
 .lec-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin-bottom:2px}
 .lec-meta{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px}
 .lec-revenue-block{margin-bottom:16px}
@@ -280,52 +280,57 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .log-method-btn:active{border-color:var(--gold);background:var(--gold-soft);transform:scale(0.97)}
 .popup-fab{position:fixed;bottom:calc(var(--nav-h)+16px);right:50%;transform:translateX(calc(215px - 100%));width:52px;height:52px;border-radius:50%;background:var(--text-primary);border:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:transform 0.15s;z-index:50;line-height:1}
 .popup-fab:active{transform:translateX(calc(215px - 100%)) scale(0.92)}
-.end-summary-stat{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
-.end-summary-stat:last-child{border-bottom:none}
+
+/* ── CSV IMPORT ── */
+.csv-drop-zone{width:100%;padding:28px 20px;background:var(--bg);border:2px dashed var(--border);border-radius:var(--radius-xs);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s;text-align:center}
+.csv-drop-zone:active,.csv-drop-zone.drag-over{border-color:var(--gold);background:var(--gold-soft)}
+.csv-row-preview{display:grid;grid-template-columns:80px 1fr 80px;gap:8px;padding:8px 12px;font-size:12px;border-bottom:1px solid var(--border)}
+.csv-row-preview:last-child{border-bottom:none}
 </style>
 </head>
 <body>
 <script>
-// Early-loaded sheet functions — available before Firebase boots
+// ── Early-loaded functions (before Firebase) ──
+window.invItems = window.invItems || [];
+window.invFilter = window.invFilter || 'ALL';
+
 window.openSheet = function(idOrEvent, id) {
-  const sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
-  const el = document.getElementById(sheetId);
-  if (!el) { console.error('Sheet not found:', sheetId); return; }
+  var sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
+  var el = document.getElementById(sheetId);
+  if (!el) return;
   el.classList.add('open');
   document.body.style.overflow = 'hidden';
-  const di = document.querySelector('#' + sheetId + ' input[type="date"]');
+  var di = el.querySelector('input[type="date"]');
   if (di && !di.value) di.value = new Date().toISOString().split('T')[0];
 };
 window.forceCloseSheet = function(id) {
-  const el = document.getElementById(id);
+  var el = document.getElementById(id);
   if (el) el.classList.remove('open');
   document.body.style.overflow = '';
 };
 window.closeSheet = function(e, id) {
   if (e.target === e.currentTarget) window.forceCloseSheet(id);
 };
+window.switchTab = function(tab) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  var screen = document.getElementById('screen-' + tab);
+  if (screen) screen.classList.add('active');
+  document.querySelectorAll('[data-tab="' + tab + '"]').forEach(function(b) { b.classList.add('active'); });
+  if (tab === 'inventory' && window.renderInventory) window.renderInventory();
+  else if (window.renderAll) window.renderAll();
+};
 window.switchPopupTab = function(tab) {
-  // Stub — replaced after main script loads
-  const live = document.getElementById('ptab-live');
-  const hist = document.getElementById('ptab-history');
-  const lv   = document.getElementById('popup-live-view');
-  const hv   = document.getElementById('popup-history-view');
+  var live = document.getElementById('ptab-live');
+  var hist = document.getElementById('ptab-history');
+  var lv   = document.getElementById('popup-live-view');
+  var hv   = document.getElementById('popup-history-view');
   if (!live) return;
   live.classList.toggle('active', tab === 'live');
   hist.classList.toggle('active', tab === 'history');
   if (lv) lv.style.display = tab === 'live' ? 'block' : 'none';
   if (hv) hv.style.display = tab === 'history' ? 'block' : 'none';
   if (tab === 'history' && window.renderHistory) window.renderHistory();
-};
-window.createPopupEvent = function() { if (window._createPopupEvent) window._createPopupEvent(); else console.warn('Not ready yet'); };
-window.switchTab = async function(tab) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const screen = document.getElementById('screen-' + tab);
-  if (screen) screen.classList.add('active');
-  document.querySelectorAll('[data-tab="' + tab + '"]').forEach(b => b.classList.add('active'));
-  if (tab === 'inventory' && window.renderInventory) window.renderInventory();
-  else if (window.renderAll) await window.renderAll();
 };
 </script>
 
@@ -347,7 +352,7 @@ window.switchTab = async function(tab) {
       <div class="avatar">T</div>
       <div class="greeting"><span>Good morning</span><strong>Tarami ✦</strong></div>
     </div>
-    <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+    <button class="icon-btn" onclick="openSettingsSheet()"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
   </div>
   <div class="dash-hero">
     <div class="dash-hero-label">Net profit · All time</div>
@@ -448,7 +453,7 @@ window.switchTab = async function(tab) {
       <div class="live-event-card">
         <div class="lec-top">
           <div class="lec-pulse-row"><span class="lec-dot"></span><span class="lec-live-lbl">LIVE</span></div>
-          <button class="lec-end-btn" onclick="confirmEndEvent()">End Event</button>
+          <button class="lec-end-btn" onclick="openSheet('sheet-edit-live-event')" style="margin-right:6px">Edit</button><button class="lec-end-btn" onclick="confirmDeleteLiveEvent()" style="color:var(--rose);border-color:rgba(224,118,118,0.3)">Delete</button>
         </div>
         <div class="lec-name" id="lec-name"></div>
         <div class="lec-meta" id="lec-meta"></div>
@@ -514,7 +519,10 @@ window.switchTab = async function(tab) {
     </div>
   </div>
   <div id="exp-month-pills" class="filter-scroll"></div>
-  <div class="section-header"><span class="section-title">Transactions</span><span class="section-action" onclick="openSheet('sheet-add-expense')">+ Add</span></div>
+  <div class="section-header"><span class="section-title">Transactions</span><div style="display:flex;gap:12px;align-items:center">
+        <span class="section-action" onclick="openSheet('sheet-import-csv')" style="color:var(--text-muted)">📥 Import</span>
+        <span class="section-action" onclick="openSheet('sheet-add-expense')">+ Add</span>
+      </div></div>
   <div style="background:var(--card);border-radius:var(--radius-sm);margin:0 24px;border:1px solid var(--border);overflow:hidden"><div id="expense-list"></div></div>
   <div id="expense-empty" class="empty-state" style="display:none"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div><div class="empty-desc">Add travel, rent, setup costs and more</div><br><button class="btn-primary" style="width:auto;padding:12px 28px" onclick="openSheet('sheet-add-expense')">Log expense</button></div>
   <div class="scroll-end"></div>
@@ -547,7 +555,7 @@ window.switchTab = async function(tab) {
           <span class="upload-hint">Tap to take photo or upload</span>
           <img id="photo-preview" src="" alt="" style="display:none">
         </div>
-        <input type="file" id="item-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handlePhotoSelect(this)">
+        <input type="file" id="item-photo-input" accept="image/*" style="display:none" onchange="handlePhotoSelect(this)">
       </div>
 
       <div class="form-field">
@@ -689,7 +697,7 @@ window.switchTab = async function(tab) {
         <span class="upload-hint">Tap to photograph item being sold</span>
         <img id="scan-preview" src="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
       </div>
-      <input type="file" id="scan-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleScanPhoto(this)">
+      <input type="file" id="scan-photo-input" accept="image/*" style="display:none" onchange="handleScanPhoto(this)">
     </div>
     <div id="scan-status" style="min-height:18px;font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:8px"></div>
     <div id="scan-form" style="display:none">
@@ -708,6 +716,12 @@ window.switchTab = async function(tab) {
           <div class="chip" data-val="Cash">💵 Cash</div>
           <div class="chip" data-val="Card">💳 Card</div>
         </div>
+      </div>
+      <div style="height:1px;background:var(--border);margin:16px 0"></div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:10px">Customer (optional)</div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="scan-cust-name" placeholder="Priya Sharma" type="text"></div>
+        <div class="form-field"><label class="form-label">Phone</label><input class="form-input" id="scan-cust-phone" placeholder="+91 98765..." type="tel"></div>
       </div>
       <button class="btn-primary btn-gold" onclick="confirmScanSale()" style="margin-top:8px">Confirm Sale</button>
     </div>
@@ -734,18 +748,27 @@ window.switchTab = async function(tab) {
         <div class="chip" data-val="Card">💳 Card</div>
       </div>
     </div>
+    <div style="height:1px;background:var(--border);margin:16px 0"></div>
+    <div style="font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:10px">Customer (optional)</div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="ml-cust-name" placeholder="Priya Sharma" type="text"></div>
+      <div class="form-field"><label class="form-label">Phone</label><input class="form-input" id="ml-cust-phone" placeholder="+91 98765..." type="tel"></div>
+    </div>
     <button class="btn-primary btn-gold" onclick="confirmManualSale()" style="margin-top:8px">Confirm Sale</button>
   </div></div>
 </div>
 
 <!-- SHEET: End event summary -->
-<div class="sheet-overlay" id="sheet-end-event" onclick="closeSheet(event,'sheet-end-event')">
+<div class="sheet-overlay" id="sheet-edit-live-event" onclick="closeSheet(event,'sheet-edit-live-event')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">End event?</div>
+  <div class="sheet-title">Edit event</div>
   <div class="sheet-body">
-    <div id="end-event-summary" style="margin-bottom:20px"></div>
-    <button class="btn-primary" onclick="endEventConfirmed()" style="margin-bottom:10px">✓ End &amp; save to history</button>
-    <button onclick="forceCloseSheet('sheet-end-event')" style="width:100%;padding:14px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-secondary)">Keep going</button>
+    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ele-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
+    <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ele-date" type="date"></div>
+    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="ele-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
+    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ele-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
+    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ele-rent" placeholder="0" type="number"></div>
+    <button class="btn-primary btn-gold" onclick="saveLiveEventEdit()" style="margin-top:8px">Save changes</button>
   </div></div>
 </div>
 
@@ -788,6 +811,120 @@ window.switchTab = async function(tab) {
     <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="cust-notes" placeholder="Bought bangles, prefers gold..." type="text"></div>
     <button class="btn-primary btn-gold" onclick="saveCustomer()" style="margin-top:8px">Save customer</button>
   </div></div>
+</div>
+
+<!-- SHEET: Import CSV -->
+<div class="sheet-overlay" id="sheet-import-csv" onclick="closeSheet(event,'sheet-import-csv')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-title">Import expenses</div>
+  <div class="sheet-body">
+
+    <!-- Format guide -->
+    <div style="background:var(--bg);border-radius:var(--radius-xs);padding:14px;margin-bottom:16px;font-size:12px;line-height:1.7;color:var(--text-secondary)">
+      <div style="font-weight:600;color:var(--text-primary);margin-bottom:6px">CSV format required:</div>
+      <code style="font-size:11px;color:var(--gold)">date, category, description, amount, paidBy</code>
+      <div style="margin-top:6px">Date format: <strong>YYYY-MM-DD</strong></div>
+      <div>Categories: Event Rent, Inventory, Logistic, Packaging, Marketing, Salary, Fixed Costs, Raw material, Other</div>
+      <div style="margin-top:8px;font-weight:600;color:var(--text-primary)">Google Sheets → File → Download → CSV</div>
+    </div>
+
+    <!-- Drop zone -->
+    <div class="form-field">
+      <div class="csv-drop-zone" id="csv-drop-zone" onclick="document.getElementById('csv-file-input').click()">
+        <div style="font-size:32px;margin-bottom:8px">📄</div>
+        <div style="font-size:14px;font-weight:600">Tap to select CSV file</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px">or drag and drop here</div>
+        <div id="csv-file-name" style="font-size:12px;color:var(--gold);margin-top:8px;font-weight:500"></div>
+      </div>
+      <input type="file" id="csv-file-input" accept=".csv,text/csv" style="display:none" onchange="handleCSVSelect(this)">
+    </div>
+
+    <!-- Preview -->
+    <div id="csv-preview" style="display:none;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px" id="csv-preview-count"></div>
+      <div style="background:var(--bg);border-radius:var(--radius-xs);overflow:hidden;max-height:200px;overflow-y:auto" id="csv-preview-rows"></div>
+    </div>
+
+    <!-- Error -->
+    <div id="csv-error" style="display:none;background:var(--rose-soft);border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-xs);padding:12px;font-size:13px;color:var(--rose);margin-bottom:12px"></div>
+
+    <button class="btn-primary btn-gold" id="btn-import-csv" onclick="importCSV()" style="display:none;margin-top:8px">Import expenses</button>
+    <div id="import-status" style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px"></div>
+  </div></div>
+</div>
+
+<!-- SHEET: Settings -->
+<div class="sheet-overlay" id="sheet-settings" onclick="closeSheet(event,'sheet-settings')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Settings</div>
+    <div class="sheet-body">
+
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Business details</div>
+
+      <div class="form-field">
+        <label class="form-label">Business name</label>
+        <input class="form-input" id="set-biz-name" placeholder="e.g. Tarami Jewellery" type="text">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Owner name</label>
+        <input class="form-input" id="set-owner-name" placeholder="e.g. Swati" type="text">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Business category</label>
+        <select class="form-input" id="set-biz-category">
+          <option value="Jewellery">Jewellery</option>
+          <option value="Fashion & Clothing">Fashion & Clothing</option>
+          <option value="Food & Beverages">Food & Beverages</option>
+          <option value="Home Decor">Home Decor</option>
+          <option value="Art & Crafts">Art & Crafts</option>
+          <option value="Beauty & Skincare">Beauty & Skincare</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Currency</label>
+        <select class="form-input" id="set-currency">
+          <option value="₹">₹ INR</option>
+          <option value="$">$ USD</option>
+          <option value="£">£ GBP</option>
+          <option value="€">€ EUR</option>
+          <option value="¥">¥ JPY</option>
+        </select>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:20px 0"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">AI & API keys</div>
+
+      <div class="form-field">
+        <label class="form-label">Gemini API key</label>
+        <input class="form-input" id="set-gemini-key" placeholder="For inventory duplicate detection" type="password" autocomplete="off">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Get from <a href="https://aistudio.google.com" target="_blank" style="color:var(--gold)">aistudio.google.com</a> · used for photo duplicate detection</div>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Anthropic API key</label>
+        <input class="form-input" id="set-claude-key" placeholder="For AI scan at pop-ups" type="password" autocomplete="off">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Get from <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold)">console.anthropic.com</a> · used for scan-to-log sales</div>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:20px 0"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Data</div>
+
+      <div class="form-field">
+        <label class="form-label">Firebase Project ID</label>
+        <input class="form-input" id="set-fb-project" type="text" disabled style="opacity:0.6">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Read-only · configured in source</div>
+      </div>
+
+      <button class="btn-primary btn-gold" onclick="saveSettings()" style="margin-top:12px">Save settings</button>
+      <div id="settings-save-status" style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px"></div>
+    </div>
+  </div>
 </div>
 
 <!-- Toast -->
@@ -917,15 +1054,97 @@ const DB = {
   }
 };
 
+// Expose DB globally so early-loaded functions (confirmEndEvent, etc.) can access it
+window.DB = DB;
+
 // ── INIT ─────────────────────────────────────────────────────────
 async function initApp() {
   initCatDropdowns();
   updateClock();
   setInterval(updateClock, 30000);
+  await loadSettings();
   await seedIfEmpty();
   await loadInventory();
   await renderAll();
 }
+
+// ── SETTINGS ──────────────────────────────────────────────────────
+let appSettings = {};
+
+async function loadSettings() {
+  try {
+    const { db, doc, getDocs, collection } = window._FB;
+    const snap = await getDocs(collection(db, 'sb_settings'));
+    if (!snap.empty) {
+      appSettings = snap.docs[0].data();
+      // Apply API keys
+      if (appSettings.geminiKey && appSettings.geminiKey !== '') GEMINI_API_KEY = appSettings.geminiKey;
+      if (appSettings.claudeKey && appSettings.claudeKey !== '') CLAUDE_API_KEY = appSettings.claudeKey;
+      // Apply business name to header
+      applySettings();
+    }
+  } catch(e) { console.error('loadSettings:', e); }
+}
+
+function applySettings() {
+  // Update greeting
+  const greetingEl = document.querySelector('.greeting strong');
+  if (greetingEl && appSettings.bizName) greetingEl.textContent = appSettings.bizName;
+  // Update avatar
+  const avatarEl = document.querySelector('.avatar');
+  if (avatarEl && appSettings.bizName) avatarEl.textContent = appSettings.bizName.charAt(0).toUpperCase();
+  // Update loading logo
+  const loadingLogo = document.querySelector('.fb-loading-logo');
+  if (loadingLogo && appSettings.bizName) loadingLogo.textContent = appSettings.bizName;
+  // Firebase project ID (read-only display)
+  const fbProject = document.getElementById('set-fb-project');
+  if (fbProject) fbProject.value = 'solobiz-tarami';
+}
+
+window.openSettingsSheet = function() {
+  // Populate form with current values
+  document.getElementById('set-biz-name').value = appSettings.bizName || '';
+  document.getElementById('set-owner-name').value = appSettings.ownerName || '';
+  document.getElementById('set-biz-category').value = appSettings.bizCategory || 'Jewellery';
+  document.getElementById('set-currency').value = appSettings.currency || '₹';
+  document.getElementById('set-gemini-key').value = appSettings.geminiKey || '';
+  document.getElementById('set-claude-key').value = appSettings.claudeKey || '';
+  document.getElementById('set-fb-project').value = 'solobiz-tarami';
+  document.getElementById('settings-save-status').textContent = '';
+  openSheet('sheet-settings');
+};
+
+window.saveSettings = async function() {
+  if (!window._FB) { showToast('Still connecting...'); return; }
+  const settings = {
+    bizName: document.getElementById('set-biz-name').value.trim(),
+    ownerName: document.getElementById('set-owner-name').value.trim(),
+    bizCategory: document.getElementById('set-biz-category').value,
+    currency: document.getElementById('set-currency').value,
+    geminiKey: document.getElementById('set-gemini-key').value.trim(),
+    claudeKey: document.getElementById('set-claude-key').value.trim(),
+    updatedAt: new Date().toISOString()
+  };
+
+  const status = document.getElementById('settings-save-status');
+  status.textContent = 'Saving...';
+
+  try {
+    const { db, doc, setDoc } = window._FB;
+    await setDoc(doc(db, 'sb_settings', 'main'), settings);
+    appSettings = settings;
+    // Apply live
+    if (settings.geminiKey) GEMINI_API_KEY = settings.geminiKey;
+    if (settings.claudeKey) CLAUDE_API_KEY = settings.claudeKey;
+    applySettings();
+    status.textContent = '';
+    forceCloseSheet('sheet-settings');
+    showToast('✓ Settings saved');
+  } catch(e) {
+    console.error('saveSettings:', e);
+    status.textContent = 'Error saving — check connection';
+  }
+};
 
 
 // ── CATEGORY DROPDOWNS ─────────────────────────────────────────────
@@ -948,8 +1167,7 @@ function showToast(msg) {
 }
 
 // ── GEMINI API KEY ─────────────────────────────────────────────────
-// 👇 PASTE YOUR GEMINI API KEY HERE (from aistudio.google.com)
-const GEMINI_API_KEY = 'AIzaSyCusgEXvp6zbZh6hPGl5LmJqjZMzq5lBaY';
+let GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY';
 
 // ── PHOTO HANDLING + DUPLICATE DETECTION ───────────────────────────
 window.handlePhotoSelect = function(input) {
@@ -971,7 +1189,7 @@ window.handlePhotoSelect = function(input) {
     dupEl.innerHTML = '';
     // Trigger duplicate detection if inventory has items with photos
     const itemsWithPhotos = invItems.filter(i => i.photoURL);
-    if (itemsWithPhotos.length > 0 && GEMINI_API_KEY !== 'AIzaSyCusgEXvp6zbZh6hPGl5LmJqjZMzq5lBaY') {
+    if (itemsWithPhotos.length > 0 && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY') {
       runDuplicateDetection(base64, itemsWithPhotos);
     }
   };
@@ -1375,58 +1593,10 @@ window.deleteItem = async function(id) {
 
 // ── SEED LOCAL DATA ────────────────────────────────────────────────
 async function seedIfEmpty() {
-  const { db, collection, addDoc, serverTimestamp, writeBatch, doc, setDoc } = window._FB;
-
-  // Seed expenses
-  if (await DB.isEmpty('sb_expenses')) {
-    const S = [
-      {d:"2024-06-21",c:"Event Rent",n:"Dufa Ecoworld stall rent",a:12000,p:"Swati"},
-      {d:"2024-07-03",c:"Event Rent",n:"Dufa Events Ecospace",a:6000,p:"Swati"},
-      {d:"2024-07-14",c:"Event Rent",n:"Sobha Tulip stall",a:2250,p:"Swati"},
-      {d:"2024-07-20",c:"Event Rent",n:"Safina Plaza stall",a:4720,p:"Swati"},
-      {d:"2024-08-08",c:"Event Rent",n:"Bliss Pop Up Ecospace",a:8000,p:"Swati"},
-      {d:"2024-10-09",c:"Event Rent",n:"Durgotsav Koramangala",a:30000,p:"Swati"},
-      {d:"2024-10-15",c:"Marketing",n:"Instagram ads October",a:3000,p:"Swati"},
-      {d:"2024-12-10",c:"Event Rent",n:"Bliss Pop Up December",a:10000,p:"Swati"},
-      {d:"2025-01-15",c:"Inventory",n:"Gold-plated bangles batch",a:28000,p:"Swati"},
-      {d:"2025-03-04",c:"Event Rent",n:"Bliss Pop Up March",a:15000,p:"Swati"},
-      {d:"2025-09-27",c:"Event Rent",n:"Durgotsav KTPO",a:15000,p:"Swati"},
-    ];
-    const batch = writeBatch(db);
-    S.forEach(r => {
-      const id = DB.newId();
-      batch.set(doc(db, 'sb_expenses', id), {id, cat:r.c, amount:r.a, desc:r.n, date:r.d, paidBy:r.p||'', createdAt:r.d+'T00:00:00.000Z'});
-    });
-    await batch.commit();
-    console.log('Expenses seeded');
-  }
-
-  // Seed events
-  if (await DB.isEmpty('sb_events')) {
-    const E = [
-      {n:"Durgotsav",s:"2025-09-27",l:"BARSHA Durga Puja Festival",o:"",r:253809,t:65000},
-      {n:"Bliss Pop Up",s:"2025-09-09",l:"The Bay at Ecoworld",o:"Bliss pop up",r:52445,t:15000},
-      {n:"Silicon Valley",s:"2025-07-08",l:"EGL Entrance",o:"Silicon Valley",r:31367,t:15000},
-      {n:"Nish Events Saroj",s:"2025-07-01",l:"Ecospace",o:"Saroj",r:39258,t:8000},
-      {n:"Bliss Pop Up",s:"2025-04-08",l:"Ecoworld Bay Food Court",o:"Bliss pop up",r:55653,t:15000},
-      {n:"Tropical Edition",s:"2025-03-23",l:"Ecoworld Bay Food Court",o:"Sunday Soul Sante",r:95401,t:12980},
-      {n:"Bliss Pop Up",s:"2025-03-04",l:"Ecoworld Bay Food Court",o:"Bliss pop up",r:73076,t:15000},
-      {n:"Christmas Edition",s:"2024-12-22",l:"Ecoworld Bay Food Court",o:"Sunday Soul Sante",r:115992,t:10030},
-      {n:"Bliss Pop Up",s:"2024-12-10",l:"Ecoworld Bay Food Court",o:"Bliss pop up",r:76272,t:10000},
-      {n:"Durgotsav",s:"2024-10-09",l:"Koramangala",o:"Dufa Events",r:188622,t:30000},
-      {n:"Safina Plaza",s:"2024-08-17",l:"Safina Plaza",o:"Safina Plaza",r:62147,t:14000},
-      {n:"Bliss Pop Up",s:"2024-08-08",l:"Ecospace",o:"Bliss pop up",r:55382,t:8000},
-      {n:"Safina Plaza",s:"2024-07-27",l:"Safina Plaza",o:"Safina Plaza",r:92544,t:14000},
-    ];
-    const batch = writeBatch(db);
-    E.forEach(e => {
-      const id = DB.newId();
-      batch.set(doc(db, 'sb_events', id), {id, name:e.n, date:e.s, location:e.l, venue:e.l, organiser:e.o, stallCost:e.t, stallRent:e.t, revenue:e.r, status:'done', sales:[], createdAt:e.s+'T00:00:00.000Z'});
-    });
-    await batch.commit();
-    console.log('Events seeded');
-  }
+  // No hardcoded seed data — use CSV import in Expenses tab to add data
+  // This function is kept as a hook for future use
 }
+
 
 // ── ROUTING ────────────────────────────────────────────────────────
 window.switchTab = function(tab) {
@@ -1453,14 +1623,25 @@ window.closeSheet = function(e, id) { if (e.target === e.currentTarget) forceClo
 function forceCloseSheet(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
 window.forceCloseSheet = forceCloseSheet;
 
-document.querySelectorAll('.chip-row').forEach(row => {
-  row.addEventListener('click', e => {
-    const c = e.target.closest('.chip'); if (!c) return;
-    row.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
-    c.classList.add('active');
-  });
+// Chip selection — use event delegation on document for dynamically added chips
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  const row = chip.closest('.chip-row');
+  if (!row) return;
+  row.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+  chip.classList.add('active');
 });
-function getChip(rowId) { const a = document.querySelector(`#${rowId} .chip.active`); return a ? a.dataset.val : ''; }
+function getChip(rowId) {
+  const row = document.getElementById(rowId);
+  if (row) {
+    const active = row.querySelector('.chip.active');
+    if (active) return active.dataset.val;
+  }
+  // fallback — querySelector with hash
+  const a = document.querySelector('#' + rowId + ' .chip.active');
+  return a ? a.dataset.val : '';
+}
 
 // ── SAVE: EXPENSE ──────────────────────────────────────────────────
 window.saveExpense = async function() {
@@ -1514,6 +1695,12 @@ window.saveCustomer = async function() {
 
 // ── RENDER: DASHBOARD ──────────────────────────────────────────────
 async function renderDashboard() {
+  // Update greeting
+  const hour = new Date().getHours();
+  const greetText = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const greetSpan = document.querySelector('.greeting > span');
+  if (greetSpan) greetSpan.textContent = greetText;
+
   const events   = await DB.getEvents();
   const expenses = await DB.getExpenses();
   const totalRev = events.reduce((s,e) => s + e.revenue, 0);
@@ -1552,8 +1739,7 @@ let currentPopupTab = 'live';
 let expandedHistId = null;
 
 // ── CLAUDE API KEY for scan feature ──────────────────────────────
-// 👇 PASTE YOUR ANTHROPIC API KEY HERE
-const CLAUDE_API_KEY = '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';
+let CLAUDE_API_KEY = 'YOUR_ANTHROPIC_API_KEY';
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────
 window.switchPopupTab = function(tab) {
@@ -1570,7 +1756,7 @@ async function renderEvents() {
   const all = await DB.getEvents();
   const totalRev = all.reduce((s,e) => s + e.revenue, 0);
   document.getElementById('popup-subtitle') && (document.getElementById('popup-subtitle').textContent = '');
-  renderLive();
+  await renderLive();
   if (currentPopupTab === 'history') renderHistory();
 }
 
@@ -1613,19 +1799,24 @@ async function renderLive() {
   } else {
     logEl.style.display = 'block';
     emptyEl.style.display = 'none';
-    logEl.innerHTML = [...sales].reverse().map(s => `
+    logEl.innerHTML = [...sales].reverse().map((s, idx) => {
+      const realIdx = sales.length - 1 - idx;
+      return `
       <div class="sale-row">
-        <div>
+        <div style="flex:1;min-width:0">
           <div class="sale-row-name">${s.name || s.item || 'Item'}</div>
-          <div class="sale-row-meta">${s.category||s.cat||''} · ${s.paymentMethod||s.mode||'UPI'} · qty ${s.qty||1} · ${new Date(s.timestamp||s.time||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
+          <div class="sale-row-meta">${s.category||s.cat||''} · ${s.paymentMethod||s.mode||'UPI'} · qty ${s.qty||1}${s.customerName?' · 👤 '+s.customerName:''} · ${new Date(s.timestamp||s.time||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
         </div>
         <div class="sale-row-amt">₹${((s.unitPrice||s.amount||0)*(s.qty||1)).toLocaleString('en-IN')}</div>
-      </div>`).join('');
+        <button onclick="event.stopPropagation();deleteSaleFromLive(${realIdx})" style="margin-left:8px;background:none;border:none;cursor:pointer;font-size:14px;opacity:0.35;padding:4px;transition:opacity 0.15s" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.35'">✕</button>
+      </div>`;
+    }).join('');
   }
 }
 
 async function renderHistory() {
-  const done = await DB.getEvents().filter(e => e.status === 'done').sort((a,b) => new Date(b.date||b.createdAt) - new Date(a.date||a.createdAt));
+  const allEvts = await DB.getEvents();
+  const done = allEvts.filter(e => e.status === 'done').sort((a,b) => new Date(b.date||b.createdAt) - new Date(a.date||a.createdAt));
   const listEl  = document.getElementById('history-list');
   const emptyEl = document.getElementById('history-empty');
   const subEl   = document.getElementById('history-subtitle');
@@ -1644,14 +1835,17 @@ async function renderHistory() {
 
     const salesDetail = isExpanded && sales.length ? `
       <div class="hist-sales-detail">
-        ${sales.map(s => `<div class="hist-sale-row">
-          <div>
+        ${sales.map((s, si) => `<div class="hist-sale-row">
+          <div style="flex:1;min-width:0">
             <span style="font-weight:600">${s.name||s.item||'Item'}</span>
             <span style="color:var(--text-muted);margin-left:6px">${s.category||s.cat||''} · qty ${s.qty||1} · ${s.paymentMethod||s.mode||''}</span>
           </div>
           <span style="font-weight:600;color:var(--green)">₹${((s.unitPrice||s.amount||0)*(s.qty||1)).toLocaleString('en-IN')}</span>
+          <button onclick="event.stopPropagation();deleteSaleFromHistory('${ev.id}',${si})" style="margin-left:8px;background:none;border:none;cursor:pointer;font-size:13px;opacity:0.3;padding:4px;transition:opacity 0.15s" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.3'">✕</button>
         </div>`).join('')}
       </div>` : (isExpanded ? '<div class="hist-sales-detail" style="padding:12px 16px;font-size:13px;color:var(--text-muted)">No individual sales logged</div>' : '');
+
+    const deleteRow = isExpanded ? `<div style="padding:10px 16px;border-top:1px solid var(--border)"><button onclick="event.stopPropagation();deleteHistEvent('${ev.id}')" style="width:100%;padding:10px;background:var(--rose-soft);color:var(--rose);border:1px solid rgba(224,118,118,0.2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform 0.15s">🗑 Delete event</button></div>` : '';
 
     return `<div class="hist-card" onclick="toggleHistCard('${ev.id}')">
       <div class="hist-card-top">
@@ -1667,6 +1861,7 @@ async function renderHistory() {
         <div><div class="hist-stat-lbl">Sales</div><div class="hist-stat-val">${sales.length} items</div></div>
       </div>
       ${salesDetail}
+      ${deleteRow}
     </div>`;
   }).join('');
 }
@@ -1676,8 +1871,57 @@ window.toggleHistCard = function(id) {
   renderHistory();
 };
 
+// ── DELETE SALE FROM LIVE EVENT ──────────────────────────────────
+window.deleteSaleFromLive = async function(saleIndex) {
+  if (!confirm('Delete this sale entry?')) return;
+  const arr = await DB.getEvents();
+  const live = arr.find(e => e.status === 'active' || e.status === 'live');
+  if (!live || !live.sales || saleIndex < 0 || saleIndex >= live.sales.length) return;
+  live.sales.splice(saleIndex, 1);
+  live.revenue = live.sales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
+  await DB.saveEvents(arr);
+  await renderLive();
+  renderDashboard();
+  showToast('Sale deleted');
+};
+
+// ── DELETE LIVE EVENT ────────────────────────────────────────────
+window.confirmDeleteLiveEvent = async function() {
+  const arr = await DB.getEvents();
+  const live = arr.find(e => e.status === 'active' || e.status === 'live');
+  if (!live) return;
+  await DB.deleteEvent(live.id);
+  await renderEvents();
+  renderDashboard();
+  showToast('Event deleted');
+};
+
+// ── DELETE HISTORY EVENT ─────────────────────────────────────────
+window.deleteHistEvent = async function(id) {
+  if (!confirm('Delete this event from history? This cannot be undone.')) return;
+  await DB.deleteEvent(id);
+  expandedHistId = null;
+  await renderHistory();
+  renderDashboard();
+  showToast('Event deleted');
+};
+
+// ── DELETE SALE FROM HISTORY EVENT ───────────────────────────────
+window.deleteSaleFromHistory = async function(eventId, saleIndex) {
+  if (!confirm('Delete this sale entry?')) return;
+  const arr = await DB.getEvents();
+  const ev = arr.find(e => e.id === eventId);
+  if (!ev || !ev.sales || saleIndex < 0 || saleIndex >= ev.sales.length) return;
+  ev.sales.splice(saleIndex, 1);
+  ev.revenue = ev.sales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
+  await DB.saveEvents(arr);
+  await renderHistory();
+  renderDashboard();
+  showToast('Sale deleted');
+};
+
 // ── CREATE EVENT ──────────────────────────────────────────────────
-window._createPopupEvent = window.createPopupEvent = async function() {
+window.createPopupEvent = async function() {
   const name = document.getElementById('ce-name').value.trim();
   if (!name) { showToast('Please enter an event name'); return; }
   const date     = document.getElementById('ce-date').value;
@@ -1705,35 +1949,55 @@ window._createPopupEvent = window.createPopupEvent = async function() {
   else showToast('Event created');
 };
 
-// ── END EVENT ─────────────────────────────────────────────────────
-window.confirmEndEvent = async function() {
-  const live = (await DB.getEvents()).find(e => e.status === 'active' || e.status === 'live');
-  if (!live) return;
-  const sales = live.sales || [];
-  const rev = sales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
-  const rent = live.stallCost || live.stallRent || 0;
-  const net = rev - rent;
-  document.getElementById('end-event-summary').innerHTML = `
-    <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:500;margin-bottom:16px">${live.name}</div>
-    <div class="end-summary-stat"><span style="color:var(--text-muted)">Total revenue</span><span style="font-weight:700">₹${rev.toLocaleString('en-IN')}</span></div>
-    <div class="end-summary-stat"><span style="color:var(--text-muted)">Stall rent</span><span style="font-weight:600">₹${rent.toLocaleString('en-IN')}</span></div>
-    <div class="end-summary-stat"><span style="color:var(--text-muted)">Net profit</span><span style="font-weight:700;color:${net>=0?'var(--green)':'var(--rose)'}">${net>=0?'+':''}₹${Math.abs(net).toLocaleString('en-IN')}</span></div>
-    <div class="end-summary-stat"><span style="color:var(--text-muted)">Items sold</span><span style="font-weight:600">${sales.length}</span></div>`;
-  openSheet('sheet-end-event');
+// ── EDIT LIVE EVENT ───────────────────────────────────────────────
+window.openSheet = window.openSheet || function(){};
+document.addEventListener('click', function(e) {
+  if (e.target.closest && e.target.closest('#sheet-edit-live-event') && !e.target.closest('.sheet')) return;
+});
+
+// Populate edit form when sheet opens
+const _origOpenSheet = window.openSheet;
+window.openSheet = function(idOrEvent, id) {
+  const sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
+  if (sheetId === 'sheet-edit-live-event') {
+    DB.getEvents().then(all => {
+      const live = all.find(e => e.status === 'active' || e.status === 'live');
+      if (!live) { showToast('No active event found'); return; }
+      document.getElementById('ele-name').value = live.name || '';
+      document.getElementById('ele-date').value = live.date || '';
+      document.getElementById('ele-venue').value = live.venue || live.location || '';
+      document.getElementById('ele-organiser').value = live.organiser || '';
+      document.getElementById('ele-rent').value = live.stallRent || live.stallCost || '';
+      _origOpenSheet(sheetId);
+    });
+    return;
+  }
+  _origOpenSheet(idOrEvent, id);
 };
 
-window.endEventConfirmed = async function() {
-  const arr = await DB.getEvents();
-  const live = arr.find(e => e.status === 'active' || e.status === 'live');
-  if (!live) return;
-  const sales = live.sales || [];
-  live.revenue = sales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
-  live.status = 'done';
-  await DB.saveEvents(arr);
-  forceCloseSheet('sheet-end-event');
-  await renderEvents();
-  renderDashboard();
-  showToast('Event ended — saved to history');
+window.saveLiveEventEdit = async function() {
+  try {
+    const name = document.getElementById('ele-name').value.trim();
+    if (!name) { showToast('Please enter an event name'); return; }
+    const all = await DB.getEvents();
+    const live = all.find(e => e.status === 'active' || e.status === 'live');
+    if (!live) { showToast('No active event found'); return; }
+    live.name = name;
+    live.date = document.getElementById('ele-date').value;
+    live.venue = document.getElementById('ele-venue').value.trim();
+    live.location = live.venue;
+    live.organiser = document.getElementById('ele-organiser').value.trim();
+    const rent = parseFloat(document.getElementById('ele-rent').value) || 0;
+    live.stallRent = rent;
+    live.stallCost = rent;
+    await DB.saveEvent(live);
+    forceCloseSheet('sheet-edit-live-event');
+    await renderEvents();
+    showToast('Event updated');
+  } catch(err) {
+    console.error('Edit live event error:', err);
+    showToast('Error saving — check console');
+  }
 };
 
 // ── SCAN ITEM (Claude Vision) ────────────────────────────────────
@@ -1751,7 +2015,7 @@ window.handleScanPhoto = async function(input) {
     document.getElementById('scan-form').style.display = 'none';
     document.getElementById('scan-status').textContent = '🔍 Identifying item...';
 
-    if (CLAUDE_API_KEY === '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') {
+    if (CLAUDE_API_KEY === 'YOUR_ANTHROPIC_API_KEY') {
       document.getElementById('scan-status').textContent = 'Add Claude API key to enable AI scan';
       document.getElementById('scan-form').style.display = 'block';
       return;
@@ -1823,16 +2087,23 @@ window.confirmScanSale = async function() {
   const qty = parseInt(document.getElementById('scan-qty').value) || 1;
   const cat = document.getElementById('scan-cat').value;
   const pay = getChip('scan-pay-chips');
+  const custName = document.getElementById('scan-cust-name').value.trim();
+  const custPhone = document.getElementById('scan-cust-phone').value.trim();
   if (!name || !price) { showToast('Enter item name and price'); return; }
-  const ok = await addSaleToLiveEvent({ name, category: cat, unitPrice: price, qty, paymentMethod: pay });
+  const ok = await addSaleToLiveEvent({ name, category: cat, unitPrice: price, qty, paymentMethod: pay, customerName: custName, customerPhone: custPhone });
   if (ok) {
+    // Save customer if name provided
+    if (custName) {
+      const cust = { id: DB.newId(), name: custName, phone: custPhone, source: 'Pop-Up', notes: `Bought: ${name}`, createdAt: new Date().toISOString() };
+      await DB.addCustomer(cust);
+    }
     // Reset scan form
     document.getElementById('scan-photo-input').value = '';
     document.getElementById('scan-preview').style.display = 'none';
     document.getElementById('scan-upload-area').classList.remove('has-img');
     document.getElementById('scan-form').style.display = 'none';
     document.getElementById('scan-status').textContent = '';
-    ['scan-name','scan-price'].forEach(id => document.getElementById(id).value = '');
+    ['scan-name','scan-price','scan-cust-name','scan-cust-phone'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('scan-qty').value = '1';
     forceCloseSheet('sheet-scan-item');
     await renderLive();
@@ -1848,10 +2119,17 @@ window.confirmManualSale = async function() {
   const qty = parseInt(document.getElementById('ml-qty').value) || 1;
   const cat = document.getElementById('ml-cat').value;
   const pay = getChip('ml-pay-chips');
+  const custName = document.getElementById('ml-cust-name').value.trim();
+  const custPhone = document.getElementById('ml-cust-phone').value.trim();
   if (!name || !price) { showToast('Enter item name and price'); return; }
-  const ok = await addSaleToLiveEvent({ name, category: cat, unitPrice: price, qty, paymentMethod: pay });
+  const ok = await addSaleToLiveEvent({ name, category: cat, unitPrice: price, qty, paymentMethod: pay, customerName: custName, customerPhone: custPhone });
   if (ok) {
-    ['ml-name','ml-price'].forEach(id => document.getElementById(id).value = '');
+    // Save customer if name provided
+    if (custName) {
+      const cust = { id: DB.newId(), name: custName, phone: custPhone, source: 'Pop-Up', notes: `Bought: ${name}`, createdAt: new Date().toISOString() };
+      await DB.addCustomer(cust);
+    }
+    ['ml-name','ml-price','ml-cust-name','ml-cust-phone'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('ml-qty').value = '1';
     forceCloseSheet('sheet-manual-log');
     await renderLive();
@@ -1921,10 +2199,10 @@ async function renderCustomers() {
   if (!customers.length) { list.innerHTML = ''; list.style.display = 'none'; empty.style.display = 'flex'; return; }
   list.style.display = 'block'; empty.style.display = 'none';
   list.innerHTML = customers.map(c =>
-    `<div class="list-item" onclick="deleteCustomer('${c.id}')">
+    `<div class="list-item">
       <div class="list-item-icon" style="background:var(--gold-soft);font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--gold);font-weight:500">${c.name.charAt(0).toUpperCase()}</div>
       <div class="list-item-body"><div class="list-item-title">${c.name}</div><div class="list-item-sub">${c.phone||'No phone'}${c.address?' · '+c.address:''}</div></div>
-      <div class="list-item-right"><span class="badge" style="background:var(--gold-soft);color:#8B6830;border:1px solid var(--gold-border)">${c.source}</span></div>
+      <div class="list-item-right" style="display:flex;align-items:center;gap:10px"><span class="badge" style="background:var(--gold-soft);color:#8B6830;border:1px solid var(--gold-border)">${c.source}</span><button onclick="event.stopPropagation();deleteCustomer('${c.id}')" style="background:none;border:none;cursor:pointer;font-size:14px;opacity:0.3;padding:4px;transition:opacity 0.15s" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.3'">✕</button></div>
     </div>`).join('');
 }
 window.deleteCustomer = async function(id) { if(!confirm('Remove?'))return; await DB.deleteCustomer(id); await renderAll(); };
@@ -1939,6 +2217,189 @@ function updateClock() { const n=new Date(); document.getElementById('clock').te
 window.addEventListener('fb-ready', () => {
   initApp();
 });
+
+
+// ── CSV IMPORT ─────────────────────────────────────────────────────
+let parsedCSVRows = [];
+
+window.handleCSVSelect = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('csv-file-name').textContent = file.name;
+  document.getElementById('csv-error').style.display = 'none';
+  document.getElementById('csv-preview').style.display = 'none';
+  document.getElementById('btn-import-csv').style.display = 'none';
+  parsedCSVRows = [];
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const result = parseCSV(text);
+    if (result.error) {
+      document.getElementById('csv-error').textContent = result.error;
+      document.getElementById('csv-error').style.display = 'block';
+      return;
+    }
+    parsedCSVRows = result.rows;
+    showCSVPreview(parsedCSVRows);
+  };
+  reader.readAsText(file);
+};
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return { error: 'CSV must have a header row and at least one data row.' };
+
+  // Detect header
+  const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
+  
+  // Map columns flexibly
+  const colMap = {
+    date:    header.findIndex(h => h.includes('date')),
+    cat:     header.findIndex(h => h.includes('cat') || h.includes('type')),
+    desc:    header.findIndex(h => h.includes('desc') || h.includes('name') || h.includes('note') || h.includes('item')),
+    amount:  header.findIndex(h => h.includes('amount') || h.includes('amt') || h.includes('price') || h.includes('cost')),
+    paidBy:  header.findIndex(h => h.includes('paid') || h.includes('by') || h.includes('person')),
+  };
+
+  if (colMap.date === -1 || colMap.amount === -1) {
+    return { error: `Could not find required columns. Found: ${header.join(', ')}. Need at least: date, amount.` };
+  }
+
+  const VALID_CATS = ['Event Rent','Inventory','Logistic','Packaging','Marketing','Salary','Fixed Costs','Raw material','Other'];
+  const rows = [];
+  const errors = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    // Handle quoted fields
+    const cols = lines[i].match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || lines[i].split(',');
+    const clean = cols.map(c => (c||'').trim().replace(/^"|"$/g, ''));
+
+    const rawDate   = colMap.date   !== -1 ? clean[colMap.date]   || '' : '';
+    const rawCat    = colMap.cat    !== -1 ? clean[colMap.cat]    || '' : 'Other';
+    const rawDesc   = colMap.desc   !== -1 ? clean[colMap.desc]   || '' : '';
+    const rawAmt    = colMap.amount !== -1 ? clean[colMap.amount] || '0' : '0';
+    const rawPaidBy = colMap.paidBy !== -1 ? clean[colMap.paidBy] || '' : '';
+
+    // Parse amount — remove ₹, commas, spaces
+    const amount = parseFloat(rawAmt.replace(/[₹,\s]/g, '')) || 0;
+    if (!amount) { errors.push(`Row ${i+1}: invalid amount "${rawAmt}"`); continue; }
+
+    // Parse date — accept YYYY-MM-DD, DD/MM/YYYY, DD-MM-YYYY
+    let date = rawDate.trim();
+    if (/^\d{2}[/-]\d{2}[/-]\d{4}$/.test(date)) {
+      const [d, m, y] = date.split(/[/-]/);
+      date = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+    } else if (/^\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$/.test(date)) {
+      const parts = date.split(/[/-]/);
+      if (parts[2].length === 2) parts[2] = '20' + parts[2];
+      date = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      errors.push(`Row ${i+1}: invalid date "${rawDate}"`); continue;
+    }
+
+    // Match category
+    const catMatch = VALID_CATS.find(c => c.toLowerCase() === rawCat.toLowerCase()) || 'Other';
+
+    rows.push({
+      id: DB.newId(),
+      date,
+      cat: catMatch,
+      desc: rawDesc || catMatch,
+      amount,
+      paidBy: rawPaidBy,
+      createdAt: date + 'T00:00:00.000Z'
+    });
+  }
+
+  if (!rows.length) return { error: 'No valid rows found. ' + errors.slice(0,3).join(' | ') };
+  return { rows, warnings: errors };
+}
+
+function showCSVPreview(rows) {
+  const previewEl = document.getElementById('csv-preview-rows');
+  const countEl   = document.getElementById('csv-preview-count');
+  countEl.textContent = `${rows.length} expenses ready to import`;
+
+  const preview = rows.slice(0, 8);
+  previewEl.innerHTML = preview.map(r => `
+    <div class="csv-row-preview">
+      <span style="color:var(--text-muted)">${r.date}</span>
+      <span><strong>${r.desc}</strong> <span style="color:var(--text-muted);font-size:11px">${r.cat}</span></span>
+      <span style="text-align:right;font-weight:600;color:var(--text-primary)">₹${r.amount.toLocaleString('en-IN')}</span>
+    </div>`).join('') + (rows.length > 8 ? `<div style="padding:8px 12px;font-size:12px;color:var(--text-muted)">+ ${rows.length - 8} more rows</div>` : '');
+
+  document.getElementById('csv-preview').style.display = 'block';
+  document.getElementById('btn-import-csv').style.display = 'block';
+}
+
+window.importCSV = async function() {
+  if (!parsedCSVRows.length) return;
+  if (!window._FB) { showToast('Firebase not ready'); return; }
+
+  const btn    = document.getElementById('btn-import-csv');
+  const status = document.getElementById('import-status');
+  btn.disabled = true;
+  btn.textContent = 'Importing...';
+
+  try {
+    const { db, writeBatch, doc } = window._FB;
+    // Batch write in chunks of 500 (Firestore limit)
+    const chunkSize = 400;
+    let imported = 0;
+    for (let i = 0; i < parsedCSVRows.length; i += chunkSize) {
+      const chunk = parsedCSVRows.slice(i, i + chunkSize);
+      const batch = writeBatch(db);
+      chunk.forEach(exp => {
+        batch.set(doc(db, 'sb_expenses', exp.id), exp);
+      });
+      await batch.commit();
+      imported += chunk.length;
+      status.textContent = `Imported ${imported} of ${parsedCSVRows.length}...`;
+    }
+
+    // Reset
+    parsedCSVRows = [];
+    document.getElementById('csv-file-input').value = '';
+    document.getElementById('csv-file-name').textContent = '';
+    document.getElementById('csv-preview').style.display = 'none';
+    btn.style.display = 'none';
+    forceCloseSheet('sheet-import-csv');
+    await renderAll();
+    showToast(`✓ ${imported} expenses imported`);
+  } catch(err) {
+    console.error('Import error:', err);
+    status.textContent = 'Import failed — ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Import expenses';
+  }
+};
+
+// Drag and drop support
+document.addEventListener('DOMContentLoaded', () => {
+  const zone = document.getElementById('csv-drop-zone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && (file.name.endsWith('.csv') || file.type === 'text/csv')) {
+      const input = document.getElementById('csv-file-input');
+      // Create a DataTransfer to assign the file
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      window.handleCSVSelect(input);
+    } else {
+      showToast('Please drop a .csv file');
+    }
+  });
+});
+
 </script>
 </body>
 </html>
