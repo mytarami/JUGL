@@ -293,6 +293,11 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <body>
 <script>
 // Early-loaded sheet functions — available before Firebase boots
+
+// ── DB (Firestore) — defined here so it's available immediately ──
+// DB defined in early script above
+
+
 window.openSheet = function(idOrEvent, id) {
   const sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
   const el = document.getElementById(sheetId);
@@ -328,7 +333,7 @@ window.invItems = window.invItems || [];
 window.invFilter = window.invFilter || 'ALL';
 
 window.confirmEndEvent = async function() {
-  if (!window.DB || !window._FB) { alert('App still loading, please wait a moment'); return; }
+  if (!window._FB) { alert('App still loading, please wait a moment'); return; }
   const live = (await window.DB.getEvents()).find(function(e){ return e.status === 'active' || e.status === 'live'; });
   if (!live) { alert('No active event found'); return; }
   var sales = live.sales || [];
@@ -349,7 +354,7 @@ window.confirmEndEvent = async function() {
 };
 
 window.endEventConfirmed = async function() {
-  if (!window.DB || !window._FB) { alert('App still loading'); return; }
+  if (!window._FB) { alert('App still loading'); return; }
   const arr  = await window.DB.getEvents();
   const live = arr.find(e => e.status === 'active' || e.status === 'live');
   if (!live) return;
@@ -365,7 +370,7 @@ window.endEventConfirmed = async function() {
 };
 
 window.openEditEvent = async function() {
-  if (!window.DB) { alert('App still loading, please wait'); return; }
+  if (!window._FB) { alert('App still loading, please wait a moment'); return; }
   var evts = await window.DB.getEvents();
   var live = evts.find(function(e){ return e.status==='active'||e.status==='live'; });
   if (!live) { alert('No active event found'); return; }
@@ -378,7 +383,7 @@ window.openEditEvent = async function() {
   window.openSheet('sheet-edit-event');
 };
 window.saveEditEvent = async function() {
-  if (!window.DB) { alert('App still loading'); return; }
+  if (!window._FB) { alert('App still loading'); return; }
   var name     = document.getElementById('edit-ev-name').value.trim();
   var date     = document.getElementById('edit-ev-date').value;
   var venue    = document.getElementById('edit-ev-venue').value.trim();
@@ -398,7 +403,7 @@ window.saveEditEvent = async function() {
   if(t){t.textContent='✓ Event updated';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
 };
 window.deleteActiveEvent = async function() {
-  if (!window.DB) { alert('App still loading'); return; }
+  if (!window._FB) { alert('App still loading'); return; }
   if (!confirm('Delete this live event and all its sales? Cannot be undone.')) return;
   var arr  = await window.DB.getEvents();
   var live = arr.find(function(e){ return e.status==='active'||e.status==='live'; });
