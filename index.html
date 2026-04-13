@@ -248,7 +248,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .lec-dot{width:8px;height:8px;border-radius:50%;background:#6DB070;animation:pulse-dot 1.5s ease-in-out infinite;flex-shrink:0}
 .lec-live-lbl{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#6DB070}
 .lec-end-btn{font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
-.lec-end-btn:active{background:rgba(224,118,118,0.3);color:var(--rose)}
+.lec-end-btn:active{background:rgba(255,255,255,0.15)}
 .lec-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin-bottom:2px}
 .lec-meta{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px}
 .lec-revenue-block{margin-bottom:16px}
@@ -280,8 +280,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .log-method-btn:active{border-color:var(--gold);background:var(--gold-soft);transform:scale(0.97)}
 .popup-fab{position:fixed;bottom:calc(var(--nav-h)+16px);right:50%;transform:translateX(calc(215px - 100%));width:52px;height:52px;border-radius:50%;background:var(--text-primary);border:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:transform 0.15s;z-index:50;line-height:1}
 .popup-fab:active{transform:translateX(calc(215px - 100%)) scale(0.92)}
-.end-summary-stat{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
-.end-summary-stat:last-child{border-bottom:none}
 
 /* ── CSV IMPORT ── */
 .csv-drop-zone{width:100%;padding:28px 20px;background:var(--bg);border:2px dashed var(--border);border-radius:var(--radius-xs);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s;text-align:center}
@@ -292,28 +290,35 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 </head>
 <body>
 <script>
-// Early-loaded sheet functions — available before Firebase boots
-
-// ── DB (Firestore) — defined here so it's available immediately ──
-// DB defined in early script
-
+// ── Early-loaded functions (before Firebase) ──
+window.invItems = window.invItems || [];
+window.invFilter = window.invFilter || 'ALL';
 
 window.openSheet = function(idOrEvent, id) {
-  const sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
-  const el = document.getElementById(sheetId);
-  if (!el) { console.error('Sheet not found:', sheetId); return; }
+  var sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
+  var el = document.getElementById(sheetId);
+  if (!el) return;
   el.classList.add('open');
   document.body.style.overflow = 'hidden';
-  const di = document.querySelector('#' + sheetId + ' input[type="date"]');
+  var di = el.querySelector('input[type="date"]');
   if (di && !di.value) di.value = new Date().toISOString().split('T')[0];
 };
 window.forceCloseSheet = function(id) {
-  const el = document.getElementById(id);
+  var el = document.getElementById(id);
   if (el) el.classList.remove('open');
   document.body.style.overflow = '';
 };
 window.closeSheet = function(e, id) {
   if (e.target === e.currentTarget) window.forceCloseSheet(id);
+};
+window.switchTab = function(tab) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  var screen = document.getElementById('screen-' + tab);
+  if (screen) screen.classList.add('active');
+  document.querySelectorAll('[data-tab="' + tab + '"]').forEach(function(b) { b.classList.add('active'); });
+  if (tab === 'inventory' && window.renderInventory) window.renderInventory();
+  else if (window.renderAll) window.renderAll();
 };
 window.switchPopupTab = function(tab) {
   var live = document.getElementById('ptab-live');
@@ -326,102 +331,6 @@ window.switchPopupTab = function(tab) {
   if (lv) lv.style.display = tab === 'live' ? 'block' : 'none';
   if (hv) hv.style.display = tab === 'history' ? 'block' : 'none';
   if (tab === 'history' && window.renderHistory) window.renderHistory();
-  if (tab === 'live' && window.renderLive) window.renderLive();
-};
-// confirmEndEvent + endEventConfirmed available immediately
-window.invItems = window.invItems || [];
-window.invFilter = window.invFilter || 'ALL';
-
-window.confirmEndEvent = async function() {
-  if (!window._FB) { alert('App still loading, please wait a moment'); return; }
-  const live = (await window.DB.getEvents()).find(function(e){ return e.status === 'active' || e.status === 'live'; });
-  if (!live) { alert('No active event found'); return; }
-  var sales = live.sales || [];
-  var rev  = sales.reduce(function(s,x){ return s + ((x.unitPrice||x.amount||0)*(x.qty||1)); }, 0);
-  var rent = live.stallCost || live.stallRent || 0;
-  var net  = rev - rent;
-  var fmt = function(n){ return n.toLocaleString('en-IN'); };
-  var netColor = net >= 0 ? 'var(--green)' : 'var(--rose)';
-  var netSign  = net >= 0 ? '+' : '';
-  var el = document.getElementById('end-event-summary');
-  if (el) el.innerHTML =
-    '<div style="font-family:serif;font-size:18px;font-weight:500;margin-bottom:16px">' + live.name + '</div>' +
-    '<div class="end-summary-stat"><span style="color:var(--text-muted)">Total revenue</span><span style="font-weight:700">₹' + fmt(rev) + '</span></div>' +
-    '<div class="end-summary-stat"><span style="color:var(--text-muted)">Stall rent</span><span style="font-weight:600">₹' + fmt(rent) + '</span></div>' +
-    '<div class="end-summary-stat"><span style="color:var(--text-muted)">Net profit</span><span style="font-weight:700;color:' + netColor + '">' + netSign + '₹' + fmt(Math.abs(net)) + '</span></div>' +
-    '<div class="end-summary-stat"><span style="color:var(--text-muted)">Items sold</span><span style="font-weight:600">' + sales.length + '</span></div>';
-  window.openSheet('sheet-end-event');
-};
-
-window.endEventConfirmed = async function() {
-  if (!window._FB) { alert('App still loading'); return; }
-  const arr  = await window.DB.getEvents();
-  const live = arr.find(e => e.status === 'active' || e.status === 'live');
-  if (!live) return;
-  const sales = live.sales || [];
-  live.revenue = sales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
-  live.status = 'done';
-  await window.DB.saveEvents(arr);
-  window.forceCloseSheet('sheet-end-event');
-  if (window.renderEvents) await window.renderEvents();
-  if (window.renderDashboard) window.renderDashboard();
-  const t = document.getElementById('toast');
-  if (t) { t.textContent = 'Event ended — saved to history'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
-};
-
-window.openEditEvent = async function() {
-  if (!window._FB) { alert('App still loading, please wait a moment'); return; }
-  var evts = await window.DB.getEvents();
-  var live = evts.find(function(e){ return e.status==='active'||e.status==='live'; });
-  if (!live) { alert('No active event found'); return; }
-  var el = function(id){ return document.getElementById(id); };
-  if(el('edit-ev-name'))     el('edit-ev-name').value     = live.name      || '';
-  if(el('edit-ev-date'))     el('edit-ev-date').value     = live.date      || '';
-  if(el('edit-ev-venue'))    el('edit-ev-venue').value    = live.venue     || live.location || '';
-  if(el('edit-ev-organiser'))el('edit-ev-organiser').value= live.organiser || '';
-  if(el('edit-ev-rent'))     el('edit-ev-rent').value     = live.stallCost || live.stallRent || 0;
-  window.openSheet('sheet-edit-event');
-};
-window.saveEditEvent = async function() {
-  if (!window._FB) { alert('App still loading'); return; }
-  var name     = document.getElementById('edit-ev-name').value.trim();
-  var date     = document.getElementById('edit-ev-date').value;
-  var venue    = document.getElementById('edit-ev-venue').value.trim();
-  var organiser= document.getElementById('edit-ev-organiser').value.trim();
-  var rent     = parseFloat(document.getElementById('edit-ev-rent').value) || 0;
-  if (!name) { alert('Event name required'); return; }
-  var arr  = await window.DB.getEvents();
-  var live = arr.find(function(e){ return e.status==='active'||e.status==='live'; });
-  if (!live) return;
-  live.name=name; live.date=date; live.venue=venue; live.location=venue;
-  live.organiser=organiser; live.stallCost=rent; live.stallRent=rent;
-  await window.DB.saveEvents(arr);
-  window.forceCloseSheet('sheet-edit-event');
-  if (window.renderEvents) await window.renderEvents();
-  if (window.renderLive) await window.renderLive();
-  var t=document.getElementById('toast');
-  if(t){t.textContent='✓ Event updated';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
-};
-window.deleteActiveEvent = async function() {
-  if (!window._FB) { alert('App still loading'); return; }
-  if (!confirm('Delete this live event and all its sales? Cannot be undone.')) return;
-  var arr  = await window.DB.getEvents();
-  var live = arr.find(function(e){ return e.status==='active'||e.status==='live'; });
-  if (!live) return;
-  await window.DB.deleteEvent(live.id);
-  if (window.renderEvents) await window.renderEvents();
-  if (window.renderDashboard) window.renderDashboard();
-  var t=document.getElementById('toast');
-  if(t){t.textContent='Event deleted';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
-};
-window.switchTab = async function(tab) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const screen = document.getElementById('screen-' + tab);
-  if (screen) screen.classList.add('active');
-  document.querySelectorAll('[data-tab="' + tab + '"]').forEach(b => b.classList.add('active'));
-  if (tab === 'inventory' && window.renderInventory) window.renderInventory();
-  else if (window.renderAll) await window.renderAll();
 };
 </script>
 
@@ -443,7 +352,7 @@ window.switchTab = async function(tab) {
       <div class="avatar">T</div>
       <div class="greeting"><span>Good morning</span><strong>Tarami ✦</strong></div>
     </div>
-    <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+    <button class="icon-btn" onclick="openSettingsSheet()"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
   </div>
   <div class="dash-hero">
     <div class="dash-hero-label">Net profit · All time</div>
@@ -544,10 +453,7 @@ window.switchTab = async function(tab) {
       <div class="live-event-card">
         <div class="lec-top">
           <div class="lec-pulse-row"><span class="lec-dot"></span><span class="lec-live-lbl">LIVE</span></div>
-          <div style="display:flex;gap:8px">
-            <button class="lec-end-btn" onclick="openEditEvent()">✏️ Edit</button>
-            <button class="lec-end-btn" style="color:rgba(224,118,118,0.8)" onclick="deleteActiveEvent()">🗑</button>
-          </div>
+          <button class="lec-end-btn" onclick="openSheet('sheet-edit-live-event')" style="margin-right:6px">Edit</button><button class="lec-end-btn" onclick="confirmDeleteLiveEvent()" style="color:var(--rose);border-color:rgba(224,118,118,0.3)">Delete</button>
         </div>
         <div class="lec-name" id="lec-name"></div>
         <div class="lec-meta" id="lec-meta"></div>
@@ -852,28 +758,17 @@ window.switchTab = async function(tab) {
   </div></div>
 </div>
 
-<!-- SHEET: Edit live event -->
-<div class="sheet-overlay" id="sheet-edit-event" onclick="closeSheet(event,'sheet-edit-event')">
+<!-- SHEET: End event summary -->
+<div class="sheet-overlay" id="sheet-edit-live-event" onclick="closeSheet(event,'sheet-edit-live-event')">
   <div class="sheet"><div class="sheet-handle"></div>
   <div class="sheet-title">Edit event</div>
   <div class="sheet-body">
-    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="edit-ev-name" type="text"></div>
-    <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="edit-ev-date" type="date"></div>
-    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="edit-ev-venue" type="text"></div>
-    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="edit-ev-organiser" type="text"></div>
-    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="edit-ev-rent" type="number"></div>
-    <button class="btn-primary btn-gold" onclick="saveEditEvent()" style="margin-top:8px">Save changes</button>
-  </div></div>
-</div>
-
-<!-- SHEET: End event summary -->
-<div class="sheet-overlay" id="sheet-end-event" onclick="closeSheet(event,'sheet-end-event')">
-  <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">End event?</div>
-  <div class="sheet-body">
-    <div id="end-event-summary" style="margin-bottom:20px"></div>
-    <button class="btn-primary" onclick="endEventConfirmed()" style="margin-bottom:10px">✓ End &amp; save to history</button>
-    <button onclick="forceCloseSheet('sheet-end-event')" style="width:100%;padding:14px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-secondary)">Keep going</button>
+    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ele-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
+    <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ele-date" type="date"></div>
+    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="ele-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
+    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ele-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
+    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ele-rent" placeholder="0" type="number"></div>
+    <button class="btn-primary btn-gold" onclick="saveLiveEventEdit()" style="margin-top:8px">Save changes</button>
   </div></div>
 </div>
 
@@ -956,6 +851,80 @@ window.switchTab = async function(tab) {
     <button class="btn-primary btn-gold" id="btn-import-csv" onclick="importCSV()" style="display:none;margin-top:8px">Import expenses</button>
     <div id="import-status" style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px"></div>
   </div></div>
+</div>
+
+<!-- SHEET: Settings -->
+<div class="sheet-overlay" id="sheet-settings" onclick="closeSheet(event,'sheet-settings')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Settings</div>
+    <div class="sheet-body">
+
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Business details</div>
+
+      <div class="form-field">
+        <label class="form-label">Business name</label>
+        <input class="form-input" id="set-biz-name" placeholder="e.g. Tarami Jewellery" type="text">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Owner name</label>
+        <input class="form-input" id="set-owner-name" placeholder="e.g. Swati" type="text">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Business category</label>
+        <select class="form-input" id="set-biz-category">
+          <option value="Jewellery">Jewellery</option>
+          <option value="Fashion & Clothing">Fashion & Clothing</option>
+          <option value="Food & Beverages">Food & Beverages</option>
+          <option value="Home Decor">Home Decor</option>
+          <option value="Art & Crafts">Art & Crafts</option>
+          <option value="Beauty & Skincare">Beauty & Skincare</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Currency</label>
+        <select class="form-input" id="set-currency">
+          <option value="₹">₹ INR</option>
+          <option value="$">$ USD</option>
+          <option value="£">£ GBP</option>
+          <option value="€">€ EUR</option>
+          <option value="¥">¥ JPY</option>
+        </select>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:20px 0"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">AI & API keys</div>
+
+      <div class="form-field">
+        <label class="form-label">Gemini API key</label>
+        <input class="form-input" id="set-gemini-key" placeholder="For inventory duplicate detection" type="password" autocomplete="off">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Get from <a href="https://aistudio.google.com" target="_blank" style="color:var(--gold)">aistudio.google.com</a> · used for photo duplicate detection</div>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Anthropic API key</label>
+        <input class="form-input" id="set-claude-key" placeholder="For AI scan at pop-ups" type="password" autocomplete="off">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Get from <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold)">console.anthropic.com</a> · used for scan-to-log sales</div>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:20px 0"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Data</div>
+
+      <div class="form-field">
+        <label class="form-label">Firebase Project ID</label>
+        <input class="form-input" id="set-fb-project" type="text" disabled style="opacity:0.6">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Read-only · configured in source</div>
+      </div>
+
+      <button class="btn-primary btn-gold" onclick="saveSettings()" style="margin-top:12px">Save settings</button>
+      <div id="settings-save-status" style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px"></div>
+    </div>
+  </div>
 </div>
 
 <!-- Toast -->
@@ -1085,15 +1054,97 @@ const DB = {
   }
 };
 
+// Expose DB globally so early-loaded functions (confirmEndEvent, etc.) can access it
+window.DB = DB;
+
 // ── INIT ─────────────────────────────────────────────────────────
 async function initApp() {
   initCatDropdowns();
   updateClock();
   setInterval(updateClock, 30000);
+  await loadSettings();
   await seedIfEmpty();
   await loadInventory();
   await renderAll();
 }
+
+// ── SETTINGS ──────────────────────────────────────────────────────
+let appSettings = {};
+
+async function loadSettings() {
+  try {
+    const { db, doc, getDocs, collection } = window._FB;
+    const snap = await getDocs(collection(db, 'sb_settings'));
+    if (!snap.empty) {
+      appSettings = snap.docs[0].data();
+      // Apply API keys
+      if (appSettings.geminiKey && appSettings.geminiKey !== '') GEMINI_API_KEY = appSettings.geminiKey;
+      if (appSettings.claudeKey && appSettings.claudeKey !== '') CLAUDE_API_KEY = appSettings.claudeKey;
+      // Apply business name to header
+      applySettings();
+    }
+  } catch(e) { console.error('loadSettings:', e); }
+}
+
+function applySettings() {
+  // Update greeting
+  const greetingEl = document.querySelector('.greeting strong');
+  if (greetingEl && appSettings.bizName) greetingEl.textContent = appSettings.bizName;
+  // Update avatar
+  const avatarEl = document.querySelector('.avatar');
+  if (avatarEl && appSettings.bizName) avatarEl.textContent = appSettings.bizName.charAt(0).toUpperCase();
+  // Update loading logo
+  const loadingLogo = document.querySelector('.fb-loading-logo');
+  if (loadingLogo && appSettings.bizName) loadingLogo.textContent = appSettings.bizName;
+  // Firebase project ID (read-only display)
+  const fbProject = document.getElementById('set-fb-project');
+  if (fbProject) fbProject.value = 'solobiz-tarami';
+}
+
+window.openSettingsSheet = function() {
+  // Populate form with current values
+  document.getElementById('set-biz-name').value = appSettings.bizName || '';
+  document.getElementById('set-owner-name').value = appSettings.ownerName || '';
+  document.getElementById('set-biz-category').value = appSettings.bizCategory || 'Jewellery';
+  document.getElementById('set-currency').value = appSettings.currency || '₹';
+  document.getElementById('set-gemini-key').value = appSettings.geminiKey || '';
+  document.getElementById('set-claude-key').value = appSettings.claudeKey || '';
+  document.getElementById('set-fb-project').value = 'solobiz-tarami';
+  document.getElementById('settings-save-status').textContent = '';
+  openSheet('sheet-settings');
+};
+
+window.saveSettings = async function() {
+  if (!window._FB) { showToast('Still connecting...'); return; }
+  const settings = {
+    bizName: document.getElementById('set-biz-name').value.trim(),
+    ownerName: document.getElementById('set-owner-name').value.trim(),
+    bizCategory: document.getElementById('set-biz-category').value,
+    currency: document.getElementById('set-currency').value,
+    geminiKey: document.getElementById('set-gemini-key').value.trim(),
+    claudeKey: document.getElementById('set-claude-key').value.trim(),
+    updatedAt: new Date().toISOString()
+  };
+
+  const status = document.getElementById('settings-save-status');
+  status.textContent = 'Saving...';
+
+  try {
+    const { db, doc, setDoc } = window._FB;
+    await setDoc(doc(db, 'sb_settings', 'main'), settings);
+    appSettings = settings;
+    // Apply live
+    if (settings.geminiKey) GEMINI_API_KEY = settings.geminiKey;
+    if (settings.claudeKey) CLAUDE_API_KEY = settings.claudeKey;
+    applySettings();
+    status.textContent = '';
+    forceCloseSheet('sheet-settings');
+    showToast('✓ Settings saved');
+  } catch(e) {
+    console.error('saveSettings:', e);
+    status.textContent = 'Error saving — check connection';
+  }
+};
 
 
 // ── CATEGORY DROPDOWNS ─────────────────────────────────────────────
@@ -1116,8 +1167,7 @@ function showToast(msg) {
 }
 
 // ── GEMINI API KEY ─────────────────────────────────────────────────
-// 👇 PASTE YOUR GEMINI API KEY HERE (from aistudio.google.com)
-const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY';
+let GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY';
 
 // ── PHOTO HANDLING + DUPLICATE DETECTION ───────────────────────────
 window.handlePhotoSelect = function(input) {
@@ -1549,12 +1599,27 @@ async function seedIfEmpty() {
 
 
 // ── ROUTING ────────────────────────────────────────────────────────
-// switchTab defined in early script
+window.switchTab = function(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-'+tab).classList.add('active');
+  document.querySelectorAll(`[data-tab="${tab}"]`).forEach(b => b.classList.add('active'));
+  if (tab === 'inventory') renderInventory();
+  else renderAll();
+};
 
 // ── SHEETS ─────────────────────────────────────────────────────────
-// openSheet defined in early script
-// closeSheet defined in early script
-
+window.openSheet = function(idOrEvent, id) {
+  // Support both openSheet('sheet-id') and openSheet(event, 'sheet-id')
+  const sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
+  const el = document.getElementById(sheetId);
+  if (!el) { console.error('Sheet not found:', sheetId); return; }
+  el.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const di = document.querySelector('#' + sheetId + ' input[type="date"]');
+  if (di && !di.value) di.value = new Date().toISOString().split('T')[0];
+};
+window.closeSheet = function(e, id) { if (e.target === e.currentTarget) forceCloseSheet(id); };
 function forceCloseSheet(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
 window.forceCloseSheet = forceCloseSheet;
 
@@ -1630,6 +1695,12 @@ window.saveCustomer = async function() {
 
 // ── RENDER: DASHBOARD ──────────────────────────────────────────────
 async function renderDashboard() {
+  // Update greeting
+  const hour = new Date().getHours();
+  const greetText = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const greetSpan = document.querySelector('.greeting > span');
+  if (greetSpan) greetSpan.textContent = greetText;
+
   const events   = await DB.getEvents();
   const expenses = await DB.getExpenses();
   const totalRev = events.reduce((s,e) => s + e.revenue, 0);
@@ -1668,18 +1739,24 @@ let currentPopupTab = 'live';
 let expandedHistId = null;
 
 // ── CLAUDE API KEY for scan feature ──────────────────────────────
-// 👇 PASTE YOUR ANTHROPIC API KEY HERE
-const CLAUDE_API_KEY = 'YOUR_ANTHROPIC_API_KEY';
+let CLAUDE_API_KEY = 'YOUR_ANTHROPIC_API_KEY';
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────
-// switchPopupTab defined in early script
+window.switchPopupTab = function(tab) {
+  currentPopupTab = tab;
+  document.getElementById('ptab-live').classList.toggle('active', tab === 'live');
+  document.getElementById('ptab-history').classList.toggle('active', tab === 'history');
+  document.getElementById('popup-live-view').style.display = tab === 'live' ? 'block' : 'none';
+  document.getElementById('popup-history-view').style.display = tab === 'history' ? 'block' : 'none';
+  if (tab === 'history') renderHistory();
+};
 
 // ── RENDER POPUP (main entry) ─────────────────────────────────────
 async function renderEvents() {
   const all = await DB.getEvents();
   const totalRev = all.reduce((s,e) => s + e.revenue, 0);
   document.getElementById('popup-subtitle') && (document.getElementById('popup-subtitle').textContent = '');
-  renderLive();
+  await renderLive();
   if (currentPopupTab === 'history') renderHistory();
 }
 
@@ -1722,19 +1799,24 @@ async function renderLive() {
   } else {
     logEl.style.display = 'block';
     emptyEl.style.display = 'none';
-    logEl.innerHTML = [...sales].reverse().map(s => `
+    logEl.innerHTML = [...sales].reverse().map((s, idx) => {
+      const realIdx = sales.length - 1 - idx;
+      return `
       <div class="sale-row">
-        <div>
+        <div style="flex:1;min-width:0">
           <div class="sale-row-name">${s.name || s.item || 'Item'}</div>
           <div class="sale-row-meta">${s.category||s.cat||''} · ${s.paymentMethod||s.mode||'UPI'} · qty ${s.qty||1}${s.customerName?' · 👤 '+s.customerName:''} · ${new Date(s.timestamp||s.time||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
         </div>
         <div class="sale-row-amt">₹${((s.unitPrice||s.amount||0)*(s.qty||1)).toLocaleString('en-IN')}</div>
-      </div>`).join('');
+        <button onclick="event.stopPropagation();deleteSaleFromLive(${realIdx})" style="margin-left:8px;background:none;border:none;cursor:pointer;font-size:14px;opacity:0.35;padding:4px;transition:opacity 0.15s" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.35'">✕</button>
+      </div>`;
+    }).join('');
   }
 }
 
 async function renderHistory() {
-  const done = await DB.getEvents().filter(e => e.status === 'done').sort((a,b) => new Date(b.date||b.createdAt) - new Date(a.date||a.createdAt));
+  const allEvts = await DB.getEvents();
+  const done = allEvts.filter(e => e.status === 'done').sort((a,b) => new Date(b.date||b.createdAt) - new Date(a.date||a.createdAt));
   const listEl  = document.getElementById('history-list');
   const emptyEl = document.getElementById('history-empty');
   const subEl   = document.getElementById('history-subtitle');
@@ -1753,14 +1835,17 @@ async function renderHistory() {
 
     const salesDetail = isExpanded && sales.length ? `
       <div class="hist-sales-detail">
-        ${sales.map(s => `<div class="hist-sale-row">
-          <div>
+        ${sales.map((s, si) => `<div class="hist-sale-row">
+          <div style="flex:1;min-width:0">
             <span style="font-weight:600">${s.name||s.item||'Item'}</span>
             <span style="color:var(--text-muted);margin-left:6px">${s.category||s.cat||''} · qty ${s.qty||1} · ${s.paymentMethod||s.mode||''}</span>
           </div>
           <span style="font-weight:600;color:var(--green)">₹${((s.unitPrice||s.amount||0)*(s.qty||1)).toLocaleString('en-IN')}</span>
+          <button onclick="event.stopPropagation();deleteSaleFromHistory('${ev.id}',${si})" style="margin-left:8px;background:none;border:none;cursor:pointer;font-size:13px;opacity:0.3;padding:4px;transition:opacity 0.15s" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.3'">✕</button>
         </div>`).join('')}
       </div>` : (isExpanded ? '<div class="hist-sales-detail" style="padding:12px 16px;font-size:13px;color:var(--text-muted)">No individual sales logged</div>' : '');
+
+    const deleteRow = isExpanded ? `<div style="padding:10px 16px;border-top:1px solid var(--border)"><button onclick="event.stopPropagation();deleteHistEvent('${ev.id}')" style="width:100%;padding:10px;background:var(--rose-soft);color:var(--rose);border:1px solid rgba(224,118,118,0.2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform 0.15s">🗑 Delete event</button></div>` : '';
 
     return `<div class="hist-card" onclick="toggleHistCard('${ev.id}')">
       <div class="hist-card-top">
@@ -1776,6 +1861,7 @@ async function renderHistory() {
         <div><div class="hist-stat-lbl">Sales</div><div class="hist-stat-val">${sales.length} items</div></div>
       </div>
       ${salesDetail}
+      ${deleteRow}
     </div>`;
   }).join('');
 }
@@ -1783,6 +1869,55 @@ async function renderHistory() {
 window.toggleHistCard = function(id) {
   expandedHistId = expandedHistId === id ? null : id;
   renderHistory();
+};
+
+// ── DELETE SALE FROM LIVE EVENT ──────────────────────────────────
+window.deleteSaleFromLive = async function(saleIndex) {
+  if (!confirm('Delete this sale entry?')) return;
+  const arr = await DB.getEvents();
+  const live = arr.find(e => e.status === 'active' || e.status === 'live');
+  if (!live || !live.sales || saleIndex < 0 || saleIndex >= live.sales.length) return;
+  live.sales.splice(saleIndex, 1);
+  live.revenue = live.sales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
+  await DB.saveEvents(arr);
+  await renderLive();
+  renderDashboard();
+  showToast('Sale deleted');
+};
+
+// ── DELETE LIVE EVENT ────────────────────────────────────────────
+window.confirmDeleteLiveEvent = async function() {
+  const arr = await DB.getEvents();
+  const live = arr.find(e => e.status === 'active' || e.status === 'live');
+  if (!live) return;
+  await DB.deleteEvent(live.id);
+  await renderEvents();
+  renderDashboard();
+  showToast('Event deleted');
+};
+
+// ── DELETE HISTORY EVENT ─────────────────────────────────────────
+window.deleteHistEvent = async function(id) {
+  if (!confirm('Delete this event from history? This cannot be undone.')) return;
+  await DB.deleteEvent(id);
+  expandedHistId = null;
+  await renderHistory();
+  renderDashboard();
+  showToast('Event deleted');
+};
+
+// ── DELETE SALE FROM HISTORY EVENT ───────────────────────────────
+window.deleteSaleFromHistory = async function(eventId, saleIndex) {
+  if (!confirm('Delete this sale entry?')) return;
+  const arr = await DB.getEvents();
+  const ev = arr.find(e => e.id === eventId);
+  if (!ev || !ev.sales || saleIndex < 0 || saleIndex >= ev.sales.length) return;
+  ev.sales.splice(saleIndex, 1);
+  ev.revenue = ev.sales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
+  await DB.saveEvents(arr);
+  await renderHistory();
+  renderDashboard();
+  showToast('Sale deleted');
 };
 
 // ── CREATE EVENT ──────────────────────────────────────────────────
@@ -1814,10 +1949,56 @@ window.createPopupEvent = async function() {
   else showToast('Event created');
 };
 
-// ── END EVENT ─────────────────────────────────────────────────────
-// confirmEndEvent defined in early script above
+// ── EDIT LIVE EVENT ───────────────────────────────────────────────
+window.openSheet = window.openSheet || function(){};
+document.addEventListener('click', function(e) {
+  if (e.target.closest && e.target.closest('#sheet-edit-live-event') && !e.target.closest('.sheet')) return;
+});
 
-// endEventConfirmed defined in early script above
+// Populate edit form when sheet opens
+const _origOpenSheet = window.openSheet;
+window.openSheet = function(idOrEvent, id) {
+  const sheetId = (typeof idOrEvent === 'string') ? idOrEvent : id;
+  if (sheetId === 'sheet-edit-live-event') {
+    DB.getEvents().then(all => {
+      const live = all.find(e => e.status === 'active' || e.status === 'live');
+      if (!live) { showToast('No active event found'); return; }
+      document.getElementById('ele-name').value = live.name || '';
+      document.getElementById('ele-date').value = live.date || '';
+      document.getElementById('ele-venue').value = live.venue || live.location || '';
+      document.getElementById('ele-organiser').value = live.organiser || '';
+      document.getElementById('ele-rent').value = live.stallRent || live.stallCost || '';
+      _origOpenSheet(sheetId);
+    });
+    return;
+  }
+  _origOpenSheet(idOrEvent, id);
+};
+
+window.saveLiveEventEdit = async function() {
+  try {
+    const name = document.getElementById('ele-name').value.trim();
+    if (!name) { showToast('Please enter an event name'); return; }
+    const all = await DB.getEvents();
+    const live = all.find(e => e.status === 'active' || e.status === 'live');
+    if (!live) { showToast('No active event found'); return; }
+    live.name = name;
+    live.date = document.getElementById('ele-date').value;
+    live.venue = document.getElementById('ele-venue').value.trim();
+    live.location = live.venue;
+    live.organiser = document.getElementById('ele-organiser').value.trim();
+    const rent = parseFloat(document.getElementById('ele-rent').value) || 0;
+    live.stallRent = rent;
+    live.stallCost = rent;
+    await DB.saveEvent(live);
+    forceCloseSheet('sheet-edit-live-event');
+    await renderEvents();
+    showToast('Event updated');
+  } catch(err) {
+    console.error('Edit live event error:', err);
+    showToast('Error saving — check console');
+  }
+};
 
 // ── SCAN ITEM (Claude Vision) ────────────────────────────────────
 window.handleScanPhoto = async function(input) {
@@ -1958,7 +2139,22 @@ window.confirmManualSale = async function() {
 };
 
 // ── LEGACY saveEvent (for home quick-add compat) ─────────────────
-// saveEvent (legacy) - using primary definition above
+window.saveEvent = async function() {
+  const name = document.getElementById('ev-name').value.trim();
+  if (!name) { showToast('Please enter an event name'); return; }
+  const date = document.getElementById('ev-date').value;
+  const stallCost = parseFloat(document.getElementById('ev-cost').value) || 0;
+  const location = document.getElementById('ev-location').value.trim();
+  const organiser = document.getElementById('ev-organiser').value.trim();
+  const status = getChip('ev-status-chips');
+  const arr = await DB.getEvents();
+  if (status === 'active') arr.forEach(e => { if (e.status === 'active' || e.status === 'live') e.status = 'done'; });
+  arr.unshift({ id: DB.newId(), name, date, location, venue: location, organiser, stallCost, stallRent: stallCost, status: status === 'active' ? 'active' : status, revenue: 0, sales: [], createdAt: new Date().toISOString() });
+  await DB.saveEvents(arr);
+  ['ev-name','ev-cost','ev-location','ev-organiser'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  forceCloseSheet('sheet-new-event');
+  switchTab('popup');
+};
 
 window.popupYearFilter = 'ALL';
 window.renderEvents = renderEvents;
@@ -2003,10 +2199,10 @@ async function renderCustomers() {
   if (!customers.length) { list.innerHTML = ''; list.style.display = 'none'; empty.style.display = 'flex'; return; }
   list.style.display = 'block'; empty.style.display = 'none';
   list.innerHTML = customers.map(c =>
-    `<div class="list-item" onclick="deleteCustomer('${c.id}')">
+    `<div class="list-item">
       <div class="list-item-icon" style="background:var(--gold-soft);font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--gold);font-weight:500">${c.name.charAt(0).toUpperCase()}</div>
       <div class="list-item-body"><div class="list-item-title">${c.name}</div><div class="list-item-sub">${c.phone||'No phone'}${c.address?' · '+c.address:''}</div></div>
-      <div class="list-item-right"><span class="badge" style="background:var(--gold-soft);color:#8B6830;border:1px solid var(--gold-border)">${c.source}</span></div>
+      <div class="list-item-right" style="display:flex;align-items:center;gap:10px"><span class="badge" style="background:var(--gold-soft);color:#8B6830;border:1px solid var(--gold-border)">${c.source}</span><button onclick="event.stopPropagation();deleteCustomer('${c.id}')" style="background:none;border:none;cursor:pointer;font-size:14px;opacity:0.3;padding:4px;transition:opacity 0.15s" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.3'">✕</button></div>
     </div>`).join('');
 }
 window.deleteCustomer = async function(id) { if(!confirm('Remove?'))return; await DB.deleteCustomer(id); await renderAll(); };
@@ -2203,14 +2399,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
-
-// ── EDIT / DELETE LIVE EVENT ──────────────────────────────────────
-// openEditEvent defined in early script
-
-// saveEditEvent defined in early script
-
-// deleteActiveEvent defined in early script
 
 </script>
 </body>
