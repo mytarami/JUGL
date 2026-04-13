@@ -1854,9 +1854,7 @@ function handleCSVSelect(input) {
 }
 
 function parseCSV(text) {
-  const lines = text.trim().split(/
-?
-/).filter(l => l.trim());
+  const lines = text.trim().replace(/\r/g, '').split('\n').filter(l => l.trim());
   if (lines.length < 2) return {error:'CSV must have a header and at least one row.'};
   const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g,''));
   const colMap = {
@@ -1876,11 +1874,11 @@ function parseCSV(text) {
     const rawDesc = colMap.desc!==-1 ? cols[colMap.desc]||'' : '';
     const rawAmt  = colMap.amount!==-1 ? cols[colMap.amount]||'0' : '0';
     const rawPaid = colMap.paidBy!==-1 ? cols[colMap.paidBy]||'' : '';
-    const amount = parseFloat(rawAmt.replace(/[₹,\s]/g,''))||0;
+    const amount = parseFloat((rawAmt||'').replace(/[^0-9.]/g,''))||0;
     if (!amount) { errors.push(`Row ${i+1}: invalid amount "${rawAmt}"`); continue; }
     let date = rawDate.trim();
-    if (/^\d{2}[/-]\d{2}[/-]\d{4}$/.test(date)) { const [d,m,y]=date.split(/[/-]/); date=`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`; }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) { errors.push(`Row ${i+1}: invalid date "${rawDate}"`); continue; }
+    if (/^[0-9]{2}[/-][0-9]{2}[/-][0-9]{4}$/.test(date)) { const [d,m,y]=date.split(/[/-]/); date=`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`; }
+    if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date)) { errors.push(`Row ${i+1}: invalid date "${rawDate}"`); continue; }
     const cat = VALID_CATS.find(c => c.toLowerCase()===rawCat.toLowerCase())||'Other';
     rows.push({id:DB.newId(), date, cat, desc:rawDesc||cat, amount, paidBy:rawPaid, createdAt:date+'T00:00:00.000Z'});
   }
@@ -1919,6 +1917,25 @@ async function initApp() {
   await renderAll();
 }
 
+
+async function saveEvent() {
+  const name = document.getElementById('ev-name')?.value.trim();
+  if (!name) { showToast('Please enter an event name'); return; }
+  const date      = document.getElementById('ev-date')?.value;
+  const stallCost = parseFloat(document.getElementById('ev-cost')?.value)||0;
+  const location  = document.getElementById('ev-location')?.value.trim();
+  const organiser = document.getElementById('ev-organiser')?.value.trim();
+  const status    = getChip('ev-status-chips') || 'upcoming';
+  const arr = await DB.getEvents();
+  if (status==='active') arr.forEach(e => { if(e.status==='active'||e.status==='live') e.status='done'; });
+  arr.unshift({id:DB.newId(), name, date, location, venue:location, organiser,
+    stallCost, stallRent:stallCost, status, revenue:0, sales:[], createdAt:new Date().toISOString()});
+  await DB.saveEvents(arr);
+  ['ev-name','ev-cost','ev-location','ev-organiser'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  forceCloseSheet('sheet-new-event');
+  switchTab('popup');
+}
+
 // ── EXPOSE TO HTML onclicks ───────────────────────────────────────
 // All functions used in HTML onclick= must be on window
 Object.assign(window, {
@@ -1930,7 +1947,7 @@ Object.assign(window, {
   createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto,
   openEditLiveEvent, saveLiveEventEdit, confirmDeleteLiveEvent,
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
-  saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
+  saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
   openSettingsSheet, saveSettings,
   renderDashboard, renderAll
