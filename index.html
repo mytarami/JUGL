@@ -17,7 +17,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);-webkit-font-smoothing:antialiased;overscroll-behavior:none;height:100%}
-.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:calc(var(--nav-h)+16px)}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:calc(var(--nav-h)+32px)}
 .status-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 0;font-size:12px;font-weight:600}
 .page-header{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between}
 .page-header-left{display:flex;align-items:center;gap:13px}
@@ -137,8 +137,8 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .inv-stock-ok{background:var(--green-soft);color:#3a7a3d}
 .inv-stock-low{background:var(--rose-soft);color:#a84040}
 .inv-stock-zero{background:rgba(0,0,0,0.06);color:var(--text-muted)}
-.inv-fab{position:fixed;bottom:calc(var(--nav-h) + 16px);right:50%;transform:translateX(calc(215px - 100%));width:52px;height:52px;border-radius:50%;background:var(--gold);border:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(201,169,110,0.4);transition:transform 0.15s;z-index:50}
-.inv-fab:active{transform:translateX(calc(215px - 100%)) scale(0.92)}
+.inv-fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:24px;width:52px;height:52px;border-radius:50%;background:var(--gold);border:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(201,169,110,0.4);transition:transform 0.15s;z-index:50}
+.inv-fab:active{transform:scale(0.92)}
 .inv-stats-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 24px 0}
 .inv-stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:12px;text-align:center}
 .inv-stat-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:500}
@@ -299,7 +299,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .auth-footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:20px}
 
 /* ── NAV PLUS BUTTON ── */
-.nav-plus{width:52px;height:52px;border-radius:50% !important;background:var(--text-primary) !important;margin-top:-16px;box-shadow:0 4px 16px rgba(0,0,0,0.2);padding:0 !important}
+.nav-plus{width:52px;height:52px;border-radius:50% !important;background:var(--text-primary) !important;margin-top:-16px;box-shadow:0 4px 16px rgba(0,0,0,0.2);padding:0 !important;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .nav-plus-icon{font-size:26px;color:#fff;line-height:1;font-weight:300}
 .nav-plus .nav-label{display:none}
 
@@ -372,7 +372,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
 <!-- HOME -->
 <div class="screen active" id="screen-home">
-  <div class="status-bar"><span id="clock">9:41</span></div>
   <div class="page-header">
     <div class="page-header-left">
       <div class="avatar">T</div>
@@ -398,10 +397,10 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="stat-value" id="dash-products">0</div>
       <div class="stat-sub">items in stock</div>
     </div>
-    <div class="stat-card" style="cursor:pointer" onclick="switchTab('popup')">
-      <div class="stat-label">Pop-Ups</div>
-      <div class="stat-value" id="dash-popups">0</div>
-      <div class="stat-sub">total events</div>
+    <div class="stat-card" style="cursor:pointer" onclick="openSalesLog()">
+      <div class="stat-label">Sales</div>
+      <div class="stat-value" id="dash-sales">0</div>
+      <div class="stat-sub">total logged</div>
     </div>
     <div class="stat-card" style="cursor:pointer" onclick="switchTab('customers')">
       <div class="stat-label">Customers</div>
@@ -421,7 +420,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
 <!-- INVENTORY (was Catalogue) -->
 <div class="screen" id="screen-inventory">
-  <div class="status-bar"><span>9:41</span></div>
   <div class="page-title">
     <h1>Inventory</h1>
     <div class="subtitle" id="inv-subtitle">Your stock, always in sync</div>
@@ -469,7 +467,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
 <!-- POP-UP -->
 <div class="screen" id="screen-popup">
-  <div class="status-bar"><span id="popup-clock">9:41</span></div>
 
   <!-- Inner tab bar: Live / History -->
   <div class="popup-tab-bar">
@@ -536,7 +533,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
 <!-- CUSTOMERS -->
 <div class="screen" id="screen-customers">
-  <div class="status-bar"><span>9:41</span></div>
   <div class="page-title"><h1>Customers</h1><div class="subtitle">Added manually or via QR at stall</div></div>
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="cust-total">0</div><div class="stat-sub">customers</div></div>
@@ -550,7 +546,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
 <!-- EXPENSES -->
 <div class="screen" id="screen-expenses">
-  <div class="status-bar"><span>9:41</span></div>
   <div class="page-title"><h1>Expenses</h1><div class="subtitle">Every business cost tracked</div></div>
   <div style="margin:20px 24px 0">
     <div class="card">
@@ -1069,12 +1064,19 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="form-field"><label class="form-label">SKU</label><input class="form-input" id="edit-item-sku" type="text"></div>
     </div>
     <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="edit-item-notes" type="text"></div>
-    <div style="background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--radius-xs);padding:10px 14px;font-size:12px;color:#8B6830;margin-bottom:16px">
-      📷 Photos cannot be changed after upload — delete and re-add if needed
-    </div>
+<div style="font-size:11px;color:var(--text-muted);margin-bottom:16px">📷 To change the photo, delete this item and re-add it</div>
     <button class="btn-primary btn-gold" onclick="saveEditItem()" style="margin-top:8px">Save changes</button>
     <button onclick="deleteItemFromEdit()" style="width:100%;margin-top:10px;padding:14px;background:none;border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--rose)">Delete item</button>
   </div></div>
+</div>
+
+<!-- SHEET: Sales Log -->
+<div class="sheet-overlay" id="sheet-sales-log" onclick="closeSheet(event,'sheet-sales-log')">
+  <div class="sheet" style="max-height:92vh"><div class="sheet-handle"></div>
+  <div class="sheet-title">Sales log</div>
+  <div style="padding:8px 24px 0;font-size:13px;color:var(--text-muted)" id="sales-log-subtitle"></div>
+  <div style="padding:16px 24px 0;overflow-y:auto;max-height:70vh" id="sales-log-list"></div>
+  </div>
 </div>
 
 <!-- Toast -->
@@ -1365,12 +1367,15 @@ function renderInventory() {
     const imgHTML = item.photoURL
       ? `<div class="inv-img-loading"><div class="inv-spinner"></div></div><img src="${item.photoURL}" alt="${item.name}" onload="this.previousSibling.remove()" onerror="this.style.display='none'">`
       : `<span style="font-size:32px">${CAT_EMOJI[item.cat]||'💎'}</span>`;
+    const addedDate = item.createdAt?.toDate ? item.createdAt.toDate() : new Date(item.createdAt||0);
+    const dateStr = addedDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
     return `<div class="inv-card" onclick="openItemDetail('${item.id}')">
       <div class="inv-img">${imgHTML}</div>
       <div class="inv-info">
         <div class="inv-name">${item.name}</div>
         <div class="inv-price">₹${(item.price||0).toLocaleString('en-IN')}</div>
         <div class="inv-meta"><span>${item.sub||item.cat}</span><span class="inv-stock-badge ${stockClass}">${stockLabel}</span></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px">Added ${dateStr}</div>
       </div>
     </div>`;
   }).join('');
@@ -2192,6 +2197,42 @@ function removeCategory(idx) {
 }
 
 // ── FIX 6: Update saveExpense to include source ──────────────────
+
+// ── SALES LOG ────────────────────────────────────────────────────
+async function openSalesLog() {
+  const events = await DB.getEvents();
+  const allSales = [];
+  events.forEach(ev => {
+    (ev.sales||[]).forEach(s => {
+      allSales.push({...s, eventName: ev.name, eventDate: ev.date});
+    });
+  });
+  // Sort newest first
+  allSales.sort((a,b) => new Date(b.timestamp||b.time||0) - new Date(a.timestamp||a.time||0));
+  const total = allSales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
+  document.getElementById('sales-log-subtitle').textContent =
+    `${allSales.length} sales · ₹${total.toLocaleString('en-IN')} total`;
+  const listEl = document.getElementById('sales-log-list');
+  if (!allSales.length) {
+    listEl.innerHTML = '<div style="text-align:center;padding:32px 0;color:var(--text-muted);font-size:13px">No sales logged yet</div>';
+  } else {
+    listEl.innerHTML = allSales.map(s => {
+      const amt = (s.unitPrice||s.amount||0) * (s.qty||1);
+      const dt  = new Date(s.timestamp||s.time||Date.now());
+      const payIcon = {UPI:'📱',Cash:'💵',Card:'💳'}[s.paymentMethod||s.mode] || '💰';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)">
+        <div style="min-width:0">
+          <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name||s.item||'Item'}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${s.category||s.cat||''} · ${payIcon} ${s.paymentMethod||s.mode||''}${s.customerName?' · 👤 '+s.customerName:''}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${s.eventName||''} · ${dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;margin-left:12px">₹${amt.toLocaleString('en-IN')}</div>
+      </div>`;
+    }).join('');
+  }
+  openSheet('sheet-sales-log');
+}
+
 async function renderDashboard() {
   const [events, expenses, customers] = await Promise.all([DB.getEvents(), DB.getExpenses(), DB.getCustomers()]);
   const totalRev = events.reduce((s,e) => s+(e.revenue||0), 0);
@@ -2201,8 +2242,9 @@ async function renderDashboard() {
   document.getElementById('dash-net-val').style.color = net<0 ? 'var(--rose)' : '#fff';
   document.getElementById('dash-rev').textContent = totalRev.toLocaleString('en-IN');
   document.getElementById('dash-exp').textContent = totalExp.toLocaleString('en-IN');
+  const totalSales = events.reduce((s,e) => s + (e.sales||[]).length, 0);
   document.getElementById('dash-products').textContent  = invItems.length;
-  document.getElementById('dash-popups').textContent    = events.length;
+  document.getElementById('dash-sales').textContent     = totalSales;
   document.getElementById('dash-customers').textContent = customers.length;
   document.getElementById('dash-deadstock').textContent = invItems.filter(i => (i.qty||0) === 0).length;
   const last = events[0];
@@ -2463,7 +2505,7 @@ Object.assign(window, {
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
-  openSettingsSheet, saveSettings, openQuickAdd, openDeadstock,
+  openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog,
   openEditExpense, saveEditExpense, deleteExpenseFromEdit,
   openEditItemSheet, saveEditItem, deleteItemFromEdit,
   addCategory, removeCategory,
