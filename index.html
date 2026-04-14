@@ -297,6 +297,24 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .auth-tab.active{background:var(--card);color:var(--text-primary);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
 .auth-error{background:var(--rose-soft);border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-xs);padding:10px 14px;font-size:13px;color:var(--rose);margin-bottom:16px;display:none}
 .auth-footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:20px}
+
+/* ── NAV PLUS BUTTON ── */
+.nav-plus{width:52px;height:52px;border-radius:50% !important;background:var(--text-primary) !important;margin-top:-16px;box-shadow:0 4px 16px rgba(0,0,0,0.2);padding:0 !important}
+.nav-plus-icon{font-size:26px;color:#fff;line-height:1;font-weight:300}
+.nav-plus .nav-label{display:none}
+
+/* ── QUICK ADD SHEET ── */
+.quick-add-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 4px}
+.quick-add-btn{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.quick-add-btn:active{border-color:var(--gold);background:var(--gold-soft);transform:scale(0.97)}
+.quick-add-icon{font-size:28px}
+.quick-add-label{font-size:13px;font-weight:600;color:var(--text-primary);text-align:center}
+
+/* ── DEADSTOCK SHEET ── */
+.deadstock-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.deadstock-item:last-child{border-bottom:none}
+.deadstock-thumb{width:44px;height:44px;border-radius:10px;background:var(--rose-soft);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0}
+.deadstock-thumb img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
@@ -373,16 +391,28 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="dash-pill expense"><div class="dash-pill-dot"></div><div><div class="dash-pill-label">Expenses</div><div class="dash-pill-val">₹<span id="dash-exp">0</span></div></div></div>
     </div>
   </div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-label">Inventory</div><div class="stat-value" id="dash-products">0</div><div class="stat-sub">items in stock</div></div>
-    <div class="stat-card"><div class="stat-label">Pop-Ups</div><div class="stat-value" id="dash-popups">0</div><div class="stat-sub">total events</div></div>
-  </div>
-  <div class="section-header"><span class="section-title">Quick add</span></div>
-  <div class="quick-actions">
-    <button class="qa-btn" onclick="switchTab('popup');openSheet('sheet-new-event')"><div class="qa-icon">🎪</div><div class="qa-label">New pop-up</div><div class="qa-sub">Log an event</div></button>
-    <button class="qa-btn" onclick="switchTab('expenses');openSheet('sheet-add-expense')"><div class="qa-icon">🧾</div><div class="qa-label">Log expense</div><div class="qa-sub">Travel, rent...</div></button>
-    <button class="qa-btn" onclick="switchTab('inventory');openSheet('sheet-add-item')"><div class="qa-icon">📦</div><div class="qa-label">Add item</div><div class="qa-sub">To inventory</div></button>
-    <button class="qa-btn" onclick="switchTab('customers');openSheet('sheet-add-customer')"><div class="qa-icon">👤</div><div class="qa-label">Add customer</div><div class="qa-sub">Name &amp; contact</div></button>
+  <!-- Stats tiles: Inventory, Pop-Ups, Customers, Deadstock -->
+  <div class="stats-grid" style="grid-template-columns:1fr 1fr">
+    <div class="stat-card" style="cursor:pointer" onclick="switchTab('inventory')">
+      <div class="stat-label">Inventory</div>
+      <div class="stat-value" id="dash-products">0</div>
+      <div class="stat-sub">items in stock</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer" onclick="switchTab('popup')">
+      <div class="stat-label">Pop-Ups</div>
+      <div class="stat-value" id="dash-popups">0</div>
+      <div class="stat-sub">total events</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer" onclick="switchTab('customers')">
+      <div class="stat-label">Customers</div>
+      <div class="stat-value" id="dash-customers">0</div>
+      <div class="stat-sub">total</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;background:var(--rose-soft);border-color:rgba(224,118,118,0.2)" onclick="openDeadstock()">
+      <div class="stat-label" style="color:var(--rose)">Deadstock</div>
+      <div class="stat-value" id="dash-deadstock" style="color:var(--rose)">0</div>
+      <div class="stat-sub">out of stock items</div>
+    </div>
   </div>
   <div class="section-header"><span class="section-title">Last pop-up</span></div>
   <div id="dash-last-event" style="margin:0 24px"></div>
@@ -543,8 +573,8 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <nav class="bottom-nav">
   <button class="nav-btn active" data-tab="home" onclick="switchTab('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
   <button class="nav-btn" data-tab="inventory" onclick="switchTab('inventory')"><span class="nav-icon">💎</span><span class="nav-label">Inventory</span></button>
+  <button class="nav-btn nav-plus" onclick="openQuickAdd()"><span class="nav-plus-icon">+</span></button>
   <button class="nav-btn" data-tab="popup" onclick="switchTab('popup')"><span class="nav-icon">🎪</span><span class="nav-label">Pop-Up</span></button>
-  <button class="nav-btn" data-tab="customers" onclick="switchTab('customers')"><span class="nav-icon">👤</span><span class="nav-label">Customers</span></button>
   <button class="nav-btn" data-tab="expenses" onclick="switchTab('expenses')"><span class="nav-icon">🧾</span><span class="nav-label">Expenses</span></button>
 </nav>
 </div>
@@ -936,6 +966,39 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div id="settings-save-status" style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px"></div>
     </div>
   </div>
+</div>
+
+<!-- SHEET: Quick Add -->
+<div class="sheet-overlay" id="sheet-quick-add" onclick="closeSheet(event,'sheet-quick-add')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-title" style="margin-bottom:20px">Add</div>
+  <div class="sheet-body" style="padding-top:0">
+    <div class="quick-add-grid">
+      <button class="quick-add-btn" onclick="forceCloseSheet('sheet-quick-add');openSheet('sheet-log-method')">
+        <div class="quick-add-icon">🛒</div>
+        <div class="quick-add-label">Log Sale</div>
+      </button>
+      <button class="quick-add-btn" onclick="forceCloseSheet('sheet-quick-add');openSheet('sheet-add-customer')">
+        <div class="quick-add-icon">👤</div>
+        <div class="quick-add-label">Customer</div>
+      </button>
+      <button class="quick-add-btn" onclick="forceCloseSheet('sheet-quick-add');switchTab('inventory');openSheet('sheet-add-item')">
+        <div class="quick-add-icon">💎</div>
+        <div class="quick-add-label">Inventory</div>
+      </button>
+    </div>
+  </div></div>
+</div>
+
+<!-- SHEET: Deadstock -->
+<div class="sheet-overlay" id="sheet-deadstock" onclick="closeSheet(event,'sheet-deadstock')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-title">Deadstock</div>
+  <div class="sheet-body">
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Items with 0 quantity in stock</div>
+    <div id="deadstock-list"></div>
+    <div id="deadstock-empty" style="display:none;text-align:center;padding:24px 0;font-size:13px;color:var(--text-muted)">🎉 No deadstock — all items have stock</div>
+  </div></div>
 </div>
 
 <!-- Toast -->
@@ -1860,8 +1923,38 @@ async function deleteCustomer(id) {
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────
+
+// ── QUICK ADD + DEADSTOCK ────────────────────────────────────────
+function openQuickAdd() { openSheet('sheet-quick-add'); }
+
+function openDeadstock() {
+  const dead = invItems.filter(i => (i.qty||0) === 0);
+  const listEl  = document.getElementById('deadstock-list');
+  const emptyEl = document.getElementById('deadstock-empty');
+  if (!dead.length) {
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+  } else {
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = dead.map(item => `
+      <div class="deadstock-item">
+        <div class="deadstock-thumb">
+          ${item.photoURL
+            ? `<img src="${item.photoURL}" alt="${item.name}">`
+            : `<span>${CAT_EMOJI[item.cat]||'💎'}</span>`}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px">${item.cat} · ₹${(item.price||0).toLocaleString('en-IN')}</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--rose);background:var(--rose-soft);padding:3px 10px;border-radius:20px">Out</div>
+      </div>`).join('');
+  }
+  openSheet('sheet-deadstock');
+}
+
 async function renderDashboard() {
-  const [events, expenses] = await Promise.all([DB.getEvents(), DB.getExpenses()]);
+  const [events, expenses, customers] = await Promise.all([DB.getEvents(), DB.getExpenses(), DB.getCustomers()]);
   const totalRev = events.reduce((s,e) => s+(e.revenue||0), 0);
   const totalExp = expenses.reduce((s,e) => s+e.amount, 0);
   const net = totalRev - totalExp;
@@ -1869,8 +1962,10 @@ async function renderDashboard() {
   document.getElementById('dash-net-val').style.color = net<0 ? 'var(--rose)' : '#fff';
   document.getElementById('dash-rev').textContent = totalRev.toLocaleString('en-IN');
   document.getElementById('dash-exp').textContent = totalExp.toLocaleString('en-IN');
-  document.getElementById('dash-products').textContent = invItems.length;
-  document.getElementById('dash-popups').textContent   = events.length;
+  document.getElementById('dash-products').textContent  = invItems.length;
+  document.getElementById('dash-popups').textContent    = events.length;
+  document.getElementById('dash-customers').textContent = customers.length;
+  document.getElementById('dash-deadstock').textContent = invItems.filter(i => (i.qty||0) === 0).length;
   const last = events[0];
   const el   = document.getElementById('dash-last-event');
   if (last) {
@@ -2128,7 +2223,7 @@ Object.assign(window, {
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
-  openSettingsSheet, saveSettings,
+  openSettingsSheet, saveSettings, openQuickAdd, openDeadstock,
   handleAuth, switchAuthTab, signOutUser, signInWithGoogle,
   renderDashboard, renderAll
 });
