@@ -376,7 +376,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="page-header">
     <div class="page-header-left">
       <div class="avatar">T</div>
-      <div class="greeting"><span>Good morning</span><strong>Tarami ✦</strong></div>
+      <div class="greeting"><span id="dash-biz-name">Tarami</span><strong id="dash-owner-name">✦</strong></div>
     </div>
     <button class="icon-btn" onclick="openSettingsSheet()"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
     <button class="icon-btn" onclick="signOutUser()" title="Sign out">
@@ -408,9 +408,9 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="stat-value" id="dash-customers">0</div>
       <div class="stat-sub">total</div>
     </div>
-    <div class="stat-card" style="cursor:pointer;background:var(--rose-soft);border-color:rgba(224,118,118,0.2)" onclick="openDeadstock()">
-      <div class="stat-label" style="color:var(--rose)">Deadstock</div>
-      <div class="stat-value" id="dash-deadstock" style="color:var(--rose)">0</div>
+    <div class="stat-card" style="cursor:pointer" onclick="openDeadstock()">
+      <div class="stat-label">Deadstock</div>
+      <div class="stat-value" id="dash-deadstock">0</div>
       <div class="stat-sub">out of stock items</div>
     </div>
   </div>
@@ -607,11 +607,11 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="form-row">
         <div class="form-field">
           <label class="form-label">Category</label>
-          <select class="form-input" id="item-cat" onchange="updateItemSubcats()"></select>
+          <select class="form-input" id="item-cat"></select>
         </div>
         <div class="form-field">
-          <label class="form-label">Sub-type</label>
-          <select class="form-input" id="item-sub"></select>
+          <label class="form-label">Sub-category</label>
+          <input class="form-input" id="item-sub" placeholder="e.g. Gold, Silver..." type="text">
         </div>
       </div>
 
@@ -681,8 +681,18 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="form-field"><label class="form-label">Amount (₹)</label><input class="form-input" id="exp-amount" placeholder="0" type="number"></div>
       <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="exp-date" type="date"></div>
     </div>
-    <div class="form-field"><label class="form-label">Description</label><input class="form-input" id="exp-note" placeholder="What was this for?" type="text"></div>
-    <div class="form-field"><label class="form-label">Paid by</label><input class="form-input" id="exp-paidby" placeholder="Swati / Nisch" type="text"></div>
+    <div class="form-field"><label class="form-label">Description</label><input class="form-input" id="exp-note" placeholder="Description" type="text"></div>
+    <div class="form-field"><label class="form-label">Paid by</label><input class="form-input" id="exp-paidby" placeholder="e.g. Swati" type="text"></div>
+    <div class="form-field"><label class="form-label">Source of sale</label>
+      <div class="chip-row" id="exp-source-chips">
+        <div class="chip" data-val="">Not a sale</div>
+        <div class="chip" data-val="Pop-Up">🎪 Pop-Up</div>
+        <div class="chip" data-val="WhatsApp">💬 WhatsApp</div>
+        <div class="chip" data-val="Instagram">📸 Instagram DM</div>
+        <div class="chip" data-val="Walk-in">🚶 Walk-in</div>
+        <div class="chip" data-val="Website">🌐 Website</div>
+      </div>
+    </div>
     <button class="btn-primary" onclick="saveExpense()" style="margin-top:8px">Save expense</button>
   </div></div>
 </div>
@@ -954,6 +964,14 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       </div>
 
       <div style="height:1px;background:var(--border);margin:20px 0"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Inventory categories</div>
+      <div id="cat-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="new-cat-input" placeholder="New category name" type="text" style="flex:1" onkeydown="if(event.key==='Enter')addCategory()">
+        <button onclick="addCategory()" style="padding:13px 16px;background:var(--gold);color:#fff;border:none;border-radius:var(--radius-xs);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Add</button>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:20px 0"></div>
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Data</div>
 
       <div class="form-field">
@@ -1001,6 +1019,64 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   </div></div>
 </div>
 
+<!-- SHEET: Edit Expense -->
+<div class="sheet-overlay" id="sheet-edit-expense" onclick="closeSheet(event,'sheet-edit-expense')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-title">Edit expense</div>
+  <div class="sheet-body">
+    <input type="hidden" id="edit-exp-id">
+    <div class="form-field"><label class="form-label">Category</label>
+      <div class="chip-row" id="edit-exp-cat-chips">
+        <div class="chip active" data-val="Event Rent">Event Rent</div>
+        <div class="chip" data-val="Inventory">Inventory</div>
+        <div class="chip" data-val="Logistic">Logistics</div>
+        <div class="chip" data-val="Packaging">Packaging</div>
+        <div class="chip" data-val="Marketing">Marketing</div>
+        <div class="chip" data-val="Salary">Salary</div>
+        <div class="chip" data-val="Fixed Costs">Fixed</div>
+        <div class="chip" data-val="Raw material">Raw material</div>
+        <div class="chip" data-val="Other">Other</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-label">Amount (₹)</label><input class="form-input" id="edit-exp-amount" type="number"></div>
+      <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="edit-exp-date" type="date"></div>
+    </div>
+    <div class="form-field"><label class="form-label">Description</label><input class="form-input" id="edit-exp-note" placeholder="Description" type="text"></div>
+    <div class="form-field"><label class="form-label">Paid by</label><input class="form-input" id="edit-exp-paidby" placeholder="e.g. Swati" type="text"></div>
+    <button class="btn-primary btn-gold" onclick="saveEditExpense()" style="margin-top:8px">Save changes</button>
+    <button onclick="deleteExpenseFromEdit()" style="width:100%;margin-top:10px;padding:14px;background:none;border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--rose)">Delete expense</button>
+  </div></div>
+</div>
+
+<!-- SHEET: Edit Inventory Item -->
+<div class="sheet-overlay" id="sheet-edit-item" onclick="closeSheet(event,'sheet-edit-item')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-title">Edit item</div>
+  <div class="sheet-body">
+    <input type="hidden" id="edit-item-id">
+    <div class="form-field"><label class="form-label">Item name</label><input class="form-input" id="edit-item-name" type="text"></div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-label">Category</label><select class="form-input" id="edit-item-cat"></select></div>
+      <div class="form-field"><label class="form-label">Sub-category</label><input class="form-input" id="edit-item-sub" type="text"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-label">Sell price (₹)</label><input class="form-input" id="edit-item-price" type="number"></div>
+      <div class="form-field"><label class="form-label">Cost price (₹)</label><input class="form-input" id="edit-item-cost" type="number"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label class="form-label">Qty in stock</label><input class="form-input" id="edit-item-qty" type="number"></div>
+      <div class="form-field"><label class="form-label">SKU</label><input class="form-input" id="edit-item-sku" type="text"></div>
+    </div>
+    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="edit-item-notes" type="text"></div>
+    <div style="background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--radius-xs);padding:10px 14px;font-size:12px;color:#8B6830;margin-bottom:16px">
+      📷 Photos cannot be changed after upload — delete and re-add if needed
+    </div>
+    <button class="btn-primary btn-gold" onclick="saveEditItem()" style="margin-top:8px">Save changes</button>
+    <button onclick="deleteItemFromEdit()" style="width:100%;margin-top:10px;padding:14px;background:none;border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--rose)">Delete item</button>
+  </div></div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -1044,21 +1120,20 @@ let GEMINI_API_KEY = localStorage.getItem('sb_gemini_key') || '';
 let CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 
 // ── CATEGORIES ────────────────────────────────────────────────────
-const CATS = {
-  "Rings":["Engagement Ring","Wedding Band","Cocktail Ring","Solitaire Ring","Cluster Ring","Plain Band","Eternity Ring","Oxidised Ring"],
-  "Necklaces":["Gold Chain","Diamond Necklace","Pearl Necklace","Temple Necklace","Kundan Necklace","Layered Necklace","Pendant Set","Choker"],
-  "Earrings":["Studs","Hoops","Jhumka","Chandbali","Drop Earrings","Huggie Hoops","Cluster Earrings","Thread Earrings"],
-  "Bangles":["Gold Bangle","Diamond Bangle","Kada","Openable Bangle","Lac Bangle","Stone Bangle","Antique Bangle","Enamel Bangle"],
-  "Bracelets":["Tennis Bracelet","Charm Bracelet","Chain Bracelet","Beaded Bracelet","Bangle Bracelet","ID Bracelet"],
-  "Anklets":["Gold Anklet","Silver Anklet","Beaded Anklet","Charm Anklet","Ghungroo Anklet","Stone Anklet"],
-  "Pendants":["Diamond Pendant","Gold Pendant","Religious Pendant","Enamel Pendant","Gemstone Pendant","Locket"],
-  "Mangalsutra":["Traditional","Modern Gold","Diamond Mangalsutra","Short Mangalsutra","Double Layer","Platinum"],
-  "Nose Jewellery":["Nose Ring","Nose Pin","Septum Ring","Nath","Clip-on Nose Pin"],
-  "Maang Tikka":["Traditional Tikka","Modern Tikka","Kundan Tikka","Diamond Tikka","Passa"]
-};
-const CAT_EMOJI = {"Rings":"💍","Necklaces":"📿","Earrings":"✨","Bangles":"💛",
-  "Bracelets":"🔗","Anklets":"🌙","Pendants":"💎","Mangalsutra":"❤️",
-  "Nose Jewellery":"💜","Maang Tikka":"👑"};
+const DEFAULT_CATS = ["Rings","Necklaces","Earrings","Bangles","Bracelets","Anklets","Pendants","Other"];
+function getCategories() {
+  try {
+    const saved = localStorage.getItem('sb_categories');
+    return saved ? JSON.parse(saved) : DEFAULT_CATS;
+  } catch(e) { return DEFAULT_CATS; }
+}
+function saveCategories(cats) {
+  localStorage.setItem('sb_categories', JSON.stringify(cats));
+}
+// Legacy CATS kept as empty for compatibility
+const CATS = {};
+const CAT_EMOJI = {"Rings":"💍","Necklaces":"📿","Earrings":"✨","Bangles":"💛","Bracelets":"🔗","Anklets":"🌙","Pendants":"💎","Other":"🏷️"};
+
 
 // ── DB LAYER ──────────────────────────────────────────────────────
 const DB = {
@@ -1215,21 +1290,25 @@ function loadSettings() {
   CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 }
 function applySettings() {
-  const nameEl = document.querySelector('.greeting strong');
-  if (nameEl) nameEl.textContent = (appSettings.name || 'Tarami') + ' ✦';
+  const bizEl   = document.getElementById('dash-biz-name');
+  const ownerEl = document.getElementById('dash-owner-name');
+  if (bizEl)   bizEl.textContent   = appSettings.bizName || appSettings.name || 'My Business';
+  if (ownerEl) ownerEl.textContent = (appSettings.name || '') + ' ✦';
+  // Also update avatar initial
+  const av = document.querySelector('.avatar');
+  if (av) av.textContent = (appSettings.name || appSettings.bizName || 'T').charAt(0).toUpperCase();
 }
 
 // ── INVENTORY ─────────────────────────────────────────────────────
 function initCatDropdowns() {
+  refreshCatDropdown();
+}
+function refreshCatDropdown() {
+  const cats = getCategories();
   const catEl = document.getElementById('item-cat');
-  if (catEl) catEl.innerHTML = Object.keys(CATS).map(c => `<option value="${c}">${c}</option>`).join('');
-  updateItemSubcats();
+  if (catEl) catEl.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
 }
-function updateItemSubcats() {
-  const cat = document.getElementById('item-cat')?.value;
-  const subEl = document.getElementById('item-sub');
-  if (subEl && cat) subEl.innerHTML = (CATS[cat]||[]).map(s => `<option value="${s}">${s}</option>`).join('');
-}
+function updateItemSubcats() {} // no-op, kept for compat
 
 async function loadInventory() {
   document.getElementById('inv-loading').style.display = 'flex';
@@ -1329,6 +1408,7 @@ function openItemDetail(id) {
           </div>
         </div>
       </div>
+      <button onclick="openEditItemSheet('${item.id}')" style="width:100%;margin-bottom:10px;padding:14px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:#8B6830">✏️ Edit item</button>
       <button class="delete-btn" onclick="deleteItem('${item.id}')">🗑 Delete item</button>
     </div>`;
   openSheet('sheet-item-detail');
@@ -1822,6 +1902,7 @@ async function renderExpenses() {
       <div class="list-item-right">
         <div class="list-item-amount neg">−₹${e.amount.toLocaleString('en-IN')}</div>
         <div class="list-item-date">${formatDate(e.date)}</div>
+        <button onclick="openEditExpense('${e.id}')" style="background:none;border:none;cursor:pointer;color:var(--gold);font-size:12px;margin-top:2px">✏️</button>
         <button onclick="deleteExpense('${e.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:12px;margin-top:2px">✕</button>
       </div>
     </div>`).join('');
@@ -1836,7 +1917,8 @@ async function saveExpense() {
   const desc   = document.getElementById('exp-note').value.trim();
   const cat    = getChip('exp-cat-chips');
   const paidBy = document.getElementById('exp-paidby').value.trim();
-  const exp    = {id:DB.newId(), cat, amount, desc, date, paidBy, createdAt:new Date().toISOString()};
+  const source = getChip('exp-source-chips') || '';
+  const exp    = {id:DB.newId(), cat, amount, desc, date, paidBy, source, createdAt:new Date().toISOString()};
   await DB.addExpense(exp);
   ['exp-amount','exp-note','exp-paidby'].forEach(id => document.getElementById(id).value='');
   forceCloseSheet('sheet-add-expense');
@@ -1953,6 +2035,163 @@ function openDeadstock() {
   openSheet('sheet-deadstock');
 }
 
+
+// ── FIX 5: EDIT EXPENSE ──────────────────────────────────────────
+let _editingExpenses = [];
+
+async function openEditExpense(id) {
+  _editingExpenses = await DB.getExpenses();
+  const exp = _editingExpenses.find(e => e.id === id);
+  if (!exp) return;
+  document.getElementById('edit-exp-id').value    = id;
+  document.getElementById('edit-exp-amount').value = exp.amount || 0;
+  document.getElementById('edit-exp-date').value   = exp.date || '';
+  document.getElementById('edit-exp-note').value   = exp.desc || '';
+  document.getElementById('edit-exp-paidby').value = exp.paidBy || '';
+  // Set active chip
+  document.querySelectorAll('#edit-exp-cat-chips .chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.val === exp.cat);
+  });
+  openSheet('sheet-edit-expense');
+}
+
+async function saveEditExpense() {
+  const id     = document.getElementById('edit-exp-id').value;
+  const amount = parseFloat(document.getElementById('edit-exp-amount').value) || 0;
+  const date   = document.getElementById('edit-exp-date').value;
+  const desc   = document.getElementById('edit-exp-note').value.trim();
+  const paidBy = document.getElementById('edit-exp-paidby').value.trim();
+  const cat    = getChip('edit-exp-cat-chips');
+  if (!amount) { showToast('Enter an amount'); return; }
+  const exp = { id, cat, amount, desc, date, paidBy, updatedAt: new Date().toISOString() };
+  try {
+    const { db, doc, updateDoc } = FB;
+    await updateDoc(doc(db, 'sb_expenses', id), exp);
+    forceCloseSheet('sheet-edit-expense');
+    await renderExpenses();
+    renderDashboard();
+    showToast('✓ Expense updated');
+  } catch(e) { showToast('Error saving — check connection'); }
+}
+
+async function deleteExpenseFromEdit() {
+  const id = document.getElementById('edit-exp-id').value;
+  if (!confirm('Delete this expense?')) return;
+  await DB.deleteExpense(id);
+  forceCloseSheet('sheet-edit-expense');
+  await renderExpenses();
+  renderDashboard();
+  showToast('Expense deleted');
+}
+
+// ── FIX 5: EDIT INVENTORY ────────────────────────────────────────
+// CHALLENGE NOTE: Photos cannot be edited via Firestore update alone
+// because Firebase Storage doesn't support in-place replacement via the
+// Firestore doc — would need to delete old Storage file and upload new one.
+// For now, edit covers all text fields. Photo replacement = delete + re-add.
+
+function openEditItemSheet(id) {
+  const item = invItems.find(i => i.id === id);
+  if (!item) return;
+  document.getElementById('edit-item-id').value    = id;
+  document.getElementById('edit-item-name').value  = item.name || '';
+  document.getElementById('edit-item-sub').value   = item.sub  || '';
+  document.getElementById('edit-item-price').value = item.price || 0;
+  document.getElementById('edit-item-cost').value  = item.cost  || 0;
+  document.getElementById('edit-item-qty').value   = item.qty   || 0;
+  document.getElementById('edit-item-sku').value   = item.sku   || '';
+  document.getElementById('edit-item-notes').value = item.notes || '';
+  // Populate category dropdown
+  const cats = getCategories();
+  const catEl = document.getElementById('edit-item-cat');
+  if (catEl) {
+    catEl.innerHTML = cats.map(c => `<option value="${c}" ${c===item.cat?'selected':''}>${c}</option>`).join('');
+  }
+  forceCloseSheet('sheet-item-detail');
+  openSheet('sheet-edit-item');
+}
+
+async function saveEditItem() {
+  const id    = document.getElementById('edit-item-id').value;
+  const name  = document.getElementById('edit-item-name').value.trim();
+  if (!name) { showToast('Item name required'); return; }
+  const cat   = document.getElementById('edit-item-cat').value;
+  const sub   = document.getElementById('edit-item-sub').value.trim();
+  const price = parseFloat(document.getElementById('edit-item-price').value) || 0;
+  const cost  = parseFloat(document.getElementById('edit-item-cost').value)  || 0;
+  const qty   = parseInt(document.getElementById('edit-item-qty').value)     || 0;
+  const sku   = document.getElementById('edit-item-sku').value.trim();
+  const notes = document.getElementById('edit-item-notes').value.trim();
+  try {
+    const { db, doc, updateDoc, serverTimestamp } = FB;
+    const updates = { name, cat, sub, price, cost, qty, sku, notes, updatedAt: serverTimestamp() };
+    await updateDoc(doc(db, 'inventory', id), updates);
+    // Update local cache
+    const idx = invItems.findIndex(i => i.id === id);
+    if (idx !== -1) invItems[idx] = { ...invItems[idx], ...updates };
+    forceCloseSheet('sheet-edit-item');
+    renderInventory();
+    renderDashboard();
+    showToast('✓ Item updated');
+  } catch(e) { showToast('Error saving'); console.error(e); }
+}
+
+async function deleteItemFromEdit() {
+  const id = document.getElementById('edit-item-id').value;
+  if (!confirm('Delete this item permanently?')) return;
+  const item = invItems.find(i => i.id === id);
+  try {
+    if (item?.photoURL) {
+      try { await FB.deleteObject(FB.ref(FB.storage, `inventory/${id}/photo.jpg`)); } catch(e) {}
+    }
+    await FB.deleteObject; // no-op guard
+    const { db, doc, deleteDoc } = FB;
+    await deleteDoc(doc(db, 'inventory', id));
+    invItems = invItems.filter(i => i.id !== id);
+    forceCloseSheet('sheet-edit-item');
+    renderInventory();
+    renderDashboard();
+    showToast('Item deleted');
+  } catch(e) { showToast('Error deleting'); }
+}
+
+// ── FIX 3: CATEGORY MANAGEMENT ───────────────────────────────────
+function renderCatTags() {
+  const cats = getCategories();
+  const el = document.getElementById('cat-tags');
+  if (!el) return;
+  el.innerHTML = cats.map((c,i) => `
+    <div style="display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px 5px 14px;font-size:13px;font-weight:500">
+      ${c}
+      <button onclick="removeCategory(${i})" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:0 0 0 4px;line-height:1">✕</button>
+    </div>`).join('');
+}
+
+function addCategory() {
+  const input = document.getElementById('new-cat-input');
+  const name  = input.value.trim();
+  if (!name) return;
+  const cats = getCategories();
+  if (cats.includes(name)) { showToast('Category already exists'); return; }
+  cats.push(name);
+  saveCategories(cats);
+  input.value = '';
+  renderCatTags();
+  refreshCatDropdown();
+  showToast('Category added');
+}
+
+function removeCategory(idx) {
+  const cats = getCategories();
+  if (cats.length <= 1) { showToast('Need at least one category'); return; }
+  cats.splice(idx, 1);
+  saveCategories(cats);
+  renderCatTags();
+  refreshCatDropdown();
+  showToast('Category removed');
+}
+
+// ── FIX 6: Update saveExpense to include source ──────────────────
 async function renderDashboard() {
   const [events, expenses, customers] = await Promise.all([DB.getEvents(), DB.getExpenses(), DB.getCustomers()]);
   const totalRev = events.reduce((s,e) => s+(e.revenue||0), 0);
@@ -2059,6 +2298,7 @@ function showCSVPreview(rows) {
 
 // ── SETTINGS ──────────────────────────────────────────────────────
 function openSettingsSheet() {
+  renderCatTags();
   // Pre-fill current values
   const ownerEl   = document.getElementById('set-owner-name');
   const bizEl     = document.getElementById('set-biz-name');
@@ -2224,6 +2464,9 @@ Object.assign(window, {
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
   openSettingsSheet, saveSettings, openQuickAdd, openDeadstock,
+  openEditExpense, saveEditExpense, deleteExpenseFromEdit,
+  openEditItemSheet, saveEditItem, deleteItemFromEdit,
+  addCategory, removeCategory,
   handleAuth, switchAuthTab, signOutUser, signInWithGoogle,
   renderDashboard, renderAll
 });
