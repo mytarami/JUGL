@@ -286,10 +286,62 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .csv-drop-zone:active,.csv-drop-zone.drag-over{border-color:var(--gold);background:var(--gold-soft)}
 .csv-row-preview{display:grid;grid-template-columns:80px 1fr 80px;gap:8px;padding:8px 12px;font-size:12px;border-bottom:1px solid var(--border)}
 .csv-row-preview:last-child{border-bottom:none}
+
+/* ── AUTH ── */
+.auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;z-index:600}
+.auth-logo{font-family:'Playfair Display',serif;font-size:36px;font-weight:500;color:var(--gold);margin-bottom:8px;letter-spacing:-0.5px}
+.auth-tagline{font-size:13px;color:var(--text-muted);margin-bottom:40px}
+.auth-card{width:100%;max-width:360px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:28px}
+.auth-tab-row{display:flex;gap:0;margin-bottom:24px;background:var(--bg);border-radius:var(--radius-xs);padding:3px}
+.auth-tab{flex:1;padding:9px;border:none;background:none;border-radius:8px;font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.auth-tab.active{background:var(--card);color:var(--text-primary);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.auth-error{background:var(--rose-soft);border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-xs);padding:10px 14px;font-size:13px;color:var(--rose);margin-bottom:16px;display:none}
+.auth-footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:20px}
 </style>
 </head>
 <body>
 
+
+
+<!-- Auth Screen -->
+<div id="auth-screen" class="auth-screen" style="display:none">
+  <div class="auth-logo">Tarami ✦</div>
+  <div class="auth-tagline">Your business, beautifully tracked</div>
+  <div class="auth-card">
+    <div class="auth-tab-row">
+      <button class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Sign in</button>
+      <button class="auth-tab" id="auth-tab-signup" onclick="switchAuthTab('signup')">Create account</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div class="form-field">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="auth-email" type="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="form-field">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="auth-password" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="form-field" id="auth-confirm-wrap" style="display:none">
+      <label class="form-label">Confirm password</label>
+      <input class="form-input" id="auth-confirm" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary btn-gold" id="auth-submit-btn" onclick="handleAuth()" style="margin-top:8px">Sign in</button>
+
+    <div style="display:flex;align-items:center;gap:12px;margin:16px 0">
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <span style="font-size:12px;color:var(--text-muted)">or</span>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+    </div>
+
+    <button onclick="signInWithGoogle()" style="width:100%;padding:13px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform 0.15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+
+    <div id="auth-loading" style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:12px;display:none">Signing in...</div>
+  </div>
+  <div class="auth-footer">Your data is stored securely in Firebase</div>
+</div>
 
 <!-- Loading screen -->
 <div class="fb-loading" id="fb-loading">
@@ -309,6 +361,9 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="greeting"><span>Good morning</span><strong>Tarami ✦</strong></div>
     </div>
     <button class="icon-btn" onclick="openSettingsSheet()"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <button class="icon-btn" onclick="signOutUser()" title="Sign out">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
   </div>
   <div class="dash-hero">
     <div class="dash-hero-label">Net profit · All time</div>
@@ -900,6 +955,9 @@ import { getFirestore, collection, addDoc, getDocs, doc, updateDoc,
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 // ── FIREBASE INIT ─────────────────────────────────────────────────
 const firebaseConfig = {
@@ -910,9 +968,10 @@ const firebaseConfig = {
   messagingSenderId: "565385221919",
   appId: "1:565385221919:web:9aac0159ed05ed456a422a"
 };
-const _app = initializeApp(firebaseConfig);
-const _db  = getFirestore(_app);
-const _st  = getStorage(_app);
+const _app  = initializeApp(firebaseConfig);
+const _db   = getFirestore(_app);
+const _st   = getStorage(_app);
+const _auth = getAuth(_app);
 const FB   = { db:_db, storage:_st, collection, addDoc, getDocs, doc, updateDoc,
                deleteDoc, setDoc, query, orderBy, serverTimestamp, writeBatch,
                ref, uploadBytes, getDownloadURL, deleteObject };
@@ -1938,6 +1997,94 @@ function saveSettings() {
   showToast('Settings saved ✓');
 }
 
+
+// ── AUTH ──────────────────────────────────────────────────────────
+let currentAuthTab = 'login';
+
+function switchAuthTab(tab) {
+  currentAuthTab = tab;
+  document.getElementById('auth-tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('auth-tab-signup').classList.toggle('active', tab==='signup');
+  document.getElementById('auth-submit-btn').textContent = tab==='login' ? 'Sign in' : 'Create account';
+  document.getElementById('auth-confirm-wrap').style.display = tab==='signup' ? 'block' : 'none';
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function handleAuth() {
+  const email    = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const confirm  = document.getElementById('auth-confirm').value;
+  if (!email || !password) { showAuthError('Please enter email and password'); return; }
+  if (currentAuthTab === 'signup' && password !== confirm) { showAuthError('Passwords do not match'); return; }
+  if (password.length < 6) { showAuthError('Password must be at least 6 characters'); return; }
+
+  const btn = document.getElementById('auth-submit-btn');
+  const loading = document.getElementById('auth-loading');
+  btn.style.display = 'none'; loading.style.display = 'block';
+  document.getElementById('auth-error').style.display = 'none';
+
+  try {
+    if (currentAuthTab === 'login') {
+      await signInWithEmailAndPassword(_auth, email, password);
+    } else {
+      await createUserWithEmailAndPassword(_auth, email, password);
+    }
+    // onAuthStateChanged will handle showing the app
+  } catch(e) {
+    btn.style.display = 'flex'; loading.style.display = 'none';
+    const msgs = {
+      'auth/user-not-found':   'No account with this email',
+      'auth/wrong-password':   'Incorrect password',
+      'auth/email-already-in-use': 'Account already exists — sign in instead',
+      'auth/invalid-email':    'Invalid email address',
+      'auth/too-many-requests':'Too many attempts — try again later',
+      'auth/invalid-credential': 'Invalid email or password',
+    };
+    showAuthError(msgs[e.code] || e.message);
+  }
+}
+
+async function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  const loading = document.getElementById('auth-loading');
+  loading.style.display = 'block';
+  document.getElementById('auth-error').style.display = 'none';
+  try {
+    await signInWithPopup(_auth, provider);
+    // onAuthStateChanged handles the rest
+  } catch(e) {
+    loading.style.display = 'none';
+    const msgs = {
+      'auth/popup-closed-by-user': 'Sign-in cancelled',
+      'auth/popup-blocked': 'Popup blocked — please allow popups for this site',
+      'auth/cancelled-popup-request': 'Sign-in cancelled',
+    };
+    showAuthError(msgs[e.code] || 'Google sign-in failed — try again');
+  }
+}
+
+async function signOutUser() {
+  if (!confirm('Sign out?')) return;
+  await signOut(_auth);
+}
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').style.display  = 'flex';
+  document.getElementById('fb-loading').style.display   = 'none';
+  document.getElementById('app').style.display          = 'none';
+}
+
+function showApp() {
+  document.getElementById('auth-screen').style.display  = 'none';
+  document.getElementById('fb-loading').style.display   = 'none';
+  document.getElementById('app').style.display          = 'block';
+}
+
 // ── INIT ──────────────────────────────────────────────────────────
 async function initApp() {
   loadSettings();
@@ -1982,12 +2129,14 @@ Object.assign(window, {
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
   openSettingsSheet, saveSettings,
+  handleAuth, switchAuthTab, signOutUser, signInWithGoogle,
   renderDashboard, renderAll
 });
 
 // ── BOOT ──────────────────────────────────────────────────────────
 document.getElementById('fb-loading').style.display = 'flex';
 document.getElementById('app').style.display = 'none';
+document.getElementById('auth-screen').style.display = 'none';
 
 // Drag-drop for CSV
 document.addEventListener('DOMContentLoaded', () => {
@@ -2007,12 +2156,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Start app
-document.getElementById('fb-loading').style.display = 'flex';
-document.getElementById('app').style.display = 'none';
-await initApp();
-document.getElementById('fb-loading').style.display = 'none';
-document.getElementById('app').style.display = 'block';
+// Start app — wait for auth state
+onAuthStateChanged(_auth, async (user) => {
+  if (user) {
+    // Logged in — load app
+    document.getElementById('fb-loading').style.display = 'flex';
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    await initApp();
+    showApp();
+  } else {
+    // Not logged in — show auth screen
+    showAuthScreen();
+  }
+});
 
 </script>
 </body>
