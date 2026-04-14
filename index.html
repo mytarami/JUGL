@@ -918,8 +918,8 @@ const FB   = { db:_db, storage:_st, collection, addDoc, getDocs, doc, updateDoc,
                ref, uploadBytes, getDownloadURL, deleteObject };
 
 // ── API KEYS ──────────────────────────────────────────────────────
-const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY';
-const CLAUDE_API_KEY = 'YOUR_ANTHROPIC_API_KEY';
+let GEMINI_API_KEY = localStorage.getItem('sb_gemini_key') || '';
+let CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 
 // ── CATEGORIES ────────────────────────────────────────────────────
 const CATS = {
@@ -1088,6 +1088,9 @@ function loadSettings() {
     const s = localStorage.getItem('sb_settings');
     if (s) appSettings = {...appSettings, ...JSON.parse(s)};
   } catch(e) {}
+  // Load API keys
+  GEMINI_API_KEY = localStorage.getItem('sb_gemini_key') || '';
+  CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 }
 function applySettings() {
   const nameEl = document.querySelector('.greeting strong');
@@ -1251,8 +1254,12 @@ function handlePhotoSelect(input) {
     document.getElementById('photo-upload-area').classList.add('has-img');
     document.getElementById('dup-result').style.display = 'none';
     const itemsWithPhotos = invItems.filter(i => i.photoURL);
-    if (itemsWithPhotos.length > 0 && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY') {
+    if (itemsWithPhotos.length > 0 && GEMINI_API_KEY) {
       runDuplicateDetection(b64, itemsWithPhotos);
+    } else if (itemsWithPhotos.length === 0) {
+      console.log('No items with photos to compare against yet');
+    } else {
+      console.log('Gemini API key not set - skipping duplicate detection');
     }
   };
   reader.readAsDataURL(file);
@@ -1288,7 +1295,7 @@ async function runDuplicateDetection(newPhotoB64, existingItems) {
        body:JSON.stringify({contents:[{parts}]})});
     const data = await response.json();
     const raw  = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    const result = JSON.parse(raw.replace(/\`\`\`json|\`\`\`/g,'').trim());
+    const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
     if (result.isDuplicate && result.confidence !== 'low') {
       const matched = existingItems.find(i => i.id === result.matchedItemId);
       const thumb = matched?.photoURL
@@ -1566,7 +1573,7 @@ async function handleScanPhoto(input) {
     document.getElementById('scan-upload-area').classList.add('has-img');
     document.getElementById('scan-form').style.display = 'none';
     document.getElementById('scan-status').textContent = '🔍 Identifying item...';
-    if (CLAUDE_API_KEY === 'YOUR_ANTHROPIC_API_KEY') {
+    if (!CLAUDE_API_KEY) {
       document.getElementById('scan-status').textContent = 'Add Claude API key to enable AI scan';
       document.getElementById('scan-form').style.display = 'block';
       return;
@@ -1897,13 +1904,38 @@ function showCSVPreview(rows) {
 }
 
 // ── SETTINGS ──────────────────────────────────────────────────────
-function openSettingsSheet() { openSheet('sheet-settings'); }
+function openSettingsSheet() {
+  // Pre-fill current values
+  const ownerEl   = document.getElementById('set-owner-name');
+  const bizEl     = document.getElementById('set-biz-name');
+  const currEl    = document.getElementById('set-currency');
+  const geminiEl  = document.getElementById('set-gemini-key');
+  const claudeEl  = document.getElementById('set-claude-key');
+  const fbEl      = document.getElementById('set-fb-project');
+  if (ownerEl)  ownerEl.value  = appSettings.name    || '';
+  if (bizEl)    bizEl.value    = appSettings.bizName  || '';
+  if (currEl)   currEl.value   = appSettings.currency || '₹';
+  if (geminiEl) geminiEl.value = GEMINI_API_KEY       || '';
+  if (claudeEl) claudeEl.value = CLAUDE_API_KEY       || '';
+  if (fbEl)     fbEl.value     = 'solobiz-tarami';
+  openSheet('sheet-settings');
+}
 function saveSettings() {
-  appSettings.name = document.getElementById('settings-name')?.value.trim() || appSettings.name;
+  // Business settings
+  appSettings.name    = document.getElementById('set-owner-name')?.value.trim() || appSettings.name;
+  appSettings.bizName = document.getElementById('set-biz-name')?.value.trim()   || appSettings.bizName;
+  appSettings.currency= document.getElementById('set-currency')?.value           || appSettings.currency;
   localStorage.setItem('sb_settings', JSON.stringify(appSettings));
+
+  // API keys — save to localStorage
+  const geminiKey = document.getElementById('set-gemini-key')?.value.trim();
+  const claudeKey = document.getElementById('set-claude-key')?.value.trim();
+  if (geminiKey) { GEMINI_API_KEY = geminiKey; localStorage.setItem('sb_gemini_key', geminiKey); }
+  if (claudeKey) { CLAUDE_API_KEY = claudeKey; localStorage.setItem('sb_claude_key', claudeKey); }
+
   applySettings();
   forceCloseSheet('sheet-settings');
-  showToast('Settings saved');
+  showToast('Settings saved ✓');
 }
 
 // ── INIT ──────────────────────────────────────────────────────────
