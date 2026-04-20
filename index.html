@@ -42,7 +42,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:20px}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 24px 0}
 .stat-card{background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);padding:16px}
-.stat-label{font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:6px}
+.stat-label{font-size:12px;color:var(--text-secondary);font-weight:600;letter-spacing:0.2px;text-transform:uppercase;margin-bottom:6px}
 .stat-value{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;letter-spacing:-0.5px}
 .stat-sub{font-size:11px;color:var(--text-muted);margin-top:3px}
 .section-header{padding:24px 24px 12px;display:flex;justify-content:space-between;align-items:center}
@@ -106,15 +106,15 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .dash-hero-label{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.5px;text-transform:uppercase;font-weight:500}
 .dash-hero-amount{font-family:'Playfair Display',serif;font-size:42px;font-weight:500;color:#fff;letter-spacing:-1px;margin:6px 0 16px;position:relative;z-index:1}
 .dash-hero-amount .sym{font-size:24px;color:rgba(255,255,255,0.5)}
-.dash-pills{display:flex;gap:10px}
-.dash-pill{flex:1;padding:12px;border-radius:12px;display:flex;align-items:center;gap:8px}
+.dash-pills{display:flex;gap:8px;flex-wrap:nowrap}
+.dash-pill{flex:1;min-width:0;padding:12px;border-radius:12px;display:flex;align-items:center;gap:8px}
 .dash-pill.income{background:rgba(109,176,112,0.15)}
 .dash-pill.expense{background:rgba(224,118,118,0.15)}
 .dash-pill-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .income .dash-pill-dot{background:var(--green)}
 .expense .dash-pill-dot{background:var(--rose)}
-.dash-pill-label{font-size:10px;color:rgba(255,255,255,0.45);font-weight:500}
-.dash-pill-val{font-size:14px;font-weight:600;color:#fff}
+.dash-pill-label{font-size:10px;color:rgba(255,255,255,0.45);font-weight:500;white-space:nowrap}
+.dash-pill-val{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .scroll-end{height:32px}
 
 /* ── INVENTORY (GoldBook style) ── */
@@ -315,6 +315,16 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .deadstock-item:last-child{border-bottom:none}
 .deadstock-thumb{width:44px;height:44px;border-radius:10px;background:var(--rose-soft);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0}
 .deadstock-thumb img{width:100%;height:100%;object-fit:cover}
+
+.hero-filter{background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);font-size:10px;font-weight:600;padding:4px 8px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap}
+.hero-filter.active{background:rgba(255,255,255,0.2);color:#fff}
+.hero-filter:active{transform:scale(0.95)}
+.onboarding-card{background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--radius-sm);padding:16px;margin:0 24px}
+.onboarding-step{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--gold-border)}
+.onboarding-step:last-child{border-bottom:none}
+.onboarding-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.onboarding-text{font-size:13px;color:var(--text-secondary);line-height:1.4}
+.onboarding-action{font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;margin-top:2px}
 </style>
 </head>
 <body>
@@ -375,19 +385,27 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="page-header">
     <div class="page-header-left">
       <div class="avatar">T</div>
-      <div class="greeting"><span id="dash-biz-name">Tarami</span><strong id="dash-owner-name">✦</strong></div>
+      <div class="greeting"><span id="dash-biz-name">My Business</span><strong id="dash-owner-name" style="font-size:13px;font-weight:400;color:var(--text-muted)"></strong></div>
     </div>
-    <button class="icon-btn" onclick="openSettingsSheet()"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
-    <button class="icon-btn" onclick="signOutUser()" title="Sign out">
+    <button class="icon-btn" onclick="openSettingsSheet()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <button class="icon-btn" onclick="signOutUser()" title="Sign out" aria-label="Sign out">
       <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </button>
   </div>
   <div class="dash-hero">
-    <div class="dash-hero-label">Net profit · All time</div>
-    <div class="dash-hero-amount"><span class="sym">₹</span><span id="dash-net-val">0</span></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="dash-hero-label" id="dash-hero-label">Net profit · All time</div>
+      <div style="display:flex;gap:4px">
+        <button class="hero-filter active" data-period="all" onclick="setHeroPeriod('all')">All</button>
+        <button class="hero-filter" data-period="month" onclick="setHeroPeriod('month')">Month</button>
+        <button class="hero-filter" data-period="week" onclick="setHeroPeriod('week')">Week</button>
+        <button class="hero-filter" data-period="today" onclick="setHeroPeriod('today')">Today</button>
+      </div>
+    </div>
+    <div class="dash-hero-amount"><span class="sym" id="dash-net-sign">₹</span><span id="dash-net-val">0</span></div>
     <div class="dash-pills">
-      <div class="dash-pill income"><div class="dash-pill-dot"></div><div><div class="dash-pill-label">Revenue</div><div class="dash-pill-val">₹<span id="dash-rev">0</span></div></div></div>
-      <div class="dash-pill expense"><div class="dash-pill-dot"></div><div><div class="dash-pill-label">Expenses</div><div class="dash-pill-val">₹<span id="dash-exp">0</span></div></div></div>
+      <div class="dash-pill income"><div class="dash-pill-dot"></div><div><div class="dash-pill-label">Revenue</div><div class="dash-pill-val" style="font-size:12px">₹<span id="dash-rev">0</span></div></div></div>
+      <div class="dash-pill expense"><div class="dash-pill-dot"></div><div><div class="dash-pill-label">Expenses</div><div class="dash-pill-val" style="font-size:12px">₹<span id="dash-exp">0</span></div></div></div>
     </div>
   </div>
   <!-- Stats tiles: Inventory, Pop-Ups, Customers, Deadstock -->
@@ -413,8 +431,29 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="stat-sub">out of stock items</div>
     </div>
   </div>
-  <div class="section-header"><span class="section-title">Last pop-up</span></div>
+  <div class="section-header"><span class="section-title">Last pop-up</span><span class="section-action" onclick="switchTab('popup');switchPopupTab('history')">See all</span></div>
   <div id="dash-last-event" style="margin:0 24px"></div>
+
+  <div id="dash-onboarding" style="display:none;margin:16px 24px 0">
+    <div class="onboarding-card">
+      <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px">Get started with SoloBiz</div>
+      <div class="onboarding-step">
+        <div class="onboarding-num">1</div>
+        <div><div class="onboarding-text">Add your first inventory item</div>
+        <div class="onboarding-action" onclick="switchTab('inventory');openSheet('sheet-add-item')">Add item →</div></div>
+      </div>
+      <div class="onboarding-step">
+        <div class="onboarding-num">2</div>
+        <div><div class="onboarding-text">Create a pop-up event</div>
+        <div class="onboarding-action" onclick="switchTab('popup');openSheet('sheet-create-event')">Create event →</div></div>
+      </div>
+      <div class="onboarding-step">
+        <div class="onboarding-num">3</div>
+        <div><div class="onboarding-text">Log your first sale</div>
+        <div class="onboarding-action" onclick="openSheet('sheet-log-method')">Log sale →</div></div>
+      </div>
+    </div>
+  </div>
   <div class="scroll-end"></div>
 </div>
 
@@ -1295,8 +1334,7 @@ function applySettings() {
   const bizEl   = document.getElementById('dash-biz-name');
   const ownerEl = document.getElementById('dash-owner-name');
   if (bizEl)   bizEl.textContent   = appSettings.bizName || appSettings.name || 'My Business';
-  if (ownerEl) ownerEl.textContent = (appSettings.name || '') + ' ✦';
-  // Also update avatar initial
+  if (ownerEl) ownerEl.textContent = appSettings.name || '';
   const av = document.querySelector('.avatar');
   if (av) av.textContent = (appSettings.name || appSettings.bizName || 'T').charAt(0).toUpperCase();
 }
@@ -2233,16 +2271,52 @@ async function openSalesLog() {
   openSheet('sheet-sales-log');
 }
 
+// ── HERO PERIOD FILTER ───────────────────────────────────────────
+let heroPeriod = 'all';
+function setHeroPeriod(period) {
+  heroPeriod = period;
+  document.querySelectorAll('.hero-filter').forEach(b => b.classList.toggle('active', b.dataset.period === period));
+  renderDashboard();
+}
+
 async function renderDashboard() {
   const [events, expenses, customers] = await Promise.all([DB.getEvents(), DB.getExpenses(), DB.getCustomers()]);
-  const totalRev = events.reduce((s,e) => s+(e.revenue||0), 0);
-  const totalExp = expenses.reduce((s,e) => s+e.amount, 0);
+
+  // Filter by period
+  const now = new Date();
+  function inPeriod(dateStr) {
+    if (heroPeriod === 'all') return true;
+    const d = new Date(dateStr || 0);
+    if (heroPeriod === 'today') return d.toDateString() === now.toDateString();
+    if (heroPeriod === 'week') {
+      const weekAgo = new Date(now); weekAgo.setDate(now.getDate()-7);
+      return d >= weekAgo;
+    }
+    if (heroPeriod === 'month') return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+    return true;
+  }
+  const periodLabel = {all:'All time',today:'Today',week:'This week',month:'This month'}[heroPeriod];
+  const filtEvents  = events.filter(e => inPeriod(e.date||e.createdAt));
+  const filtExpenses = expenses.filter(e => inPeriod(e.date||e.createdAt));
+
+  const totalRev = filtEvents.reduce((s,e) => s+(e.revenue||0), 0);
+  const totalExp = filtExpenses.reduce((s,e) => s+e.amount, 0);
   const net = totalRev - totalExp;
+
+  // Fix 1: Net loss label
+  const isLoss = net < 0;
+  const labelEl = document.getElementById('dash-hero-label');
+  if (labelEl) labelEl.textContent = (isLoss ? 'Net loss' : 'Net profit') + ' · ' + periodLabel;
+  const signEl = document.getElementById('dash-net-sign');
+  if (signEl) signEl.textContent = isLoss ? '–₹' : '₹';
   document.getElementById('dash-net-val').textContent = Math.abs(net).toLocaleString('en-IN');
-  document.getElementById('dash-net-val').style.color = net<0 ? 'var(--rose)' : '#fff';
+  document.getElementById('dash-net-val').style.color = isLoss ? 'var(--rose)' : '#fff';
+
   document.getElementById('dash-rev').textContent = totalRev.toLocaleString('en-IN');
   document.getElementById('dash-exp').textContent = totalExp.toLocaleString('en-IN');
   const totalSales = events.reduce((s,e) => s + (e.sales||[]).length, 0);
+  const obEl = document.getElementById('dash-onboarding');
+  if (obEl) obEl.style.display = totalSales === 0 ? 'block' : 'none';
   document.getElementById('dash-products').textContent  = invItems.length;
   document.getElementById('dash-sales').textContent     = totalSales;
   document.getElementById('dash-customers').textContent = customers.length;
@@ -2446,7 +2520,7 @@ async function signInWithGoogle() {
 }
 
 async function signOutUser() {
-  if (!confirm('Sign out?')) return;
+  if (!confirm('Sign out of SoloBiz?')) return;
   await signOut(_auth);
 }
 
@@ -2505,7 +2579,7 @@ Object.assign(window, {
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
-  openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog,
+  openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog, setHeroPeriod,
   openEditExpense, saveEditExpense, deleteExpenseFromEdit,
   openEditItemSheet, saveEditItem, deleteItemFromEdit,
   addCategory, removeCategory,
