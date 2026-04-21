@@ -131,13 +131,13 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 @keyframes spin{to{transform:rotate(360deg)}}
 .inv-info{padding:10px 12px 12px}
 .inv-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.inv-price{font-size:13px;color:var(--gold);font-weight:600;margin-top:2px}
-.inv-meta{font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;justify-content:space-between;align-items:center}
-.inv-stock-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.inv-price{font-size:13px;font-weight:600;margin-top:2px}.inv-price.has-price{color:var(--gold)}.inv-price.no-price{color:var(--text-muted)}
+.inv-meta{font-size:12px;color:var(--text-secondary);margin-top:3px;display:flex;justify-content:space-between;align-items:center}
+.inv-stock-badge{font-size:10px;font-weight:700;letter-spacing:0.02em;padding:3px 8px;border-radius:10px}
 .inv-stock-ok{background:var(--green-soft);color:#3a7a3d}
 .inv-stock-low{background:var(--rose-soft);color:#a84040}
 .inv-stock-zero{background:rgba(0,0,0,0.06);color:var(--text-muted)}
-.inv-fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:24px;width:52px;height:52px;border-radius:50%;background:var(--gold);border:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(201,169,110,0.4);transition:transform 0.15s;z-index:50}
+.inv-fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:24px;width:52px;height:52px;border-radius:50%;background:var(--text-primary);border:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(201,169,110,0.4);transition:transform 0.15s;z-index:50}
 .inv-fab:active{transform:scale(0.92)}
 .inv-stats-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 24px 0}
 .inv-stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:12px;text-align:center}
@@ -153,8 +153,8 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .photo-upload-area.has-img .upload-hint,.photo-upload-area.has-img .upload-icon{display:none}
 
 /* item detail sheet */
-.item-detail-img{width:100%;aspect-ratio:1;background:var(--gold-soft);overflow:hidden}
-.item-detail-img img{width:100%;height:100%;object-fit:cover}
+.item-detail-img{width:100%;height:220px;background:var(--gold-soft);overflow:hidden;flex-shrink:0}
+.item-detail-img img{width:100%;height:100%;object-fit:cover;display:block}
 .item-detail-body{padding:20px 24px}
 .item-detail-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:500}
 .item-detail-price{font-size:18px;color:var(--gold);font-weight:600;margin-top:4px}
@@ -325,6 +325,31 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .onboarding-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .onboarding-text{font-size:13px;color:var(--text-secondary);line-height:1.4}
 .onboarding-action{font-size:12px;color:var(--gold);font-weight:600;cursor:pointer;margin-top:2px}
+
+.inv-card.selected{outline:2px solid var(--gold);outline-offset:-2px}
+.bulk-bar{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:382px;background:var(--text-primary);color:#fff;border-radius:var(--radius-sm);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:150;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+.bulk-bar-actions{display:flex;gap:8px}
+.bulk-action-btn{background:rgba(255,255,255,0.12);border:none;color:#fff;font-size:12px;font-weight:600;padding:7px 12px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.bulk-action-btn.danger{background:rgba(224,118,118,0.3);color:var(--rose)}
+
+.sale-success-amount{font-family:'Playfair Display',serif;font-size:48px;font-weight:500;color:var(--text-primary);letter-spacing:-1.5px;text-align:center;margin:8px 0 4px}
+.sale-success-check{width:56px;height:56px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px}
+.sale-receipt{background:var(--bg);border-radius:var(--radius-sm);padding:16px;margin:20px 0}
+.sale-receipt-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+.sale-receipt-row:last-child{border-bottom:none}
+.sale-receipt-lbl{color:var(--text-muted);font-size:13px}
+.sale-receipt-val{font-weight:600}
+
+.sale-detail-img{width:100%;height:200px;background:var(--gold-soft);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:20px;display:flex;align-items:center;justify-content:center}
+.sale-detail-img img{width:100%;height:100%;object-fit:cover}
+.sale-detail-emoji{font-size:56px}
+.sale-detail-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px}
+.sale-detail-row:last-child{border-bottom:none}
+.sale-detail-lbl{color:var(--text-muted);font-size:13px}
+.sale-detail-val{font-weight:600;text-align:right;max-width:60%}
+.sale-log-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s;-webkit-tap-highlight-color:transparent}
+.sale-log-row:last-child{border-bottom:none}
+.sale-log-row:active{background:var(--gold-soft);margin:0 -24px;padding:11px 24px}
 </style>
 </head>
 <body>
@@ -383,13 +408,13 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <!-- HOME -->
 <div class="screen active" id="screen-home">
   <div class="page-header">
-    <div class="page-header-left">
-      <div class="avatar">T</div>
-      <div class="greeting"><span id="dash-biz-name">My Business</span><strong id="dash-owner-name" style="font-size:13px;font-weight:400;color:var(--text-muted)"></strong></div>
-    </div>
-    <button class="icon-btn" onclick="openSettingsSheet()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
-    <button class="icon-btn" onclick="signOutUser()" title="Sign out" aria-label="Sign out">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <button style="display:flex;align-items:center;gap:13px;background:none;border:none;cursor:pointer;padding:0;text-align:left;flex:1;min-width:0" onclick="openSettingsSheet()">
+      <div class="avatar" id="header-avatar">T</div>
+      <div class="greeting" style="min-width:0;flex:1">
+        <span id="dash-biz-name" style="display:block;font-size:16px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">My Business</span>
+        <strong id="dash-owner-name" style="display:block;font-size:13px;font-weight:400;color:var(--text-muted)"></strong>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;flex-shrink:0;stroke:var(--text-muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
   </div>
   <div class="dash-hero">
@@ -472,8 +497,9 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   </div>
 
   <!-- search -->
-  <div class="inv-search-wrap">
-    <input class="inv-search" id="inv-search" placeholder="Search jewellery..." oninput="renderInventory()" type="text">
+  <div class="inv-search-wrap" style="display:flex;gap:8px;align-items:center">
+    <input class="inv-search" id="inv-search" placeholder="Search..." oninput="renderInventory()" type="text" style="flex:1">
+    <button onclick="cycleSort()" id="sort-btn" style="flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text-secondary);font-family:'DM Sans',sans-serif;white-space:nowrap">↕ Name</button>
   </div>
 
   <!-- category filter pills -->
@@ -481,7 +507,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
   <div class="section-header">
     <span class="section-title" id="inv-section-title">All items</span>
-    <span class="section-action" onclick="openSheet('sheet-add-item')">+ Add</span>
   </div>
 
   <!-- grid -->
@@ -501,6 +526,14 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="scroll-end"></div>
 
   <!-- FAB -->
+  <div id="bulk-bar" style="display:none" class="bulk-bar">
+    <span id="bulk-count-label" style="font-size:13px;font-weight:600">0 selected</span>
+    <div class="bulk-bar-actions">
+      <button class="bulk-action-btn" onclick="bulkMarkOutOfStock()">Out of stock</button>
+      <button class="bulk-action-btn danger" onclick="bulkDelete()">Delete</button>
+      <button class="bulk-action-btn" onclick="exitBulkMode()">Cancel</button>
+    </div>
+  </div>
   <button class="inv-fab" onclick="openSheet('sheet-add-item')">+</button>
 </div>
 
@@ -691,6 +724,9 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <div class="sheet-overlay" id="sheet-item-detail" onclick="closeSheet(event,'sheet-item-detail')">
   <div class="sheet" id="item-detail-content">
     <div class="sheet-handle"></div>
+    <div style="display:flex;justify-content:flex-end;padding:8px 16px 0">
+      <button onclick="forceCloseSheet('sheet-item-detail')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;line-height:1;padding:4px 8px">×</button>
+    </div>
     <div id="item-detail-body"></div>
   </div>
 </div>
@@ -734,20 +770,23 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <!-- SHEET: Create Event -->
 <div class="sheet-overlay" id="sheet-create-event" onclick="closeSheet(event,'sheet-create-event')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">New event</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500">New event</div>
+    <button onclick="forceCloseSheet('sheet-create-event')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+  </div>
   <div class="sheet-body">
     <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ce-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
     <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ce-date" type="date"></div>
     <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="ce-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
     <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ce-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
-    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ce-rent" placeholder="0" type="number"></div>
+    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ce-rent" placeholder="e.g. 1200" type="text" inputmode="numeric" pattern="[0-9]*"></div>
     <div class="form-field"><label class="form-label">Status</label>
       <div class="chip-row" id="ce-status-chips">
-        <div class="chip active" data-val="live">🟢 Start Live</div>
         <div class="chip" data-val="upcoming">📅 Upcoming</div>
+        <div class="chip active" data-val="live">🟢 Start Live</div>
       </div>
     </div>
-    <button class="btn-primary btn-gold" onclick="createPopupEvent()" style="margin-top:8px">Create event</button>
+    <button class="btn-primary" style="background:var(--text-primary);margin-top:8px" onclick="createPopupEvent()">Create event</button>
   </div></div>
 </div>
 
@@ -762,7 +801,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
         <div style="font-size:14px;font-weight:600">Scan Item</div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:4px">AI identifies from photo</div>
       </button>
-      <button class="log-method-btn" onclick="forceCloseSheet('sheet-log-method');openSheet('sheet-manual-log')">
+      <button class="log-method-btn" onclick="forceCloseSheet('sheet-log-method');openManualLog()">
         <div style="font-size:36px;margin-bottom:10px">✏️</div>
         <div style="font-size:14px;font-weight:600">Log Manually</div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Fill in item details</div>
@@ -819,7 +858,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="sheet-title">Log manually</div>
   <div class="sheet-body">
     <div class="form-field"><label class="form-label">Category</label>
-      <select class="form-input" id="ml-cat"><option>Bangles</option><option>Rings</option><option>Earrings</option><option>Necklaces</option><option>Bracelets</option><option>Anklets</option><option>Other</option></select>
+      <select class="form-input" id="ml-cat"></select>
     </div>
     <div class="form-field"><label class="form-label">Item name</label><input class="form-input" id="ml-name" placeholder="e.g. Gold cuff bangle" type="text"></div>
     <div class="form-row">
@@ -846,14 +885,25 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <!-- SHEET: End event summary -->
 <div class="sheet-overlay" id="sheet-edit-live-event" onclick="closeSheet(event,'sheet-edit-live-event')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">Edit event</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500">Edit event</div>
+    <button onclick="forceCloseSheet('sheet-edit-live-event')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+  </div>
   <div class="sheet-body">
-    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ele-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
-    <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ele-date" type="date"></div>
-    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="ele-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
-    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ele-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
-    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ele-rent" placeholder="0" type="number"></div>
-    <button class="btn-primary btn-gold" onclick="saveLiveEventEdit()" style="margin-top:8px">Save changes</button>
+    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="edit-live-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
+    <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="edit-live-date" type="date"></div>
+    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="edit-live-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
+    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="edit-live-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
+    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="edit-live-rent" placeholder="0" type="text" inputmode="numeric" pattern="[0-9]*"></div>
+    <div class="form-field"><label class="form-label">Status</label>
+      <div class="chip-row" id="edit-live-status-chips">
+        <div class="chip active" data-val="active">🟢 Live</div>
+        <div class="chip" data-val="upcoming">📅 Upcoming</div>
+        <div class="chip" data-val="done">✓ Done</div>
+      </div>
+    </div>
+    <button class="btn-primary" style="background:var(--text-primary);margin-top:8px" onclick="saveLiveEventEdit()">Save changes</button>
+    <button onclick="endEventFromEdit()" style="width:100%;margin-top:10px;padding:14px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-secondary)">Mark as complete → move to History</button>
   </div></div>
 </div>
 
@@ -1016,6 +1066,12 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
       <button class="btn-primary btn-gold" onclick="saveSettings()" style="margin-top:12px">Save settings</button>
       <div id="settings-save-status" style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px"></div>
+
+      <div style="height:1px;background:var(--border);margin:20px 0"></div>
+      <button onclick="signOutUser()" style="width:100%;padding:14px;background:none;border:1px solid rgba(224,118,118,0.35);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--rose);display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--rose);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </button>
     </div>
   </div>
 </div>
@@ -1084,28 +1140,45 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 </div>
 
 <!-- SHEET: Edit Inventory Item -->
-<div class="sheet-overlay" id="sheet-edit-item" onclick="closeSheet(event,'sheet-edit-item')">
+<div class="sheet-overlay" id="sheet-edit-item">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">Edit item</div>
+  <!-- Fix 16: Header with Cancel button -->
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500">Edit item</div>
+    <button onclick="tryCloseEditItem()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+  </div>
   <div class="sheet-body">
     <input type="hidden" id="edit-item-id">
-    <div class="form-field"><label class="form-label">Item name</label><input class="form-input" id="edit-item-name" type="text"></div>
+    <!-- Fix 10: Photo change -->
+    <div class="form-field">
+      <label class="form-label">Photo</label>
+      <div style="position:relative;width:100%;height:140px;border-radius:var(--radius-xs);overflow:hidden;background:var(--gold-soft);cursor:pointer" onclick="document.getElementById('edit-photo-input').click()">
+        <img id="edit-photo-preview" src="" style="width:100%;height:100%;object-fit:cover;display:none">
+        <div id="edit-photo-placeholder" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          <span style="font-size:28px">📷</span>
+          <span style="font-size:12px;color:var(--text-muted)">Tap to change photo</span>
+        </div>
+      </div>
+      <input type="file" id="edit-photo-input" accept="image/*" style="display:none" onchange="handleEditPhoto(this)">
+    </div>
+    <div class="form-field"><label class="form-label">Item name</label><input class="form-input" id="edit-item-name" type="text" oninput="markEditDirty()"></div>
     <div class="form-row">
-      <div class="form-field"><label class="form-label">Category</label><select class="form-input" id="edit-item-cat"></select></div>
-      <div class="form-field"><label class="form-label">Sub-category</label><input class="form-input" id="edit-item-sub" type="text"></div>
+      <!-- Fix 13+14: Category defaults to first in user list, clears sub on change -->
+      <div class="form-field"><label class="form-label">Category</label><select class="form-input" id="edit-item-cat" onchange="markEditDirty();document.getElementById('edit-item-sub').value=''"></select></div>
+      <div class="form-field"><label class="form-label">Sub-category</label><input class="form-input" id="edit-item-sub" type="text" placeholder="Optional" oninput="markEditDirty()"></div>
     </div>
     <div class="form-row">
-      <div class="form-field"><label class="form-label">Sell price (₹)</label><input class="form-input" id="edit-item-price" type="number"></div>
-      <div class="form-field"><label class="form-label">Cost price (₹)</label><input class="form-input" id="edit-item-cost" type="number"></div>
+      <div class="form-field"><label class="form-label">Sell price (₹)</label><input class="form-input" id="edit-item-price" type="number" oninput="markEditDirty()"></div>
+      <div class="form-field"><label class="form-label">Cost price (₹)</label><input class="form-input" id="edit-item-cost" type="number" oninput="markEditDirty()"></div>
     </div>
     <div class="form-row">
-      <div class="form-field"><label class="form-label">Qty in stock</label><input class="form-input" id="edit-item-qty" type="number"></div>
-      <div class="form-field"><label class="form-label">SKU</label><input class="form-input" id="edit-item-sku" type="text"></div>
+      <div class="form-field"><label class="form-label">Qty in stock</label><input class="form-input" id="edit-item-qty" type="number" oninput="markEditDirty()"></div>
+      <div class="form-field"><label class="form-label">SKU</label><input class="form-input" id="edit-item-sku" type="text" oninput="markEditDirty()"></div>
     </div>
-    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="edit-item-notes" type="text"></div>
-<div style="font-size:11px;color:var(--text-muted);margin-bottom:16px">📷 To change the photo, delete this item and re-add it</div>
+    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="edit-item-notes" type="text" oninput="markEditDirty()"></div>
     <button class="btn-primary btn-gold" onclick="saveEditItem()" style="margin-top:8px">Save changes</button>
-    <button onclick="deleteItemFromEdit()" style="width:100%;margin-top:10px;padding:14px;background:none;border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--rose)">Delete item</button>
+    <!-- Fix 11+15: Red delete button with confirmation -->
+    <button onclick="deleteItemFromEdit()" style="width:100%;margin-top:10px;padding:14px;background:var(--rose);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Delete item</button>
   </div></div>
 </div>
 
@@ -1115,6 +1188,38 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="sheet-title">Sales log</div>
   <div style="padding:8px 24px 0;font-size:13px;color:var(--text-muted)" id="sales-log-subtitle"></div>
   <div style="padding:16px 24px 0;overflow-y:auto;max-height:70vh" id="sales-log-list"></div>
+  </div>
+</div>
+
+<!-- SHEET: Sale Success -->
+<div class="sheet-overlay" id="sheet-sale-success">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div class="sheet-body" style="text-align:center;padding-top:8px;padding-bottom:32px">
+    <div class="sale-success-check">✓</div>
+    <div style="font-size:13px;color:var(--text-muted);font-weight:500;letter-spacing:0.3px;text-transform:uppercase">Sale logged</div>
+    <div class="sale-success-amount" id="ss-amount">₹0</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin-bottom:4px" id="ss-name"></div>
+    <div class="sale-receipt" id="ss-receipt"></div>
+    <div style="margin-top:20px">
+      <button class="btn-primary" style="background:var(--text-primary);margin-bottom:10px" onclick="closeSaleSuccess()">Done</button>
+      <button onclick="logAnotherSale()" style="width:100%;padding:14px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-primary)">+ Log another sale</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- SHEET: Sale Detail -->
+<div class="sheet-overlay" id="sheet-sale-detail" onclick="closeSheet(event,'sheet-sale-detail')">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500" id="sd-title">Sale</div>
+    <button onclick="forceCloseSheet('sheet-sale-detail')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+  </div>
+  <div class="sheet-body" style="padding-bottom:32px">
+    <div class="sale-detail-img" id="sd-img">
+      <span class="sale-detail-emoji" id="sd-emoji">💎</span>
+    </div>
+    <div id="sd-rows"></div>
+  </div>
   </div>
 </div>
 
@@ -1335,13 +1440,89 @@ function applySettings() {
   const ownerEl = document.getElementById('dash-owner-name');
   if (bizEl)   bizEl.textContent   = appSettings.bizName || appSettings.name || 'My Business';
   if (ownerEl) ownerEl.textContent = appSettings.name || '';
-  const av = document.querySelector('.avatar');
-  if (av) av.textContent = (appSettings.name || appSettings.bizName || 'T').charAt(0).toUpperCase();
+  const initial = (appSettings.name || appSettings.bizName || 'T').charAt(0).toUpperCase();
+  document.querySelectorAll('.avatar').forEach(av => av.textContent = initial);
 }
 
 // ── INVENTORY ─────────────────────────────────────────────────────
 function initCatDropdowns() {
   refreshCatDropdown();
+}
+
+// ── ITEM NAME VALIDATION ─────────────────────────────────────────
+
+// ── BULK SELECT MODE ─────────────────────────────────────────────
+let bulkMode    = false;
+let bulkSelected = new Set();
+let _longPressTimer = null;
+
+function startLongPress(id) {
+  _longPressTimer = setTimeout(() => enterBulkMode(id), 500);
+}
+function cancelLongPress() {
+  clearTimeout(_longPressTimer);
+}
+function enterBulkMode(id) {
+  bulkMode = true;
+  bulkSelected = new Set([id]);
+  document.getElementById('bulk-bar').style.display = 'flex';
+  renderInventory();
+  updateBulkBar();
+}
+function exitBulkMode() {
+  bulkMode = false;
+  bulkSelected.clear();
+  document.getElementById('bulk-bar').style.display = 'none';
+  renderInventory();
+}
+function toggleBulkSelect(id) {
+  if (bulkSelected.has(id)) bulkSelected.delete(id);
+  else bulkSelected.add(id);
+  if (bulkSelected.size === 0) { exitBulkMode(); return; }
+  updateBulkBar();
+  // Update card visual
+  document.querySelectorAll('.inv-card').forEach(c => {
+    if (c.dataset.id) c.classList.toggle('selected', bulkSelected.has(c.dataset.id));
+  });
+}
+function updateBulkBar() {
+  const el = document.getElementById('bulk-count-label');
+  if (el) el.textContent = `${bulkSelected.size} selected`;
+}
+async function bulkDelete() {
+  if (!confirm(`Delete ${bulkSelected.size} item(s)? Cannot be undone.`)) return;
+  for (const id of bulkSelected) {
+    try { const { db, doc, deleteDoc } = FB; await deleteDoc(doc(db, 'inventory', id)); } catch(e) {}
+  }
+  invItems = invItems.filter(i => !bulkSelected.has(i.id));
+  exitBulkMode();
+  renderInventory();
+  renderDashboard();
+  showToast(`Deleted ${bulkSelected.size} items`);
+}
+async function bulkMarkOutOfStock() {
+  for (const id of bulkSelected) {
+    try {
+      const { db:_db2, doc:_doc2, updateDoc, serverTimestamp } = FB; await updateDoc(_doc2(_db2, 'inventory', id), {qty:0, updatedAt:serverTimestamp()});
+      const item = invItems.find(i => i.id === id);
+      if (item) item.qty = 0;
+    } catch(e) {}
+  }
+  exitBulkMode();
+  renderInventory();
+  showToast(`Marked ${bulkSelected.size} items out of stock`);
+}
+function validateItemName(input) {
+  const val = input.value.trim();
+  if (!val) return;
+  // Warn if looks like gibberish: >2 consecutive consonants or random chars
+  const hasLongConsonantRun = /[bcdfghjklmnpqrstvwxyz]{4,}/i.test(val);
+  const isTooShort = val.length < 3;
+  const hint = document.getElementById('item-name-hint');
+  if (!hint) return;
+  if (isTooShort) { hint.textContent = 'Name seems too short'; hint.style.display = 'block'; }
+  else if (hasLongConsonantRun) { hint.textContent = 'Double-check spelling'; hint.style.display = 'block'; }
+  else { hint.style.display = 'none'; }
 }
 function refreshCatDropdown() {
   const cats = getCategories();
@@ -1367,16 +1548,82 @@ async function loadInventory() {
   renderInventory();
 }
 
+
+// ── INVENTORY SORT (Fix 3) ───────────────────────────────────────
+const sortModes = ['name','price','date','qty'];
+const sortLabels = {'name':'↕ Name','price':'↕ Price','date':'↕ Date','qty':'↕ Qty'};
+let invSortMode = 'date';
+
+function cycleSort() {
+  const idx = sortModes.indexOf(invSortMode);
+  invSortMode = sortModes[(idx+1) % sortModes.length];
+  const btn = document.getElementById('sort-btn');
+  if (btn) btn.textContent = sortLabels[invSortMode];
+  renderInventory();
+}
+
+function sortItems(items) {
+  return [...items].sort((a,b) => {
+    if (invSortMode === 'name')  return (a.name||'').localeCompare(b.name||'');
+    if (invSortMode === 'price') return (b.price||0) - (a.price||0);
+    if (invSortMode === 'qty')   return (b.qty||0) - (a.qty||0);
+    // date (default)
+    const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt||0).getTime();
+    const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt||0).getTime();
+    return tb - ta;
+  });
+}
+
+// ── EDIT ITEM: DIRTY STATE (Fix 12) ────────────────────────────
+let _editItemDirty = false;
+function markEditDirty() { _editItemDirty = true; }
+
+function tryCloseEditItem() {
+  if (_editItemDirty && !confirm('You have unsaved changes. Close anyway?')) return;
+  _editItemDirty = false;
+  forceCloseSheet('sheet-edit-item');
+}
+
+// ── EDIT ITEM: PHOTO CHANGE (Fix 10) ───────────────────────────
+let _editPhotoFile = null;
+
+function handleEditPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  _editPhotoFile = file;
+  markEditDirty();
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('edit-photo-preview');
+    const placeholder = document.getElementById('edit-photo-placeholder');
+    if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+    if (placeholder) placeholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── FIX 1: Dynamic search placeholder ─────────────────────────
+function updateSearchPlaceholder() {
+  const el = document.getElementById('inv-search');
+  if (!el) return;
+  // Use business category (e.g. "Jewellery", "Clothing") not the business name
+  const cat = appSettings.bizCategory || '';
+  const catLower = cat ? cat.toLowerCase() : 'items';
+  el.placeholder = `Search ${catLower}...`;
+}
+
 function renderInventory() {
+  updateSearchPlaceholder();
   const search = (document.getElementById('inv-search')?.value || '').toLowerCase();
-  const cats = ['ALL', ...Object.keys(CATS).filter(c => invItems.some(i => i.cat === c))];
+  const cats = ['ALL', ...Array.from(new Set(invItems.map(i=>i.cat).filter(Boolean)))];
 
   document.getElementById('inv-filter-pills').innerHTML = cats.map(c => {
     const count = c === 'ALL' ? invItems.length : invItems.filter(i => i.cat === c).length;
-    return `<div class="filter-pill ${invFilter===c?'active':''}" onclick="setInvFilter('${c}')">${c} <span style="opacity:0.6">${count}</span></div>`;
+    return `<div class="filter-pill ${invFilter===c?'active':''}" onclick="setInvFilter('${c}')">${c==='ALL'?'All':c}</div>`;
   }).join('');
 
   let filtered = invFilter === 'ALL' ? invItems : invItems.filter(i => i.cat === invFilter);
+  filtered = sortItems(filtered);
   if (search) filtered = filtered.filter(i =>
     i.name?.toLowerCase().includes(search) ||
     (i.sub||'').toLowerCase().includes(search) ||
@@ -1407,11 +1654,16 @@ function renderInventory() {
       : `<span style="font-size:32px">${CAT_EMOJI[item.cat]||'💎'}</span>`;
     const addedDate = item.createdAt?.toDate ? item.createdAt.toDate() : new Date(item.createdAt||0);
     const dateStr = addedDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    return `<div class="inv-card" onclick="openItemDetail('${item.id}')">
+    const cardClick = bulkMode ? `toggleBulkSelect('${item.id}')` : `openItemDetail('${item.id}')`;
+    const selectedClass = bulkSelected.has(item.id) ? ' selected' : '';
+    return `<div class="inv-card${selectedClass}" data-id="${item.id}"
+      onclick="${cardClick}"
+      onmousedown="startLongPress('${item.id}')" onmouseup="cancelLongPress()" onmouseleave="cancelLongPress()"
+      ontouchstart="startLongPress('${item.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
       <div class="inv-img">${imgHTML}</div>
       <div class="inv-info">
         <div class="inv-name">${item.name}</div>
-        <div class="inv-price">₹${(item.price||0).toLocaleString('en-IN')}</div>
+        <div class="inv-price ${item.price?'has-price':'no-price'}">₹${(item.price||0).toLocaleString('en-IN')}</div>
         <div class="inv-meta"><span>${item.sub||item.cat}</span><span class="inv-stock-badge ${stockClass}">${stockLabel}</span></div>
         <div style="font-size:10px;color:var(--text-muted);margin-top:3px">Added ${dateStr}</div>
       </div>
@@ -1444,15 +1696,10 @@ function openItemDetail(id) {
         ${item.notes?`<div class="item-detail-row"><span class="item-detail-lbl">Notes</span><span class="item-detail-val">${item.notes}</span></div>`:''}
         <div class="item-detail-row">
           <span class="item-detail-lbl">Quantity</span>
-          <div class="qty-control">
-            <button class="qty-btn" onclick="adjustQty(-1)">−</button>
-            <div class="qty-val" id="detail-qty">${item.qty||0}</div>
-            <button class="qty-btn" onclick="adjustQty(1)">+</button>
-          </div>
+          <span class="item-detail-val">${item.qty||0} in stock</span>
         </div>
       </div>
-      <button onclick="openEditItemSheet('${item.id}')" style="width:100%;margin-bottom:10px;padding:14px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:#8B6830">✏️ Edit item</button>
-      <button class="delete-btn" onclick="deleteItem('${item.id}')">🗑 Delete item</button>
+      <button onclick="openEditItemSheet('${item.id}')" style="width:100%;margin-top:16px;padding:14px;background:var(--text-primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Edit item</button>
     </div>`;
   openSheet('sheet-item-detail');
 }
@@ -1778,12 +2025,59 @@ async function createPopupEvent() {
 async function addSaleToLiveEvent(saleData) {
   const arr  = await DB.getEvents();
   const live = arr.find(e => e.status==='active'||e.status==='live');
-  if (!live) { showToast('No active event'); return false; }
+  if (!live) {
+    if (confirm('No live event found. Create or start one now?')) {
+      openSheet('sheet-create-event');
+    }
+    return false;
+  }
   live.sales = live.sales || [];
   live.sales.push({id:DB.newId(), timestamp:new Date().toISOString(), ...saleData});
   live.revenue = live.sales.reduce((s,x) => s+((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
   await DB.saveEvents(arr);
   return true;
+}
+
+
+// ── SALE SUCCESS SHEET ───────────────────────────────────────────
+let _lastSaleSource = 'manual'; // 'manual' or 'scan'
+
+function showSaleSuccess({ name, price, qty, pay, custName, cat }) {
+  const total = price * qty;
+  const payIcon = {UPI:'📱 UPI', Cash:'💵 Cash', Card:'💳 Card'}[pay] || pay || 'UPI';
+  document.getElementById('ss-amount').textContent = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('ss-name').textContent   = name + (qty > 1 ? ` × ${qty}` : '');
+  document.getElementById('ss-receipt').innerHTML  = [
+    ['Category',  cat || '—'],
+    ['Payment',   payIcon],
+    qty > 1 ? ['Unit price', '₹' + price.toLocaleString('en-IN')] : null,
+    qty > 1 ? ['Quantity',   qty] : null,
+    custName ? ['Customer',  custName] : null,
+    ['Time', new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})],
+  ].filter(Boolean).map(([lbl, val]) =>
+    `<div class="sale-receipt-row"><span class="sale-receipt-lbl">${lbl}</span><span class="sale-receipt-val">${val}</span></div>`
+  ).join('');
+  openSheet('sheet-sale-success');
+}
+
+function closeSaleSuccess() {
+  forceCloseSheet('sheet-sale-success');
+}
+
+function logAnotherSale() {
+  forceCloseSheet('sheet-sale-success');
+  // Re-open the log method picker
+  openSheet('sheet-log-method');
+}
+
+
+// ── MANUAL LOG OPEN ──────────────────────────────────────────────
+function openManualLog() {
+  // Populate category dropdown from user settings
+  const cats = getCategories();
+  const sel  = document.getElementById('ml-cat');
+  if (sel) sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+  openSheet('sheet-manual-log');
 }
 
 async function confirmManualSale() {
@@ -1801,9 +2095,11 @@ async function confirmManualSale() {
     ['ml-name','ml-price','ml-cust-name','ml-cust-phone'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('ml-qty').value = '1';
     forceCloseSheet('sheet-manual-log');
+    forceCloseSheet('sheet-log-method');
     renderLive();
     renderDashboard();
-    showToast('✅ ' + name + ' · ₹' + (price*qty).toLocaleString('en-IN'));
+    _lastSaleSource = 'manual';
+    showSaleSuccess({name, price, qty, pay, custName, cat});
   }
 }
 
@@ -1873,23 +2169,59 @@ async function confirmScanSale() {
     ['scan-name','scan-price','scan-cust-name','scan-cust-phone'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('scan-qty').value='1';
     forceCloseSheet('sheet-scan-item');
+    forceCloseSheet('sheet-log-method');
     renderLive();
     renderDashboard();
-    showToast('✅ ' + name + ' · ₹' + (price*qty).toLocaleString('en-IN'));
+    _lastSaleSource = 'scan';
+    showSaleSuccess({name, price, qty, pay, custName, cat});
   }
 }
 
 // Edit live event
 async function openEditLiveEvent() {
   const all  = await DB.getEvents();
-  const live = all.find(e => e.status==='active'||e.status==='live');
-  if (!live) { showToast('No active event'); return; }
-  document.getElementById('edit-live-name').value      = live.name||'';
-  document.getElementById('edit-live-date').value      = live.date||'';
-  document.getElementById('edit-live-venue').value     = live.venue||live.location||'';
-  document.getElementById('edit-live-organiser').value = live.organiser||'';
-  document.getElementById('edit-live-rent').value      = live.stallCost||live.stallRent||0;
+  const live = all.find(e => e.status==='active'||e.status==='live'||e.status==='upcoming'||e.status==='done');
+  // Try to get the most recent event if no live one
+  const ev = all.find(e => e.status==='active'||e.status==='live') || all[0];
+  if (!ev) { showToast('No event found'); return; }
+  document.getElementById('edit-live-name').value      = ev.name||'';
+  document.getElementById('edit-live-date').value      = ev.date||'';
+  document.getElementById('edit-live-venue').value     = ev.venue||ev.location||'';
+  document.getElementById('edit-live-organiser').value = ev.organiser||'';
+  document.getElementById('edit-live-rent').value      = ev.stallCost||ev.stallRent||0;
+  // Pre-select status chip
+  const status = ev.status==='active' ? 'active' : (ev.status==='done' ? 'done' : 'upcoming');
+  document.querySelectorAll('#edit-live-status-chips .chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.val === status);
+  });
+  // Store which event we are editing
+  window._editingEventId = ev.id;
   openSheet('sheet-edit-live-event');
+}
+
+
+// ── END EVENT / MARK COMPLETE (Fix 4) ─────────────────────────────
+async function endEventFromEdit() {
+  const arr = await DB.getEvents();
+  const ev  = arr.find(e => e.id === window._editingEventId) || arr.find(e => e.status==='active'||e.status==='live');
+  if (!ev) return;
+  const sales  = ev.sales || [];
+  const rev    = sales.reduce((s,x) => s+((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
+  const rent   = ev.stallCost||ev.stallRent||0;
+  const net    = rev - rent;
+  const netStr = (net>=0?'+':'–') + '₹' + Math.abs(net).toLocaleString('en-IN');
+  if (!confirm(`End "${ev.name}"?
+
+${sales.length} sales · ₹${rev.toLocaleString('en-IN')} revenue · ${netStr} net
+
+This moves the event to History.`)) return;
+  ev.status  = 'done';
+  ev.revenue = rev;
+  await DB.saveEvents(arr);
+  forceCloseSheet('sheet-edit-live-event');
+  await renderEvents();
+  renderDashboard();
+  showToast('✓ Event moved to History');
 }
 
 async function saveLiveEventEdit() {
@@ -1898,15 +2230,18 @@ async function saveLiveEventEdit() {
   const venue     = document.getElementById('edit-live-venue').value.trim();
   const organiser = document.getElementById('edit-live-organiser').value.trim();
   const rent      = parseFloat(document.getElementById('edit-live-rent').value)||0;
+  const newStatus = getChip('edit-live-status-chips');
   if (!name) { showToast('Event name required'); return; }
-  const arr  = await DB.getEvents();
-  const live = arr.find(e => e.status==='active'||e.status==='live');
-  if (!live) return;
-  live.name=name; live.date=date; live.venue=venue; live.location=venue;
-  live.organiser=organiser; live.stallCost=rent; live.stallRent=rent;
+  const arr = await DB.getEvents();
+  const ev  = arr.find(e => e.id === window._editingEventId) || arr.find(e => e.status==='active'||e.status==='live');
+  if (!ev) return;
+  ev.name=name; ev.date=date; ev.venue=venue; ev.location=venue;
+  ev.organiser=organiser; ev.stallCost=rent; ev.stallRent=rent;
+  if (newStatus) ev.status = newStatus === 'active' ? 'active' : newStatus;
   await DB.saveEvents(arr);
   forceCloseSheet('sheet-edit-live-event');
-  await renderLive();
+  await renderEvents();
+  renderDashboard();
   showToast('✓ Event updated');
 }
 
@@ -2139,6 +2474,13 @@ function openEditItemSheet(id) {
   document.getElementById('edit-item-id').value    = id;
   document.getElementById('edit-item-name').value  = item.name || '';
   document.getElementById('edit-item-sub').value   = item.sub  || '';
+  _editItemDirty  = false;
+  _editPhotoFile  = null;
+  // Pre-fill photo
+  const prevEl = document.getElementById('edit-photo-preview');
+  const holdEl = document.getElementById('edit-photo-placeholder');
+  if (prevEl && item.photoURL) { prevEl.src = item.photoURL; prevEl.style.display = 'block'; if(holdEl) holdEl.style.display = 'none'; }
+  else { if(prevEl) { prevEl.style.display = 'none'; prevEl.src = ''; } if(holdEl) holdEl.style.display = 'flex'; }
   document.getElementById('edit-item-price').value = item.price || 0;
   document.getElementById('edit-item-cost').value  = item.cost  || 0;
   document.getElementById('edit-item-qty').value   = item.qty   || 0;
@@ -2148,7 +2490,8 @@ function openEditItemSheet(id) {
   const cats = getCategories();
   const catEl = document.getElementById('edit-item-cat');
   if (catEl) {
-    catEl.innerHTML = cats.map(c => `<option value="${c}" ${c===item.cat?'selected':''}>${c}</option>`).join('');
+    const itemCat = item.cat && cats.includes(item.cat) ? item.cat : cats[0];
+    catEl.innerHTML = cats.map(c => `<option value="${c}" ${c===itemCat?'selected':''}>${c}</option>`).join('');
   }
   forceCloseSheet('sheet-item-detail');
   openSheet('sheet-edit-item');
@@ -2166,12 +2509,19 @@ async function saveEditItem() {
   const sku   = document.getElementById('edit-item-sku').value.trim();
   const notes = document.getElementById('edit-item-notes').value.trim();
   try {
-    const { db, doc, updateDoc, serverTimestamp } = FB;
+    const { db, doc, updateDoc, serverTimestamp, ref, uploadBytes, getDownloadURL } = FB;
     const updates = { name, cat, sub, price, cost, qty, sku, notes, updatedAt: serverTimestamp() };
+    // Fix 10: Upload new photo if selected
+    if (_editPhotoFile) {
+      const storageRef = ref(FB.storage, `inventory/${id}/photo.jpg`);
+      await uploadBytes(storageRef, _editPhotoFile);
+      updates.photoURL = await getDownloadURL(storageRef);
+      _editPhotoFile = null;
+    }
     await updateDoc(doc(db, 'inventory', id), updates);
-    // Update local cache
     const idx = invItems.findIndex(i => i.id === id);
     if (idx !== -1) invItems[idx] = { ...invItems[idx], ...updates };
+    _editItemDirty = false;
     forceCloseSheet('sheet-edit-item');
     renderInventory();
     renderDashboard();
@@ -2180,8 +2530,9 @@ async function saveEditItem() {
 }
 
 async function deleteItemFromEdit() {
-  const id = document.getElementById('edit-item-id').value;
-  if (!confirm('Delete this item permanently?')) return;
+  const id   = document.getElementById('edit-item-id').value;
+  const name = document.getElementById('edit-item-name').value || 'this item';
+  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
   const item = invItems.find(i => i.id === id);
   try {
     if (item?.photoURL) {
@@ -2237,6 +2588,64 @@ function removeCategory(idx) {
 // ── FIX 6: Update saveExpense to include source ──────────────────
 
 // ── SALES LOG ────────────────────────────────────────────────────
+
+// ── SALE DETAIL SHEET ────────────────────────────────────────────
+// _allSalesCache holds the full enriched sale list built by openSalesLog
+let _allSalesCache = [];
+
+async function openSaleDetail(saleId) {
+  const s = _allSalesCache.find(x => x.id === saleId);
+  if (!s) return;
+
+  // Try to find the matching inventory item for its photo
+  const item = invItems.find(i =>
+    i.name?.toLowerCase() === (s.name||s.item||'').toLowerCase() ||
+    i.sku === s.sku
+  );
+
+  const amt     = (s.unitPrice||s.amount||0) * (s.qty||1);
+  const payIcon = {UPI:'📱 UPI', Cash:'💵 Cash', Card:'💳 Card'}[s.paymentMethod||s.mode] || (s.paymentMethod||s.mode||'—');
+  const dt      = new Date(s.timestamp||s.time||Date.now());
+
+  // Title
+  document.getElementById('sd-title').textContent = s.name||s.item||'Sale';
+
+  // Image — show inventory photo if found, else emoji
+  const imgEl   = document.getElementById('sd-img');
+  const emojiEl = document.getElementById('sd-emoji');
+  if (item?.photoURL) {
+    imgEl.innerHTML = `<img src="${item.photoURL}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    const cat = s.category || s.cat || '';
+    const emoji = {Rings:'💍',Necklaces:'📿',Earrings:'✨',Bangles:'💛',Bracelets:'🔗',Anklets:'🌙',Pendants:'💎'}[cat] || '🛒';
+    imgEl.innerHTML = `<span class="sale-detail-emoji">${emoji}</span>`;
+  }
+
+  // Detail rows
+  const rows = [
+    ['Total',          `<span style="font-size:18px;color:var(--green)">₹${amt.toLocaleString('en-IN')}</span>`],
+    ['Unit price',     `₹${(s.unitPrice||s.amount||0).toLocaleString('en-IN')}`],
+    s.qty > 1 ? ['Quantity', s.qty] : null,
+    ['Category',       s.category||s.cat||'—'],
+    ['Payment',        payIcon],
+    s.customerName ? ['Customer',    s.customerName] : null,
+    s.customerPhone ? ['Phone',      s.customerPhone] : null,
+    ['Event',          s.eventName||'—'],
+    ['Date',           dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})],
+    ['Time',           dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})],
+    item ? ['In stock now', `${item.qty||0} left`] : null,
+  ].filter(Boolean);
+
+  document.getElementById('sd-rows').innerHTML = rows.map(([lbl, val]) =>
+    `<div class="sale-detail-row">
+      <span class="sale-detail-lbl">${lbl}</span>
+      <span class="sale-detail-val">${val}</span>
+    </div>`
+  ).join('');
+
+  openSheet('sheet-sale-detail');
+}
+
 async function openSalesLog() {
   const events = await DB.getEvents();
   const allSales = [];
@@ -2245,8 +2654,9 @@ async function openSalesLog() {
       allSales.push({...s, eventName: ev.name, eventDate: ev.date});
     });
   });
-  // Sort newest first
   allSales.sort((a,b) => new Date(b.timestamp||b.time||0) - new Date(a.timestamp||a.time||0));
+  _allSalesCache = allSales; // cache for detail view
+
   const total = allSales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
   document.getElementById('sales-log-subtitle').textContent =
     `${allSales.length} sales · ₹${total.toLocaleString('en-IN')} total`;
@@ -2255,16 +2665,25 @@ async function openSalesLog() {
     listEl.innerHTML = '<div style="text-align:center;padding:32px 0;color:var(--text-muted);font-size:13px">No sales logged yet</div>';
   } else {
     listEl.innerHTML = allSales.map(s => {
-      const amt = (s.unitPrice||s.amount||0) * (s.qty||1);
-      const dt  = new Date(s.timestamp||s.time||Date.now());
+      const amt     = (s.unitPrice||s.amount||0) * (s.qty||1);
+      const dt      = new Date(s.timestamp||s.time||Date.now());
       const payIcon = {UPI:'📱',Cash:'💵',Card:'💳'}[s.paymentMethod||s.mode] || '💰';
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)">
-        <div style="min-width:0">
+      // Try to find inventory photo thumbnail
+      const item    = invItems.find(i => i.name?.toLowerCase() === (s.name||'').toLowerCase());
+      const thumbHTML = item?.photoURL
+        ? `<img src="${item.photoURL}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0">`
+        : `<div style="width:36px;height:36px;border-radius:8px;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${{Rings:'💍',Necklaces:'📿',Earrings:'✨',Bangles:'💛',Bracelets:'🔗',Anklets:'🌙',Pendants:'💎'}[s.category||s.cat]||'🛒'}</div>`;
+      return `<div class="sale-log-row" onclick="openSaleDetail('${s.id}')">
+        ${thumbHTML}
+        <div style="flex:1;min-width:0;margin:0 10px">
           <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name||s.item||'Item'}</div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${s.category||s.cat||''} · ${payIcon} ${s.paymentMethod||s.mode||''}${s.customerName?' · 👤 '+s.customerName:''}</div>
           <div style="font-size:11px;color:var(--text-muted)">${s.eventName||''} · ${dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>
         </div>
-        <div style="font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;margin-left:12px">₹${amt.toLocaleString('en-IN')}</div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          <div style="font-size:14px;font-weight:700;color:var(--green)">₹${amt.toLocaleString('en-IN')}</div>
+          <span style="color:var(--text-muted);font-size:16px">›</span>
+        </div>
       </div>`;
     }).join('');
   }
@@ -2422,9 +2841,11 @@ function openSettingsSheet() {
   const geminiEl  = document.getElementById('set-gemini-key');
   const claudeEl  = document.getElementById('set-claude-key');
   const fbEl      = document.getElementById('set-fb-project');
-  if (ownerEl)  ownerEl.value  = appSettings.name    || '';
-  if (bizEl)    bizEl.value    = appSettings.bizName  || '';
-  if (currEl)   currEl.value   = appSettings.currency || '₹';
+  if (ownerEl)  ownerEl.value  = appSettings.name        || '';
+  if (bizEl)    bizEl.value    = appSettings.bizName      || '';
+  if (currEl)   currEl.value   = appSettings.currency     || '₹';
+  const bizCatEl = document.getElementById('set-biz-category');
+  if (bizCatEl) bizCatEl.value = appSettings.bizCategory  || 'Jewellery';
   if (geminiEl) geminiEl.value = GEMINI_API_KEY       || '';
   if (claudeEl) claudeEl.value = CLAUDE_API_KEY       || '';
   if (fbEl)     fbEl.value     = 'solobiz-tarami';
@@ -2432,9 +2853,10 @@ function openSettingsSheet() {
 }
 function saveSettings() {
   // Business settings
-  appSettings.name    = document.getElementById('set-owner-name')?.value.trim() || appSettings.name;
-  appSettings.bizName = document.getElementById('set-biz-name')?.value.trim()   || appSettings.bizName;
-  appSettings.currency= document.getElementById('set-currency')?.value           || appSettings.currency;
+  appSettings.name        = document.getElementById('set-owner-name')?.value.trim()   || appSettings.name;
+  appSettings.bizName     = document.getElementById('set-biz-name')?.value.trim()     || appSettings.bizName;
+  appSettings.bizCategory = document.getElementById('set-biz-category')?.value        || appSettings.bizCategory;
+  appSettings.currency    = document.getElementById('set-currency')?.value             || appSettings.currency;
   localStorage.setItem('sb_settings', JSON.stringify(appSettings));
 
   // API keys — save to localStorage
@@ -2574,16 +2996,20 @@ Object.assign(window, {
   renderInventory, setInvFilter, openItemDetail, adjustQty, deleteItem,
   saveInventoryItem, handlePhotoSelect, addToExisting, dismissDuplicate, updateItemSubcats,
   renderEvents, renderLive, renderHistory, toggleHistCard,
-  createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto,
-  openEditLiveEvent, saveLiveEventEdit, confirmDeleteLiveEvent,
+  createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto, openManualLog,
+  openEditLiveEvent, saveLiveEventEdit, confirmDeleteLiveEvent, endEventFromEdit,
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
   openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog, setHeroPeriod,
+  cycleSort, tryCloseEditItem, markEditDirty, handleEditPhoto, updateSearchPlaceholder,
+  startLongPress, cancelLongPress, toggleBulkSelect, exitBulkMode, bulkDelete, bulkMarkOutOfStock,
+  validateItemName,
   openEditExpense, saveEditExpense, deleteExpenseFromEdit,
   openEditItemSheet, saveEditItem, deleteItemFromEdit,
   addCategory, removeCategory,
   handleAuth, switchAuthTab, signOutUser, signInWithGoogle,
+  showSaleSuccess, closeSaleSuccess, logAnotherSale, openSaleDetail,
   renderDashboard, renderAll
 });
 
