@@ -1288,18 +1288,26 @@ const DB = {
   async getEvents() {
     try {
       const snap = await getDocs(collection(_db, 'sb_events'));
-      return snap.docs.map(d => ({id:d.id,...d.data()}))
+      return snap.docs.map(d => ({...d.data(), id: d.id, _docId: d.id}))
         .sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
     } catch(e) { console.error('getEvents:', e); return []; }
   },
   async saveEvents(arr) {
     const batch = writeBatch(_db);
-    arr.forEach(ev => batch.set(doc(_db,'sb_events',ev.id), {...ev, updatedAt:serverTimestamp()}));
+    arr.forEach(ev => {
+      const docId = ev._docId || ev.id;
+      const {_docId, ...data} = ev;
+      batch.set(doc(_db,'sb_events', docId), {...data, updatedAt:serverTimestamp()});
+    });
     await batch.commit();
   },
   async deleteEvent(id) {
     if (!id) throw new Error('No event ID provided');
     await deleteDoc(doc(_db, 'sb_events', id));
+  },
+  async deleteEventByDocId(docId) {
+    if (!docId) throw new Error('No doc ID provided');
+    await deleteDoc(doc(_db, 'sb_events', docId));
   },
 
   async getExpenses() {
@@ -1978,7 +1986,8 @@ function toggleHistCard(id) { expandedHistId = expandedHistId===id ? null : id; 
 async function deleteHistEvent(id) {
   if (!confirm('Delete this event and all its sales?')) return;
   try {
-    await DB.deleteEvent(id);
+    // id here is already the Firestore doc ID from renderHistory
+    await deleteDoc(doc(_db, 'sb_events', id));
     await renderHistory();
     await renderLive();
     await renderDashboard();
