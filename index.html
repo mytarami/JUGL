@@ -563,7 +563,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="live-event-card">
         <div class="lec-top">
           <div class="lec-pulse-row"><span class="lec-dot"></span><span class="lec-live-lbl">LIVE</span></div>
-          <button class="lec-end-btn" onclick="openSheet('sheet-edit-live-event')" style="margin-right:6px">Edit</button><button class="lec-end-btn" onclick="confirmDeleteLiveEvent()" style="color:var(--rose);border-color:rgba(224,118,118,0.3)">Delete</button>
+          <button class="lec-end-btn" onclick="openEditLiveEvent()" style="margin-right:6px">Edit</button><button class="lec-end-btn" onclick="confirmDeleteLiveEvent()" style="color:var(--rose);border-color:rgba(224,118,118,0.3)">Delete</button>
         </div>
         <div class="lec-name" id="lec-name"></div>
         <div class="lec-meta" id="lec-meta"></div>
@@ -1976,7 +1976,7 @@ function toggleHistCard(id) { expandedHistId = expandedHistId===id ? null : id; 
 async function deleteHistEvent(id) {
   if (!confirm('Delete this event and all its sales?')) return;
   try {
-    await DB.deleteEvent(id);
+    await deleteDoc(doc(_db, 'sb_events', id));
     await renderHistory();
     await renderDashboard();
     showToast('Event deleted');
@@ -2254,10 +2254,13 @@ async function saveLiveEventEdit() {
 async function confirmDeleteLiveEvent() {
   if (!confirm('Delete this live event and all its sales?')) return;
   try {
-    const arr  = await DB.getEvents();
-    const live = arr.find(e => e.status==='active'||e.status==='live');
-    if (!live) { showToast('No active event found'); return; }
-    await DB.deleteEvent(live.id);
+    const snap = await getDocs(collection(_db, 'sb_events'));
+    const liveDoc = snap.docs.find(d => {
+      const s = d.data().status;
+      return s === 'active' || s === 'live';
+    });
+    if (!liveDoc) { showToast('No active event found'); return; }
+    await deleteDoc(doc(_db, 'sb_events', liveDoc.id));
     await renderEvents();
     await renderDashboard();
     showToast('Event deleted');
