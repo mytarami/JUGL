@@ -35,7 +35,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;justify-content:space-around;padding:0 4px;z-index:100}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;border-radius:14px;cursor:pointer;transition:background 0.15s;min-width:48px;border:none;background:transparent}
-.nav-btn.active{background:var(--text-primary)}
+.nav-btn.active{background:var(--text-primary);color:#fff}
 .nav-icon{font-size:18px;line-height:1}
 .nav-label{font-size:9px;font-weight:600;letter-spacing:0.03em;color:var(--text-muted)}
 .nav-btn.active .nav-label{color:#fff}
@@ -563,7 +563,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="live-event-card">
         <div class="lec-top">
           <div class="lec-pulse-row"><span class="lec-dot"></span><span class="lec-live-lbl">LIVE</span></div>
-          <button class="lec-end-btn" onclick="openEditLiveEvent()" style="touch-action:manipulation">Edit</button>
+          <button class="lec-end-btn" onclick="openEditLiveEvent()" style="touch-action:manipulation;margin-right:6px">Edit</button><button class="lec-end-btn" onclick="completeEvent()" style="touch-action:manipulation;color:#6DB070;border-color:rgba(109,176,112,0.4)">✓ Complete</button>
         </div>
         <div class="lec-name" id="lec-name"></div>
         <div class="lec-meta" id="lec-meta"></div>
