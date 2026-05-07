@@ -563,7 +563,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="live-event-card">
         <div class="lec-top">
           <div class="lec-pulse-row"><span class="lec-dot"></span><span class="lec-live-lbl">LIVE</span></div>
-          <button class="lec-end-btn" onclick="openEditLiveEvent()" style="margin-right:6px">Edit</button><button class="lec-end-btn" onclick="confirmDeleteLiveEvent()" style="color:var(--rose);border-color:rgba(224,118,118,0.3)">Delete</button>
+          <button class="lec-end-btn" onclick="openEditLiveEvent()" style="margin-right:6px">Edit</button><button class="lec-end-btn" onclick="completeEvent()" style="color:#6DB070;border-color:rgba(109,176,112,0.4)">✓ Complete</button>
         </div>
         <div class="lec-name" id="lec-name"></div>
         <div class="lec-meta" id="lec-meta"></div>
@@ -2254,6 +2254,46 @@ async function saveLiveEventEdit() {
   showToast('✓ Event updated');
 }
 
+
+// ── COMPLETE EVENT (move to history) ─────────────────────────────
+async function completeEvent() {
+  const events = await DB.getEvents();
+  const live = events.find(e => e.status === 'active' || e.status === 'live');
+  if (!live) { showToast('No active event found'); return; }
+
+  const sales  = live.sales || [];
+  const rev    = sales.reduce((s, x) => s + ((x.unitPrice || x.amount || 0) * (x.qty || 1)), 0);
+  const rent   = live.stallCost || live.stallRent || 0;
+  const net    = rev - rent;
+  const netStr = (net >= 0 ? '+' : '–') + '₹' + Math.abs(net).toLocaleString('en-IN');
+
+  const msg = [
+    'Move "' + live.name + '" to History?',
+    '',
+    sales.length + ' sales · ₹' + rev.toLocaleString('en-IN') + ' revenue · ' + netStr + ' net',
+    '',
+    'You can delete it from History if needed.'
+  ].join('\n');
+
+  if (!confirm(msg)) return;
+
+  try {
+    // Mark as done and save
+    const idx = events.findIndex(e => e.id === live.id);
+    events[idx].status  = 'done';
+    events[idx].revenue = rev;
+    await DB.saveEvents(events);
+    // Switch to history tab to show it
+    switchPopupTab('history');
+    await renderEvents();
+    await renderDashboard();
+    showToast('✓ ' + live.name + ' moved to History');
+  } catch(e) {
+    console.error('completeEvent error:', e);
+    showToast('Error: ' + (e?.message || 'Could not complete'));
+  }
+}
+
 async function confirmDeleteLiveEvent() {
   if (!confirm('Delete this live event and all its sales?')) return;
   try {
@@ -3019,7 +3059,7 @@ Object.assign(window, {
   saveInventoryItem, handlePhotoSelect, addToExisting, dismissDuplicate, updateItemSubcats,
   renderEvents, renderLive, renderHistory, toggleHistCard,
   createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto, openManualLog,
-  openEditLiveEvent, saveLiveEventEdit, confirmDeleteLiveEvent, endEventFromEdit,
+  openEditLiveEvent, saveLiveEventEdit, confirmDeleteLiveEvent, endEventFromEdit, completeEvent,
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
