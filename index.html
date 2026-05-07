@@ -1878,8 +1878,10 @@ async function saveInventoryItem() {
 
 // ── POP-UP ────────────────────────────────────────────────────────
 async function renderEvents() {
-  renderLive();
-  if (currentPopupTab === 'history') renderHistory();
+  await renderLive();
+  if (currentPopupTab === 'history') {
+    await renderHistory();
+  }
 }
 
 async function renderLive() {
@@ -1976,13 +1978,14 @@ function toggleHistCard(id) { expandedHistId = expandedHistId===id ? null : id; 
 async function deleteHistEvent(id) {
   if (!confirm('Delete this event and all its sales?')) return;
   try {
-    await deleteDoc(doc(_db, 'sb_events', id));
+    await DB.deleteEvent(id);
     await renderHistory();
+    await renderLive();
     await renderDashboard();
-    showToast('Event deleted');
+    showToast('✓ Event deleted');
   } catch(e) {
     console.error('deleteHistEvent error:', e);
-    showToast('Error: ' + (e.message || 'Could not delete'));
+    showToast('Delete failed: ' + (e?.message || 'Unknown error'));
   }
 }
 
@@ -2254,19 +2257,18 @@ async function saveLiveEventEdit() {
 async function confirmDeleteLiveEvent() {
   if (!confirm('Delete this live event and all its sales?')) return;
   try {
-    const snap = await getDocs(collection(_db, 'sb_events'));
-    const liveDoc = snap.docs.find(d => {
-      const s = d.data().status;
-      return s === 'active' || s === 'live';
-    });
-    if (!liveDoc) { showToast('No active event found'); return; }
-    await deleteDoc(doc(_db, 'sb_events', liveDoc.id));
-    await renderEvents();
+    const events = await DB.getEvents();
+    const liveEvent = events.find(e => e.status === 'active' || e.status === 'live');
+    if (!liveEvent) { showToast('No active event found'); return; }
+    await DB.deleteEvent(liveEvent.id);
+    await renderLive();
+    await renderHistory();
     await renderDashboard();
-    showToast('Event deleted');
+    forceCloseSheet('sheet-edit-live-event');
+    showToast('✓ Event deleted');
   } catch(e) {
     console.error('confirmDeleteLiveEvent error:', e);
-    showToast('Error: ' + (e.message || 'Could not delete'));
+    showToast('Delete failed: ' + (e?.message || 'Unknown error'));
   }
 }
 
