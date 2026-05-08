@@ -17,7 +17,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);-webkit-font-smoothing:antialiased;overscroll-behavior:none;height:100%}
-.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:calc(var(--nav-h)+32px)}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:calc(var(--nav-h) + 40px)}
 .status-bar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 0;font-size:12px;font-weight:600}
 .page-header{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between}
 .page-header-left{display:flex;align-items:center;gap:13px}
@@ -350,6 +350,64 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .sale-log-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s;-webkit-tap-highlight-color:transparent}
 .sale-log-row:last-child{border-bottom:none}
 .sale-log-row:active{background:var(--gold-soft);margin:0 -24px;padding:11px 24px}
+
+/* ── UPCOMING EVENT CARDS ── */
+.upcoming-card{flex-shrink:0;width:160px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;cursor:pointer;transition:transform 0.15s;-webkit-tap-highlight-color:transparent}
+.upcoming-card:active{transform:scale(0.97)}
+.upcoming-badge{display:inline-flex;align-items:center;background:var(--gold-soft);color:var(--gold);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-bottom:8px;border:1px solid var(--gold-border)}
+.upcoming-name{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upcoming-date{font-size:11px;color:var(--text-muted);margin-bottom:3px}
+.upcoming-loc{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ── UPCOMING LIST CARDS (popup tab) ── */
+.upcoming-list-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;cursor:pointer}
+.upcoming-list-card:active{opacity:0.85}
+
+/* ── LOG EXPENSE FIXED BUTTON ── */
+.log-expense-fixed{position:fixed;bottom:calc(var(--nav-h) + 12px);left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:382px;background:var(--gold);color:#fff;border:none;border-radius:var(--radius-sm);padding:15px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(201,169,110,0.4);z-index:100;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.log-expense-fixed:active{transform:translateX(-50%) scale(0.98);box-shadow:0 2px 10px rgba(201,169,110,0.3)}
+
+/* ── HELP BUTTON ── */
+.help-fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:24px;width:44px;height:44px;border-radius:50%;background:var(--gold);border:none;color:#fff;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(201,169,110,0.4);z-index:120;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;touch-action:manipulation}
+.help-fab:active{transform:scale(0.93)}
+/* ── HELP SHEET ── */
+.help-section-title{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.6px;text-transform:uppercase;margin:20px 0 10px}
+.help-tab-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.help-tab-chip{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px 12px;font-size:13px}
+.help-tab-chip-icon{font-size:16px}
+.help-tab-chip-label{font-weight:600;color:var(--text-primary);font-size:12px}
+.help-tab-chip-desc{font-size:11px;color:var(--text-muted);margin-top:1px}
+/* ── ACCORDION ── */
+.accordion-item{border:1px solid var(--border);border-radius:var(--radius-xs);margin-bottom:8px;overflow:hidden}
+.accordion-trigger{width:100%;background:none;border:none;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-primary);text-align:left;touch-action:manipulation}
+.accordion-trigger:active{background:var(--bg)}
+.accordion-arrow{font-size:12px;color:var(--text-muted);transition:transform 0.2s;flex-shrink:0}
+.accordion-arrow.open{transform:rotate(180deg)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height 0.25s ease;background:var(--bg)}
+.accordion-body.open{max-height:400px}
+.accordion-content{padding:12px 16px;font-size:13px;color:var(--text-secondary);line-height:1.6}
+.accordion-content ol,.accordion-content ul{padding-left:16px;margin:4px 0}
+.accordion-content li{margin-bottom:4px}
+/* ── FAQ ── */
+.faq-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.faq-a{font-size:12px;color:var(--text-secondary);line-height:1.5}
+
+/* ── BEST SELLER BADGE ── */
+.bestseller-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold-soft);border:1px solid var(--gold-border);color:#8B6830;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
+.bestseller-line{font-size:11px;color:var(--gold);font-weight:500;margin-top:4px}
+
+/* ── CUSTOMER ENHANCEMENTS ── */
+.cust-search{width:100%;padding:11px 16px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--card);color:var(--text-primary);box-sizing:border-box;margin-bottom:12px}
+.cust-search:focus{outline:none;border-color:var(--gold)}
+.cust-stat-row{display:flex;gap:12px;margin-bottom:16px}
+.cust-stat{flex:1;background:var(--bg);border-radius:var(--radius-xs);padding:12px;text-align:center}
+.cust-stat-val{font-size:20px;font-weight:600;color:var(--text-primary)}
+.cust-stat-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px}
+/* ── CUSTOMER DETAIL SHEET ── */
+.cust-detail-avatar{width:64px;height:64px;border-radius:50%;background:var(--gold-soft);border:2px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:24px;font-style:italic;color:var(--gold);font-weight:500;margin:0 auto 12px}
+.cust-purchase-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.cust-purchase-row:last-child{border-bottom:none}
 </style>
 </head>
 <body>
@@ -414,25 +472,35 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
         <span id="dash-biz-name" style="display:block;font-size:16px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">My Business</span>
         <strong id="dash-owner-name" style="display:block;font-size:13px;font-weight:400;color:var(--text-muted)"></strong>
       </div>
-      <svg viewBox="0 0 24 24" style="width:16px;height:16px;flex-shrink:0;stroke:var(--text-muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="9 18 15 12 9 6"/></svg>
+      <svg viewBox="0 0 256 256" width="16" height="16" style="flex-shrink:0;fill:var(--text-muted)"><path d="M40,88H73a32,32,0,0,0,62,0H216a8,8,0,0,0,0-16H135a32,32,0,0,0-62,0H40a8,8,0,0,0,0,16Zm64-24A16,16,0,1,1,88,80,16,16,0,0,1,104,64ZM216,168H183a32,32,0,0,0-62,0H40a8,8,0,0,0,0,16H121a32,32,0,0,0,62,0h33a8,8,0,0,0,0-16Zm-64,24a16,16,0,1,1,16-16A16,16,0,0,1,152,192Z"/></svg>
     </button>
   </div>
-  <div class="dash-hero">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-      <div class="dash-hero-label" id="dash-hero-label">Net profit · All time</div>
-      <div style="display:flex;gap:4px">
-        <button class="hero-filter active" data-period="all" onclick="setHeroPeriod('all')">All</button>
-        <button class="hero-filter" data-period="month" onclick="setHeroPeriod('month')">Month</button>
-        <button class="hero-filter" data-period="week" onclick="setHeroPeriod('week')">Week</button>
-        <button class="hero-filter" data-period="today" onclick="setHeroPeriod('today')">Today</button>
+  <div style="margin:16px 24px 0;background:var(--text-primary);border-radius:var(--radius);padding:22px 24px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:rgba(201,169,110,0.1)"></div>
+    <div id="dash-greeting" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin-bottom:14px;position:relative;z-index:1">Good morning!</div>
+    <div id="dash-insights" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:8px"></div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1">
+      <div style="display:flex;gap:16px">
+        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Revenue</div><div style="font-size:13px;font-weight:600;color:#fff">₹<span id="dash-rev">0</span></div></div>
+        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Expenses</div><div style="font-size:13px;font-weight:600;color:#fff">₹<span id="dash-exp">0</span></div></div>
+        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Net</div><div style="font-size:13px;font-weight:600;color:#fff" id="dash-net-mini">₹0</div></div>
       </div>
+      <div style="font-size:10px;font-weight:600;color:rgba(201,169,110,0.8);cursor:pointer" onclick="switchTab('expenses')">Details →</div>
     </div>
-    <div class="dash-hero-amount"><span class="sym" id="dash-net-sign">₹</span><span id="dash-net-val">0</span></div>
-    <div class="dash-pills">
-      <div class="dash-pill income"><div class="dash-pill-dot"></div><div><div class="dash-pill-label">Revenue</div><div class="dash-pill-val" style="font-size:12px">₹<span id="dash-rev">0</span></div></div></div>
-      <div class="dash-pill expense"><div class="dash-pill-dot"></div><div><div class="dash-pill-label">Expenses</div><div class="dash-pill-val" style="font-size:12px">₹<span id="dash-exp">0</span></div></div></div>
-    </div>
+    <!-- Hidden inputs kept for JS compatibility -->
+    <span id="dash-net-sign" style="display:none">₹</span>
+    <span id="dash-net-val" style="display:none">0</span>
+    <span id="dash-hero-label" style="display:none"></span>
   </div>
+  <!-- Upcoming events horizontal scroll -->
+  <div id="home-upcoming-section" style="display:none;margin:16px 0 0">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0 24px;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:600;color:var(--text-primary)">Upcoming events</div>
+      <div style="font-size:12px;color:var(--gold);cursor:pointer" onclick="switchTab('popup');switchPopupTab('upcoming')">See all</div>
+    </div>
+    <div id="home-upcoming-scroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 24px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch"></div>
+  </div>
+
   <!-- Stats tiles: Inventory, Pop-Ups, Customers, Deadstock -->
   <div class="stats-grid" style="grid-template-columns:1fr 1fr">
     <div class="stat-card" style="cursor:pointer" onclick="switchTab('inventory')">
@@ -459,7 +527,10 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="section-header"><span class="section-title">Last pop-up</span><span class="section-action" onclick="switchTab('popup');switchPopupTab('history')">See all</span></div>
   <div id="dash-last-event" style="margin:0 24px"></div>
 
-  <div id="dash-onboarding" style="display:none;margin:16px 24px 0">
+  <!-- Help FAB (home only) -->
+<button class="help-fab" id="help-fab" onclick="openSheet('sheet-help')" style="display:none">?</button>
+
+<div id="dash-onboarding" style="display:none;margin:16px 24px 0">
     <div class="onboarding-card">
       <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px">Get started with SoloBiz</div>
       <div class="onboarding-step">
@@ -543,6 +614,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <!-- Inner tab bar: Live / History -->
   <div class="popup-tab-bar">
     <button class="popup-tab active" id="ptab-live" onclick="switchPopupTab('live')">Live</button>
+    <button class="popup-tab" id="ptab-upcoming" onclick="switchPopupTab('upcoming')">Upcoming</button>
     <button class="popup-tab" id="ptab-history" onclick="switchPopupTab('history')">History</button>
   </div>
 
@@ -551,7 +623,51 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <!-- No live event state -->
     <div id="popup-no-live" style="display:none">
       <div class="popup-empty-state">
-        <div class="popup-empty-icon">🎪</div>
+        <svg viewBox="0 0 200 160" width="160" height="128" style="margin-bottom:12px">
+          <!-- Table / stall -->
+          <rect x="20" y="100" width="160" height="12" rx="6" fill="#C9A96E" opacity="0.3"/>
+          <rect x="30" y="112" width="8" height="30" rx="4" fill="#C9A96E" opacity="0.25"/>
+          <rect x="162" y="112" width="8" height="30" rx="4" fill="#C9A96E" opacity="0.25"/>
+          <rect x="24" y="88" width="152" height="16" rx="6" fill="#C9A96E" opacity="0.4"/>
+          <!-- Sign on table -->
+          <rect x="55" y="104" width="90" height="28" rx="5" fill="#F6F3EE" stroke="#C9A96E" stroke-width="1.5"/>
+          <line x1="78" y1="100" x2="78" y2="104" stroke="#C9A96E" stroke-width="1.5"/>
+          <line x1="122" y1="100" x2="122" y2="104" stroke="#C9A96E" stroke-width="1.5"/>
+          <!-- Cat body -->
+          <ellipse cx="100" cy="72" rx="28" ry="26" fill="#D4B896"/>
+          <!-- Cat face highlight -->
+          <ellipse cx="100" cy="76" rx="18" ry="16" fill="#E8D5C0" opacity="0.6"/>
+          <!-- Cat ears -->
+          <polygon points="76,54 70,38 86,50" fill="#D4B896"/>
+          <polygon points="78,52 73,42 85,50" fill="#E8C4B0" opacity="0.6"/>
+          <polygon points="124,54 130,38 114,50" fill="#D4B896"/>
+          <polygon points="122,52 127,42 115,50" fill="#E8C4B0" opacity="0.6"/>
+          <!-- Small flower/accessory -->
+          <circle cx="126" cy="44" r="5" fill="#C9A96E" opacity="0.7"/>
+          <circle cx="126" cy="44" r="2.5" fill="#fff" opacity="0.8"/>
+          <!-- Eyes -->
+          <circle cx="92" cy="70" r="4" fill="#7A5C3A"/>
+          <circle cx="108" cy="70" r="4" fill="#7A5C3A"/>
+          <circle cx="93.5" cy="68.5" r="1.5" fill="#fff"/>
+          <circle cx="109.5" cy="68.5" r="1.5" fill="#fff"/>
+          <!-- Smile -->
+          <path d="M95,78 Q100,83 105,78" stroke="#7A5C3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- Nose -->
+          <ellipse cx="100" cy="76" rx="2" ry="1.5" fill="#C9A96E"/>
+          <!-- Whiskers -->
+          <line x1="76" y1="74" x2="90" y2="76" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <line x1="76" y1="78" x2="90" y2="78" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <line x1="110" y1="76" x2="124" y2="74" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <line x1="110" y1="78" x2="124" y2="78" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <!-- Paws on table -->
+          <ellipse cx="82" cy="93" rx="10" ry="8" fill="#D4B896"/>
+          <ellipse cx="118" cy="93" rx="10" ry="8" fill="#D4B896"/>
+          <!-- Paw pads -->
+          <circle cx="80" cy="96" r="2.5" fill="#fff" opacity="0.7"/>
+          <circle cx="84" cy="98" r="1.5" fill="#fff" opacity="0.7"/>
+          <circle cx="116" cy="96" r="2.5" fill="#fff" opacity="0.7"/>
+          <circle cx="120" cy="98" r="1.5" fill="#fff" opacity="0.7"/>
+        </svg>
         <div class="popup-empty-title">No active event</div>
         <div class="popup-empty-desc">Start an event to begin logging sales in real time</div>
         <button class="popup-start-btn" onclick="openSheet('sheet-create-event')">+ Start Event</button>
@@ -563,10 +679,11 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="live-event-card">
         <div class="lec-top">
           <div class="lec-pulse-row"><span class="lec-dot"></span><span class="lec-live-lbl">LIVE</span></div>
-          <button class="lec-end-btn" onclick="openEditLiveEvent()" style="touch-action:manipulation;margin-right:6px">Edit</button><button class="lec-end-btn" onclick="completeEvent()" style="touch-action:manipulation;color:#6DB070;border-color:rgba(109,176,112,0.4)">✓ Complete</button>
+          <button class="lec-end-btn" onclick="openEditLiveEvent()" style="touch-action:manipulation;margin-right:4px">Edit</button><button class="lec-end-btn" onclick="completeEvent()" style="touch-action:manipulation;color:#6DB070;border-color:rgba(109,176,112,0.4)">✓ Complete</button>
         </div>
         <div class="lec-name" id="lec-name"></div>
         <div class="lec-meta" id="lec-meta"></div>
+        <div class="bestseller-line" id="lec-bestseller" style="display:none"></div>
         <div class="lec-revenue-block">
           <div class="lec-rev-label">Total revenue</div>
           <div class="lec-rev-amount" id="lec-revenue">₹0</div>
@@ -586,13 +703,57 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     </div>
   </div>
 
+  <!-- UPCOMING TAB -->
+  <div id="popup-upcoming-view" style="display:none;padding-bottom:80px">
+    <div class="page-title" style="padding-top:16px"><h1>Upcoming</h1><div class="subtitle" id="upcoming-subtitle">Future events</div></div>
+    <div id="upcoming-list" style="margin:8px 24px 0"></div>
+    <div id="upcoming-empty" class="empty-state" style="display:none">
+      <div class="empty-icon">📅</div>
+      <div class="empty-title">No upcoming events</div>
+      <div class="empty-desc">Schedule a future event to see it here</div>
+      <button class="popup-start-btn" style="margin-top:16px" onclick="openSheet('sheet-create-event')">+ Schedule Event</button>
+    </div>
+  </div>
+
   <!-- HISTORY TAB -->
   <div id="popup-history-view" style="display:none">
     <div class="page-title" style="padding-top:16px"><h1>History</h1><div class="subtitle" id="history-subtitle"></div></div>
     <div id="history-list" style="margin-top:8px"></div>
     <div id="history-empty" class="empty-state" style="display:none">
-      <div class="empty-icon">📋</div>
-      <div class="empty-title">No past events</div>
+      <svg viewBox="0 0 200 160" width="140" height="112" style="margin-bottom:8px;opacity:0.85">
+          <rect x="20" y="100" width="160" height="12" rx="6" fill="#C9A96E" opacity="0.3"/>
+          <rect x="30" y="112" width="8" height="30" rx="4" fill="#C9A96E" opacity="0.25"/>
+          <rect x="162" y="112" width="8" height="30" rx="4" fill="#C9A96E" opacity="0.25"/>
+          <rect x="24" y="88" width="152" height="16" rx="6" fill="#C9A96E" opacity="0.4"/>
+          <rect x="55" y="104" width="90" height="28" rx="5" fill="#F6F3EE" stroke="#C9A96E" stroke-width="1.5"/>
+          <line x1="78" y1="100" x2="78" y2="104" stroke="#C9A96E" stroke-width="1.5"/>
+          <line x1="122" y1="100" x2="122" y2="104" stroke="#C9A96E" stroke-width="1.5"/>
+          <ellipse cx="100" cy="72" rx="28" ry="26" fill="#D4B896"/>
+          <ellipse cx="100" cy="76" rx="18" ry="16" fill="#E8D5C0" opacity="0.6"/>
+          <polygon points="76,54 70,38 86,50" fill="#D4B896"/>
+          <polygon points="78,52 73,42 85,50" fill="#E8C4B0" opacity="0.6"/>
+          <polygon points="124,54 130,38 114,50" fill="#D4B896"/>
+          <polygon points="122,52 127,42 115,50" fill="#E8C4B0" opacity="0.6"/>
+          <circle cx="126" cy="44" r="5" fill="#C9A96E" opacity="0.7"/>
+          <circle cx="126" cy="44" r="2.5" fill="#fff" opacity="0.8"/>
+          <circle cx="92" cy="70" r="4" fill="#7A5C3A"/>
+          <circle cx="108" cy="70" r="4" fill="#7A5C3A"/>
+          <circle cx="93.5" cy="68.5" r="1.5" fill="#fff"/>
+          <circle cx="109.5" cy="68.5" r="1.5" fill="#fff"/>
+          <path d="M95,78 Q100,83 105,78" stroke="#7A5C3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="100" cy="76" rx="2" ry="1.5" fill="#C9A96E"/>
+          <line x1="76" y1="74" x2="90" y2="76" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <line x1="76" y1="78" x2="90" y2="78" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <line x1="110" y1="76" x2="124" y2="74" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <line x1="110" y1="78" x2="124" y2="78" stroke="#7A5C3A" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="82" cy="93" rx="10" ry="8" fill="#D4B896"/>
+          <ellipse cx="118" cy="93" rx="10" ry="8" fill="#D4B896"/>
+          <circle cx="80" cy="96" r="2.5" fill="#fff" opacity="0.7"/>
+          <circle cx="84" cy="98" r="1.5" fill="#fff" opacity="0.7"/>
+          <circle cx="116" cy="96" r="2.5" fill="#fff" opacity="0.7"/>
+          <circle cx="120" cy="98" r="1.5" fill="#fff" opacity="0.7"/>
+      </svg>
+      <div class="empty-title">No pop-ups to show</div>
       <div class="empty-desc">Completed events will appear here</div>
     </div>
   </div>
@@ -600,7 +761,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="scroll-end"></div>
 
   <!-- FAB -->
-  <button class="popup-fab" onclick="openSheet('sheet-create-event')">+</button>
+  
 </div>
 
 <!-- CUSTOMERS -->
@@ -633,8 +794,14 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       </div></div>
   <div style="background:var(--card);border-radius:var(--radius-sm);margin:0 24px;border:1px solid var(--border);overflow:hidden"><div id="expense-list"></div></div>
   <div id="expense-empty" class="empty-state" style="display:none"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div><div class="empty-desc">Add travel, rent, setup costs and more</div><br><button class="btn-primary" style="width:auto;padding:12px 28px" onclick="openSheet('sheet-add-expense')">Log expense</button></div>
-  <div class="scroll-end"></div>
+  <div style="height:80px"></div>
 </div>
+
+<!-- Log Expense fixed button -->
+<button class="log-expense-fixed" id="log-expense-btn" style="display:none" onclick="openSheet('sheet-add-expense')">
+  <svg viewBox="0 0 256 256" width="18" height="18" style="fill:#fff;flex-shrink:0"><path d="M216,72H56a8,8,0,0,1,0-16H192a8,8,0,0,0,0-16H56A24,24,0,0,0,32,64V192a24,24,0,0,0,24,24H216a16,16,0,0,0,16-16V88A16,16,0,0,0,216,72Zm0,120H56a8,8,0,0,1,0-16H216Zm0-32H56a8,8,0,0,1,0-16H216Zm-36-52a12,12,0,1,1,12,12A12,12,0,0,1,180,108Z"/></svg>
+  Log Expense
+</button>
 
 <!-- NAV -->
 <nav class="bottom-nav">
@@ -1035,7 +1202,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div style="height:1px;background:var(--border);margin:20px 0"></div>
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">AI & API keys</div>
 
-      <div class="form-field">
+      <div class="form-field" style="display:none">
         <label class="form-label">Gemini API key</label>
         <input class="form-input" id="set-gemini-key" placeholder="For inventory duplicate detection" type="password" autocomplete="off">
         <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Get from <a href="https://aistudio.google.com" target="_blank" style="color:var(--gold)">aistudio.google.com</a> · used for photo duplicate detection</div>
@@ -1058,7 +1225,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div style="height:1px;background:var(--border);margin:20px 0"></div>
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Data</div>
 
-      <div class="form-field">
+      <div class="form-field" style="display:none">
         <label class="form-label">Firebase Project ID</label>
         <input class="form-input" id="set-fb-project" type="text" disabled style="opacity:0.6">
         <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Read-only · configured in source</div>
@@ -1187,7 +1354,8 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="sheet" style="max-height:92vh"><div class="sheet-handle"></div>
   <div class="sheet-title">Sales log</div>
   <div style="padding:8px 24px 0;font-size:13px;color:var(--text-muted)" id="sales-log-subtitle"></div>
-  <div style="padding:16px 24px 0;overflow-y:auto;max-height:70vh" id="sales-log-list"></div>
+  <div id="sales-pay-split" style="display:flex;gap:8px;padding:10px 24px 0;flex-wrap:wrap"></div>
+  <div style="padding:12px 24px 0;overflow-y:auto;max-height:65vh" id="sales-log-list"></div>
   </div>
 </div>
 
@@ -1208,7 +1376,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 </div>
 
 <!-- SHEET: Sale Detail -->
-<div class="sheet-overlay" id="sheet-sale-detail" onclick="closeSheet(event,'sheet-sale-detail')">
+<div class="sheet-overlay" id="sheet-sale-detail" onclick="closeSheet(event,'sheet-sale-detail')" style="z-index:350">
   <div class="sheet"><div class="sheet-handle"></div>
   <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
     <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500" id="sd-title">Sale</div>
@@ -1219,6 +1387,148 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <span class="sale-detail-emoji" id="sd-emoji">💎</span>
     </div>
     <div id="sd-rows"></div>
+  </div>
+  </div>
+</div>
+
+<!-- SHEET: Help & FAQ -->
+<div class="sheet-overlay" id="sheet-help" onclick="closeSheet(event,'sheet-help')">
+  <div class="sheet" style="max-height:92vh"><div class="sheet-handle"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500">Help & Guide</div>
+    <button onclick="forceCloseSheet('sheet-help')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+  </div>
+  <div style="overflow-y:auto;max-height:78vh;padding:0 24px 32px">
+
+    <div class="help-section-title">Quick Guide</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="help-tab-chip"><div class="help-tab-chip-icon">🏠</div><div><div class="help-tab-chip-label">Home</div><div class="help-tab-chip-desc">Business overview, revenue stats, upcoming events & insights</div></div></div>
+      <div class="help-tab-chip"><div class="help-tab-chip-icon">🎪</div><div><div class="help-tab-chip-label">Pop-Up</div><div class="help-tab-chip-desc">Create events, log sales in real-time, view history & best sellers</div></div></div>
+      <div class="help-tab-chip"><div class="help-tab-chip-icon">💎</div><div><div class="help-tab-chip-label">Inventory</div><div class="help-tab-chip-desc">Add products, track stock levels, manage categories & photos</div></div></div>
+      <div class="help-tab-chip"><div class="help-tab-chip-icon">🧾</div><div><div class="help-tab-chip-label">Expenses</div><div class="help-tab-chip-desc">Log costs, import CSV bank statements, track by category</div></div></div>
+      <div class="help-tab-chip"><div class="help-tab-chip-icon">⚙️</div><div><div class="help-tab-chip-label">Settings</div><div class="help-tab-chip-desc">Business name, categories, API keys, sign out</div></div></div>
+    </div>
+
+    <div class="help-section-title">How To</div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        How to create a pop-up event <span class="accordion-arrow">▾</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-content">
+        <ol>
+          <li>Tap the <strong>Pop-Up</strong> tab in the bottom nav</li>
+          <li>Tap the <strong>+</strong> button (bottom right)</li>
+          <li>Enter event name, date, venue, organiser, stall rent</li>
+          <li>Set status to <strong>🟢 Start Live</strong> if starting now, or <strong>📅 Upcoming</strong> to schedule</li>
+          <li>Tap <strong>Create event</strong></li>
+        </ol>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        How to log a sale <span class="accordion-arrow">▾</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-content">
+        <ol>
+          <li>You need a <strong>live event</strong> running first</li>
+          <li>Tap the <strong>+</strong> in the centre of the nav bar</li>
+          <li>Choose <strong>Log Sale</strong></li>
+          <li>Fill in item name, price, quantity, payment method</li>
+          <li>Optionally add customer name & phone</li>
+          <li>Tap <strong>Confirm Sale</strong></li>
+        </ol>
+        <div style="margin-top:8px;padding:8px 10px;background:var(--gold-soft);border-radius:8px;font-size:11px;color:#8B6830">💡 The sale auto-links to your active event</div>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        How to add inventory <span class="accordion-arrow">▾</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-content">
+        <ol>
+          <li>Tap <strong>Inventory</strong> tab or use the centre <strong>+</strong> button</li>
+          <li>Tap the <strong>+</strong> circle (bottom right of inventory)</li>
+          <li>Upload a photo (optional), enter name, category, price, cost, quantity</li>
+          <li>Tap <strong>Save to inventory</strong></li>
+        </ol>
+        <div style="margin-top:8px;padding:8px 10px;background:var(--gold-soft);border-radius:8px;font-size:11px;color:#8B6830">💡 Add categories first in Settings → Inventory Categories</div>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        How to track expenses <span class="accordion-arrow">▾</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-content">
+        <ol>
+          <li>Tap the <strong>Expenses</strong> tab</li>
+          <li>Tap the gold <strong>Log Expense</strong> button at the bottom</li>
+          <li>Select category, enter amount, date, description</li>
+          <li>Tap <strong>Save expense</strong></li>
+        </ol>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" onclick="toggleAccordion(this)">
+        How to import expenses from CSV <span class="accordion-arrow">▾</span>
+      </button>
+      <div class="accordion-body"><div class="accordion-content">
+        <ol>
+          <li>Export your bank statement as CSV</li>
+          <li>In Expenses tab, tap the <strong>📥 Import</strong> button</li>
+          <li>Upload your CSV file</li>
+          <li>The app auto-detects date, amount, and description columns</li>
+          <li>Preview the data, then tap <strong>Import expenses</strong></li>
+        </ol>
+        <div style="margin-top:8px;padding:8px 10px;background:var(--gold-soft);border-radius:8px;font-size:11px;color:#8B6830">💡 CSV must have at least a date and amount column</div>
+      </div></div>
+    </div>
+
+    <div class="help-section-title">FAQs</div>
+    <div>
+      <div class="faq-item">
+        <div class="faq-q">Where is my data stored?</div>
+        <div class="faq-a">All data is stored securely in Google Firebase (Firestore) — a cloud database. Your data is private and only accessible when you're logged in to your account.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does it work offline?</div>
+        <div class="faq-a">Partially. The app needs an internet connection to save data to Firebase. If you go offline mid-session, changes will sync when you reconnect. For best results, use with internet access.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I export my data?</div>
+        <div class="faq-a">CSV import is supported for expenses. Full data export (inventory, sales, events) is on the roadmap for a future version. For now, your Firebase Console gives full data access.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can multiple people use the same account?</div>
+        <div class="faq-a">Yes — anyone with the login credentials can access the same data. Each person signs in with the same Google account or email/password. Role-based access is planned for future.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I mark an event as complete?</div>
+        <div class="faq-a">Tap <strong>Edit</strong> on the live event card, then tap <strong>"Mark as complete → move to History"</strong>. This saves the event summary and moves it to History.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is my payment/financial data secure?</div>
+        <div class="faq-a">Yes. SoloBiz uses Google Firebase with authentication — no one else can access your data. We don't process any payments; the app only tracks records you enter manually.</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- SHEET: Customer Detail -->
+<div class="sheet-overlay" id="sheet-customer-detail" onclick="closeSheet(event,'sheet-customer-detail')">
+  <div class="sheet" style="max-height:92vh"><div class="sheet-handle"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500">Customer</div>
+    <button onclick="forceCloseSheet('sheet-customer-detail')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+  </div>
+  <div style="overflow-y:auto;max-height:78vh;padding:16px 24px 32px">
+    <div id="cust-detail-body"></div>
   </div>
   </div>
 </div>
@@ -1411,6 +1721,12 @@ function switchTab(tab) {
   const screen = document.getElementById('screen-' + tab);
   if (screen) screen.classList.add('active');
   document.querySelectorAll(`[data-tab="${tab}"]`).forEach(b => b.classList.add('active'));
+  // Show/hide Log Expense button
+  const expBtn = document.getElementById('log-expense-btn');
+  if (expBtn) expBtn.style.display = tab === 'expenses' ? 'flex' : 'none';
+  // Show/hide help FAB
+  const helpFab = document.getElementById('help-fab');
+  if (helpFab) helpFab.style.display = tab === 'home' ? 'flex' : 'none';
   if (tab === 'inventory') renderInventory();
   else renderAll();
 }
@@ -1915,6 +2231,23 @@ async function renderLive() {
   document.getElementById('lec-sales-count').textContent = sales.length;
   document.getElementById('lec-rent').textContent        = '₹' + (live.stallCost||live.stallRent||0).toLocaleString('en-IN');
   document.getElementById('lec-net').textContent         = (net>=0?'+':'')+'₹'+Math.abs(net).toLocaleString('en-IN');
+
+  // Best seller calculation
+  const saleQtys = {};
+  sales.forEach(s => {
+    const n = s.name||s.item||'';
+    if (n) saleQtys[n] = (saleQtys[n]||0) + (s.qty||1);
+  });
+  const bsEl = document.getElementById('lec-bestseller');
+  if (bsEl) {
+    if (sales.length >= 3 && Object.keys(saleQtys).length) {
+      const maxQty = Math.max(...Object.values(saleQtys));
+      const winners = Object.entries(saleQtys).filter(([,q])=>q===maxQty).map(([n])=>n);
+      bsEl.textContent = '🏆 Best seller: ' + winners.join(' & ');
+      bsEl.style.display = 'block';
+    } else { bsEl.style.display = 'none'; }
+  }
+
   const logEl   = document.getElementById('live-sales-log');
   const emptyEl = document.getElementById('live-sales-empty');
   if (!sales.length) { logEl.style.display='none'; emptyEl.style.display='block'; }
@@ -1923,7 +2256,7 @@ async function renderLive() {
     logEl.innerHTML = [...sales].reverse().map(s => `
       <div class="sale-row">
         <div>
-          <div class="sale-row-name">${s.name||s.item||'Item'}</div>
+          <div class="sale-row-name">${s.name||s.item||'Item'}${Object.keys(saleQtys).length&&Math.max(...Object.values(saleQtys))>0&&saleQtys[s.name||s.item]===Math.max(...Object.values(saleQtys))&&sales.length>=3?'<span class="bestseller-badge">🏆 Best</span>':''}</div>
           <div class="sale-row-meta">${s.category||s.cat||''} · ${s.paymentMethod||s.mode||'UPI'} · qty ${s.qty||1}${s.customerName?' · 👤 '+s.customerName:''} · ${new Date(s.timestamp||s.time||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -1968,7 +2301,7 @@ async function renderHistory() {
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-size:13px;color:${net>=0?'var(--green)':'var(--rose)'};font-weight:700">${net>=0?'+':''}₹${Math.abs(net).toLocaleString('en-IN')}</span>
-          <button onclick="event.stopPropagation();deleteHistEvent('${ev.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:4px">🗑</button>
+          
         </div>
       </div>
       <div class="hist-card-stats">
@@ -2407,8 +2740,81 @@ async function importCSV() {
 }
 
 // ── CUSTOMERS ─────────────────────────────────────────────────────
+
+// ── CUSTOMER DETAIL + SEARCH ─────────────────────────────────────
+let _allCustomersCache = [];
+
+async function openCustomerDetail(id) {
+  const customers = _allCustomersCache.length ? _allCustomersCache : await DB.getCustomers();
+  const c = customers.find(x => x.id === id);
+  if (!c) return;
+
+  // Find all sales linked to this customer (by name+phone match)
+  const events   = await DB.getEvents();
+  const purchases = [];
+  events.forEach(ev => {
+    (ev.sales||[]).forEach(s => {
+      if ((s.customerName||'').toLowerCase() === (c.name||'').toLowerCase() ||
+          (s.customerPhone && s.customerPhone === c.phone)) {
+        purchases.push({...s, eventName: ev.name, eventDate: ev.date});
+      }
+    });
+  });
+  purchases.sort((a,b) => new Date(b.timestamp||0) - new Date(a.timestamp||0));
+
+  const totalSpent   = purchases.reduce((s,x) => s+((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
+  const firstSeen    = purchases.length ? new Date(purchases[purchases.length-1].timestamp||c.createdAt||Date.now()) : null;
+  const lastPurchase = purchases.length ? new Date(purchases[0].timestamp||Date.now()) : null;
+
+  const body = document.getElementById('cust-detail-body');
+  if (!body) return;
+
+  body.innerHTML = `
+    <div class="cust-detail-avatar">${c.name.charAt(0).toUpperCase()}</div>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:18px;font-weight:600">${c.name}</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:3px">${c.phone||'No phone'}${c.email?' · '+c.email:''}</div>
+      ${c.notes ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px;font-style:italic">${c.notes}</div>` : ''}
+    </div>
+    <div class="cust-stat-row">
+      <div class="cust-stat"><div class="cust-stat-val">${purchases.length}</div><div class="cust-stat-lbl">Purchases</div></div>
+      <div class="cust-stat"><div class="cust-stat-val">₹${totalSpent.toLocaleString('en-IN')}</div><div class="cust-stat-lbl">Total spent</div></div>
+      <div class="cust-stat"><div class="cust-stat-val">${c.source||'—'}</div><div class="cust-stat-lbl">Source</div></div>
+    </div>
+    ${firstSeen ? `<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">First seen ${firstSeen.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}${lastPurchase?' · Last purchase '+lastPurchase.toLocaleDateString('en-IN',{day:'numeric',month:'short'}):''}</div>` : ''}
+    ${purchases.length ? `
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px">Purchase history</div>
+      ${purchases.map(p => {
+        const amt = (p.unitPrice||p.amount||0)*(p.qty||1);
+        const dt  = new Date(p.timestamp||Date.now()).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+        const pay = {UPI:'📱',Cash:'💵',Card:'💳'}[p.paymentMethod||p.mode]||'💰';
+        return `<div class="cust-purchase-row">
+          <div><div style="font-weight:600">${p.name||p.item||'Item'}</div><div style="font-size:11px;color:var(--text-muted)">${p.eventName||''} · ${dt} · ${pay} ${p.paymentMethod||p.mode||''}</div></div>
+          <div style="font-weight:700;color:var(--green)">₹${amt.toLocaleString('en-IN')}</div>
+        </div>`;
+      }).join('')}
+    ` : '<div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:13px">No purchases found yet</div>'}
+    <div style="margin-top:20px;display:flex;gap:10px">
+      ${c.phone ? `<a href="tel:${c.phone}" style="flex:1;padding:13px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-primary);text-align:center;text-decoration:none">📞 Call</a>` : ''}
+      ${c.phone ? `<a href="https://wa.me/91${c.phone.replace(/\D/g,'')}" target="_blank" style="flex:1;padding:13px;background:#25D366;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:#fff;text-align:center;text-decoration:none">WhatsApp</a>` : ''}
+    </div>
+    <button onclick="deleteCustomer('${c.id}')" style="width:100%;margin-top:10px;padding:13px;background:none;border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--rose)">Remove customer</button>
+  `;
+  openSheet('sheet-customer-detail');
+}
+
+function filterCustomers(query) {
+  const q = (query||'').toLowerCase();
+  const items = document.querySelectorAll('#customer-list .list-item');
+  items.forEach(el => {
+    const text = el.textContent.toLowerCase();
+    el.style.display = text.includes(q) ? 'flex' : 'none';
+  });
+}
+
 async function renderCustomers() {
   const customers = await DB.getCustomers();
+  _allCustomersCache = customers;
   const now = new Date();
   const tm  = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   document.getElementById('cust-total').textContent = customers.length;
@@ -2417,15 +2823,21 @@ async function renderCustomers() {
   const empty = document.getElementById('customer-empty');
   if (!customers.length) { list.innerHTML=''; list.style.display='none'; empty.style.display='flex'; return; }
   list.style.display='block'; empty.style.display='none';
-  list.innerHTML = customers.map(c => `
-    <div class="list-item">
+  list.innerHTML = customers.map(c => {
+    const totalSpent = c.totalSpent || 0;
+    return `<div class="list-item" onclick="openCustomerDetail('${c.id}')" style="cursor:pointer">
       <div class="list-item-icon" style="background:var(--gold-soft);font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--gold);font-weight:500">${c.name.charAt(0).toUpperCase()}</div>
-      <div class="list-item-body"><div class="list-item-title">${c.name}</div><div class="list-item-sub">${c.phone||'No phone'}${c.address?' · '+c.address:''}</div></div>
+      <div class="list-item-body">
+        <div class="list-item-title">${c.name}</div>
+        <div class="list-item-sub">${c.phone||'No phone'}${c.notes?' · '+c.notes:''}</div>
+        ${totalSpent ? `<div style="font-size:11px;color:var(--gold);font-weight:500;margin-top:2px">₹${totalSpent.toLocaleString('en-IN')} spent</div>` : ''}
+      </div>
       <div class="list-item-right">
         <span class="badge" style="background:var(--gold-soft);color:#8B6830;border:1px solid var(--gold-border)">${c.source||'—'}</span>
-        <button onclick="deleteCustomer('${c.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:12px;margin-top:4px;display:block">✕</button>
+        <svg viewBox="0 0 24 24" width="14" height="14" style="stroke:var(--text-muted);fill:none;stroke-width:2;margin-top:6px"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 async function saveCustomer() {
@@ -2729,7 +3141,26 @@ async function openSalesLog() {
 
   const total = allSales.reduce((s,x) => s + ((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
   document.getElementById('sales-log-subtitle').textContent =
-    `${allSales.length} sales · ₹${total.toLocaleString('en-IN')} total`;
+    `${allSales.length} sale${allSales.length!==1?'s':''} · ₹${total.toLocaleString('en-IN')} total`;
+
+  // Payment split
+  const paySplit = {};
+  allSales.forEach(s => {
+    const method = s.paymentMethod || s.mode || 'Other';
+    paySplit[method] = (paySplit[method]||0) + ((s.unitPrice||s.amount||0)*(s.qty||1));
+  });
+  const payIcons = {UPI:'📱',Cash:'💵',Card:'💳'};
+  const payColors = {UPI:'rgba(99,179,237,0.15)',Cash:'rgba(109,176,112,0.15)',Card:'rgba(201,169,110,0.15)'};
+  const payBorder = {UPI:'rgba(99,179,237,0.3)',Cash:'rgba(109,176,112,0.3)',Card:'rgba(201,169,110,0.3)'};
+  const payText   = {UPI:'#2b6cb0',Cash:'#276749',Card:'#744210'};
+  const splitEl   = document.getElementById('sales-pay-split');
+  if (splitEl) splitEl.innerHTML = Object.entries(paySplit).map(([method, amt]) =>
+    `<div style="display:flex;align-items:center;gap:6px;background:${payColors[method]||'rgba(0,0,0,0.05)'};border:1px solid ${payBorder[method]||'rgba(0,0,0,0.1)'};border-radius:20px;padding:5px 12px">
+      <span style="font-size:13px">${payIcons[method]||'💰'}</span>
+      <span style="font-size:12px;font-weight:600;color:${payText[method]||'var(--text-primary)'}">${method}</span>
+      <span style="font-size:12px;color:var(--text-secondary);font-weight:500">₹${amt.toLocaleString('en-IN')}</span>
+    </div>`
+  ).join('');
   const listEl = document.getElementById('sales-log-list');
   if (!allSales.length) {
     listEl.innerHTML = '<div style="text-align:center;padding:32px 0;color:var(--text-muted);font-size:13px">No sales logged yet</div>';
@@ -2748,7 +3179,7 @@ async function openSalesLog() {
         ${thumbHTML}
         <div style="flex:1;min-width:0;margin:0 10px">
           <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name||s.item||'Item'}</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${s.category||s.cat||''} · ${payIcon} ${s.paymentMethod||s.mode||''}${s.customerName?' · 👤 '+s.customerName:''}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;display:flex;align-items:center;gap:6px"><span style="background:var(--bg);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:600;color:var(--text-secondary)">${payIcon} ${s.paymentMethod||s.mode||'UPI'}</span>${s.category||s.cat?'<span style="margin-left:2px">'+( s.category||s.cat)+'</span>':''}${s.customerName?'<span style="margin-left:2px">👤 '+s.customerName+'</span>':''}</div>
           <div style="font-size:11px;color:var(--text-muted)">${s.eventName||''} · ${dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
@@ -2767,6 +3198,161 @@ function setHeroPeriod(period) {
   heroPeriod = period;
   document.querySelectorAll('.hero-filter').forEach(b => b.classList.toggle('active', b.dataset.period === period));
   renderDashboard();
+}
+
+
+// ── GREETING + INSIGHTS ──────────────────────────────────────────
+function renderGreeting(events, expenses, totalSales) {
+  const hour = new Date().getHours();
+  const tod  = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  const name = appSettings.name || appSettings.bizName || '';
+  const greetEl = document.getElementById('dash-greeting');
+  if (greetEl) greetEl.textContent = `Good ${tod}${name ? ', ' + name : ''}!`;
+
+  // Build insights
+  const insights = [];
+  const now      = new Date();
+  const thisWeek = new Date(now); thisWeek.setDate(now.getDate() - 7);
+  const thisMonth= new Date(now.getFullYear(), now.getMonth(), 1);
+
+  // Weekly revenue
+  const weekEvents = events.filter(e => new Date(e.date||e.createdAt||0) >= thisWeek);
+  const weekRev    = weekEvents.reduce((s,e) => s+(e.revenue||0), 0);
+  if (weekRev > 0) {
+    insights.push({ icon:'📈', text:`₹${weekRev.toLocaleString('en-IN')} revenue this week — keep it up!` });
+  }
+
+  // Active/upcoming events
+  const upcoming = events.filter(e => e.status==='upcoming').length;
+  const active   = events.filter(e => e.status==='active'||e.status==='live').length;
+  if (active > 0) {
+    insights.push({ icon:'🟢', text:`You have a live event running right now` });
+  } else if (upcoming > 0) {
+    insights.push({ icon:'📅', text:`${upcoming} upcoming event${upcoming>1?'s':''} scheduled` });
+  }
+
+  // Top seller from all sales
+  const salesCount = {};
+  events.forEach(ev => (ev.sales||[]).forEach(s => {
+    const n = s.name||s.item||'';
+    if (n) salesCount[n] = (salesCount[n]||0) + ((s.unitPrice||s.amount||0)*(s.qty||1));
+  }));
+  const topSeller = Object.entries(salesCount).sort((a,b)=>b[1]-a[1])[0];
+  if (topSeller) {
+    insights.push({ icon:'⭐', text:`Top seller: ${topSeller[0]} — ₹${topSeller[1].toLocaleString('en-IN')}` });
+  }
+
+  // New customers this month
+  // Fallback: total sales count
+  if (insights.length < 2 && totalSales > 0) {
+    insights.push({ icon:'🛍️', text:`${totalSales} total sale${totalSales>1?'s':''} logged across all events` });
+  }
+
+  // No data state
+  if (insights.length === 0) {
+    insights.push({ icon:'✨', text:'Create your first event to start tracking sales' });
+    insights.push({ icon:'💎', text:'Add inventory items to get started' });
+  }
+
+  const insEl = document.getElementById('dash-insights');
+  if (insEl) insEl.innerHTML = insights.slice(0,3).map(i =>
+    `<div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:13px">${i.icon}</span>
+      <span style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.4">${i.text}</span>
+    </div>`
+  ).join('');
+}
+
+
+// ── UPCOMING EVENTS ───────────────────────────────────────────────
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const d    = new Date(dateStr + 'T00:00:00');
+  const diff = Math.ceil((d - new Date()) / 86400000);
+  return diff;
+}
+
+async function renderUpcoming() {
+  const events   = await DB.getEvents();
+  const today    = new Date(); today.setHours(0,0,0,0);
+  const upcoming = events.filter(e => {
+    if (e.status === 'active' || e.status === 'live') return false;
+    if (e.status === 'upcoming') return true;
+    if (e.date) { const d = new Date(e.date + 'T00:00:00'); return d >= today; }
+    return false;
+  }).sort((a,b) => new Date(a.date||'9999') - new Date(b.date||'9999'));
+
+  const listEl  = document.getElementById('upcoming-list');
+  const emptyEl = document.getElementById('upcoming-empty');
+  const subEl   = document.getElementById('upcoming-subtitle');
+  if (subEl) subEl.textContent = upcoming.length + ' event' + (upcoming.length!==1?'s':'') + ' scheduled';
+
+  if (!upcoming.length) {
+    if (listEl)  listEl.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'flex';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (listEl) listEl.innerHTML = upcoming.map(ev => {
+    const days = daysUntil(ev.date);
+    const badge = days === null ? '' : days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`;
+    const dateStr = ev.date ? new Date(ev.date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    return `<div class="upcoming-list-card" onclick="openEditLiveEvent()">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div style="font-size:16px;font-weight:600;color:var(--text-primary)">${ev.name}</div>
+        ${badge ? `<span class="upcoming-badge">${badge}</span>` : ''}
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:3px">📅 ${dateStr}</div>
+      ${(ev.venue||ev.location) ? `<div style="font-size:12px;color:var(--text-muted)">📍 ${ev.venue||ev.location}</div>` : ''}
+      ${ev.organiser ? `<div style="font-size:12px;color:var(--text-muted);margin-top:2px">🏷 ${ev.organiser}</div>` : ''}
+      ${ev.stallCost ? `<div style="font-size:12px;color:var(--text-muted);margin-top:2px">🏪 Stall rent ₹${(ev.stallCost||0).toLocaleString('en-IN')}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function renderHomeUpcoming() {
+  const events   = await DB.getEvents();
+  const today    = new Date(); today.setHours(0,0,0,0);
+  const upcoming = events.filter(e => {
+    if (e.status === 'active' || e.status === 'live') return false;
+    if (e.status === 'upcoming') return true;
+    if (e.date) { const d = new Date(e.date+'T00:00:00'); return d >= today; }
+    return false;
+  }).sort((a,b) => new Date(a.date||'9999') - new Date(b.date||'9999')).slice(0,6);
+
+  const section = document.getElementById('home-upcoming-section');
+  const scroll  = document.getElementById('home-upcoming-scroll');
+  if (!section || !scroll) return;
+
+  if (!upcoming.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+
+  scroll.innerHTML = upcoming.map(ev => {
+    const days    = daysUntil(ev.date);
+    const badge   = days === null ? '' : days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `${days}d away`;
+    const dateStr = ev.date ? new Date(ev.date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '';
+    return `<div class="upcoming-card" onclick="switchTab('popup');switchPopupTab('upcoming')">
+      ${badge ? `<div class="upcoming-badge">${badge}</div>` : ''}
+      <div class="upcoming-name">${ev.name}</div>
+      <div class="upcoming-date">${dateStr}</div>
+      <div class="upcoming-loc">${ev.venue||ev.location||ev.organiser||''}</div>
+    </div>`;
+  }).join('');
+}
+
+
+// ── HELP ACCORDION ───────────────────────────────────────────────
+function toggleAccordion(btn) {
+  const item  = btn.closest('.accordion-item');
+  const body  = item.querySelector('.accordion-body');
+  const arrow = btn.querySelector('.accordion-arrow');
+  const isOpen = body.classList.contains('open');
+  // Close all others in same sheet
+  btn.closest('.sheet').querySelectorAll('.accordion-body.open').forEach(b => {
+    b.classList.remove('open');
+    b.previousElementSibling?.querySelector('.accordion-arrow')?.classList.remove('open');
+  });
+  if (!isOpen) { body.classList.add('open'); if(arrow) arrow.classList.add('open'); }
 }
 
 async function renderDashboard() {
@@ -2807,6 +3393,13 @@ async function renderDashboard() {
   const totalSales = events.reduce((s,e) => s + (e.sales||[]).length, 0);
   const obEl = document.getElementById('dash-onboarding');
   if (obEl) obEl.style.display = totalSales === 0 ? 'block' : 'none';
+  renderGreeting(events, expenses, totalSales);
+  renderHomeUpcoming();
+
+  // Update mini net display in new hero card
+  const netMini = totalRev - totalExp;
+  const miniEl = document.getElementById('dash-net-mini');
+  if (miniEl) miniEl.textContent = (netMini<0?'–':'') + '₹' + Math.abs(netMini).toLocaleString('en-IN');
   document.getElementById('dash-products').textContent  = invItems.length;
   document.getElementById('dash-sales').textContent     = totalSales;
   document.getElementById('dash-customers').textContent = customers.length;
@@ -3033,6 +3626,9 @@ function showApp() {
 async function initApp() {
   loadSettings();
   applySettings();
+  // Show help FAB on home tab by default
+  const helpFab = document.getElementById('help-fab');
+  if (helpFab) helpFab.style.display = 'flex';
   initCatDropdowns();
   updateClock();
   setInterval(updateClock, 30000);
@@ -3072,7 +3668,9 @@ Object.assign(window, {
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
-  openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog, setHeroPeriod,
+  openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog, setHeroPeriod, renderGreeting,
+  renderUpcoming, renderHomeUpcoming, toggleAccordion,
+  openCustomerDetail, filterCustomers,
   cycleSort, tryCloseEditItem, markEditDirty, handleEditPhoto, updateSearchPlaceholder,
   startLongPress, cancelLongPress, toggleBulkSelect, exitBulkMode, bulkDelete, bulkMarkOutOfStock,
   validateItemName,
