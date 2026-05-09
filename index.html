@@ -36,7 +36,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;justify-content:space-around;padding:0 4px;z-index:100}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;border-radius:0;cursor:pointer;transition:all 0.15s;min-width:48px;border:none;background:transparent;position:relative;color:var(--text-muted);opacity:0.45}
 .nav-btn.active{opacity:1;color:var(--text-primary)}
-.nav-btn.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:2.5px;background:var(--text-primary);border-radius:2px}
+.nav-btn.active::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:5px;height:5px;background:var(--gold);border-radius:50%}
 .nav-icon{font-size:18px;line-height:1}
 .nav-label{font-size:9px;font-weight:600;letter-spacing:0.03em;color:inherit}
 .nav-btn.active .nav-label{color:var(--text-primary)}
@@ -582,12 +582,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <div class="inv-stat"><div class="inv-stat-val" id="inv-low-stock">0</div><div class="inv-stat-lbl">Low stock</div></div>
   </div>
 
-  <!-- search -->
-  <div class="inv-search-wrap" style="display:flex;gap:8px;align-items:center">
-    <input class="inv-search" id="inv-search" placeholder="Search..." oninput="renderInventory()" type="text" style="flex:1">
-    <button onclick="cycleSort()" id="sort-btn" style="flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text-secondary);font-family:'DM Sans',sans-serif;white-space:nowrap">↕ Name</button>
-  </div>
-
   <!-- category filter pills -->
   <div id="inv-filter-pills" class="filter-scroll"></div>
 
@@ -739,7 +733,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     </span>
   </div>
   <div style="background:var(--card);border-radius:var(--radius-sm);margin:0 24px;border:1px solid var(--border);overflow:hidden"><div id="expense-list"></div></div>
-  <div id="expense-empty" class="empty-state" style="display:none"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div><div class="empty-desc">Add travel, rent, setup costs and more</div><br><button class="btn-primary" style="width:auto;padding:12px 28px" onclick="openSheet('sheet-add-expense')">Log expense</button></div>
+  <div id="expense-empty" class="empty-state" style="display:none"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div><div class="empty-desc">Add travel, rent, setup costs and more</div></div>
   <div style="height:80px"></div>
 </div>
 
@@ -765,7 +759,10 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <div class="sheet-overlay" id="sheet-add-item" onclick="closeSheet(event,'sheet-add-item')">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Add item</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+      <div class="sheet-title" style="padding:0">Add item</div>
+      <button onclick="forceCloseSheet('sheet-add-item')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+    </div>
     <div class="sheet-body">
 
       <!-- Photo upload -->
@@ -892,7 +889,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ce-date" type="date"></div>
     <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="ce-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
     <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ce-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
-    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ce-rent" placeholder="e.g. 1200" type="text" inputmode="numeric" pattern="[0-9]*"></div>
+    <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ce-rent" placeholder="0" type="number" inputmode="numeric"></div>
     <div class="form-field"><label class="form-label">Status</label>
       <div class="chip-row" id="ce-status-chips">
         <div class="chip" data-val="upcoming">📅 Upcoming</div>
@@ -972,19 +969,24 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500">Log sale</div>
     <button onclick="closeManualLog(null,true)" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:26px;padding:4px 8px;line-height:1;-webkit-tap-highlight-color:transparent">×</button>
   </div>
-  <!-- Sale type tabs -->
+  <!-- Sale type tabs — Pop-Up first -->
   <div style="display:flex;gap:8px;padding:12px 24px 0">
-    <button id="ml-tab-nonpopup" onclick="switchSaleTab('nonpopup')" style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--text-primary);background:var(--text-primary);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent">Non Pop-Up</button>
-    <button id="ml-tab-popup" onclick="switchSaleTab('popup')" style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent">Pop-Up</button>
+    <button id="ml-tab-popup" onclick="switchSaleTab('popup')" style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--text-primary);background:var(--text-primary);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent">🟢 Live Pop-Up</button>
+    <button id="ml-tab-nonpopup" onclick="switchSaleTab('nonpopup')" style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent">Other</button>
   </div>
   <div class="sheet-body">
-    <!-- Pop-Up extra fields -->
-    <div id="ml-popup-fields" style="display:none">
-      <div class="form-row">
-        <div class="form-field"><label class="form-label">Pop name</label><input class="form-input" id="ml-pop-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
-        <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ml-pop-date" type="date"></div>
+    <!-- Pop-Up fields: live event banner + inventory picker -->
+    <div id="ml-popup-fields">
+      <div id="ml-live-event-banner" style="background:rgba(109,176,112,0.1);border:1px solid rgba(109,176,112,0.3);border-radius:var(--radius-xs);padding:10px 14px;margin-bottom:14px;font-size:13px;color:#276749;display:none">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--green);text-transform:uppercase">Live</span>
+        <span id="ml-live-event-name" style="font-weight:600;margin-left:6px"></span>
       </div>
-      <div style="height:1px;background:var(--border);margin-bottom:16px"></div>
+      <!-- Inventory quick-pick -->
+      <div id="ml-inv-picker-wrap" style="display:none;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px">Pick from inventory</div>
+        <div id="ml-inv-grid" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch"></div>
+      </div>
+      <div style="height:1px;background:var(--border);margin-bottom:14px"></div>
     </div>
     <!-- Optional photo -->
     <div class="form-field">
@@ -999,10 +1001,18 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <div class="form-field"><label class="form-label">Category</label>
       <select class="form-input" id="ml-cat"></select>
     </div>
-    <div class="form-field"><label class="form-label">Item name</label><input class="form-input" id="ml-name" placeholder="e.g. Gold cuff bangle" type="text"></div>
+    <div class="form-field" id="ml-name-field">
+      <label class="form-label" id="ml-name-label">Item name <span style="color:var(--rose)">*</span></label>
+      <input class="form-input" id="ml-name" placeholder="e.g. Gold cuff bangle" type="text" oninput="clearFieldError('ml-name-field')">
+      <div id="ml-name-err" style="display:none;font-size:11px;color:var(--rose);margin-top:4px">This field is required</div>
+    </div>
     <div class="form-row">
       <div class="form-field"><label class="form-label">Qty</label><input class="form-input" id="ml-qty" type="number" value="1" min="1"></div>
-      <div class="form-field"><label class="form-label">Unit price (₹)</label><input class="form-input" id="ml-price" placeholder="0" type="number"></div>
+      <div class="form-field" id="ml-price-field">
+        <label class="form-label" id="ml-price-label">Unit price (₹) <span style="color:var(--rose)">*</span></label>
+        <input class="form-input" id="ml-price" placeholder="0" type="number" oninput="clearFieldError('ml-price-field')">
+        <div id="ml-price-err" style="display:none;font-size:11px;color:var(--rose);margin-top:4px">This field is required</div>
+      </div>
     </div>
     <div class="form-field"><label class="form-label">Payment</label>
       <div class="chip-row" id="ml-pay-chips">
@@ -1131,7 +1141,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <div class="sheet-overlay" id="sheet-settings" onclick="closeSheet(event,'sheet-settings')">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Settings</div>
+    <div class="sheet-title">Profile</div>
     <div class="sheet-body">
 
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Business details</div>
@@ -1188,7 +1198,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
         <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Read-only · configured in source</div>
       </div>
 
-      <button class="btn-primary btn-gold" onclick="saveSettings()" style="margin-top:12px">Save settings</button>
+      <button class="btn-primary btn-gold" onclick="saveSettings()" style="margin-top:12px">Save profile</button>
       <div id="settings-save-status" style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px"></div>
 
       <div style="height:1px;background:var(--border);margin:20px 0"></div>
@@ -1348,6 +1358,27 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   </div>
 </div>
 
+<!-- SHEET: Live Sale Detail -->
+<div class="sheet-overlay" id="sheet-live-sale-detail" onclick="closeSheet(event,'sheet-live-sale-detail')" style="z-index:350">
+  <div class="sheet"><div class="sheet-handle"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500">Sale Detail</div>
+    <button onclick="forceCloseSheet('sheet-live-sale-detail')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1">×</button>
+  </div>
+  <div class="sheet-body" style="padding-bottom:32px">
+    <div style="text-align:center;padding:20px 0 12px">
+      <div id="lsd-amount" style="font-size:32px;font-weight:700;color:var(--green);font-family:'Playfair Display',serif"></div>
+      <div id="lsd-name" style="font-size:18px;font-weight:600;margin-top:6px"></div>
+      <div id="lsd-meta" style="font-size:13px;color:var(--text-muted);margin-top:4px"></div>
+      <div id="lsd-customer" style="font-size:13px;color:var(--text-muted);margin-top:4px"></div>
+    </div>
+    <div style="padding:0 8px;margin-top:8px">
+      <button id="lsd-delete-btn" style="width:100%;padding:14px;background:none;border:1.5px solid var(--rose);border-radius:12px;color:var(--rose);font-size:15px;font-weight:600;cursor:pointer">Remove Sale</button>
+    </div>
+  </div>
+  </div>
+</div>
+
 <!-- SHEET: Help & FAQ -->
 <div class="sheet-overlay" id="sheet-help" onclick="closeSheet(event,'sheet-help')">
   <div class="sheet" style="max-height:92vh"><div class="sheet-handle"></div>
@@ -1363,7 +1394,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="help-tab-chip"><div class="help-tab-chip-icon">🎪</div><div><div class="help-tab-chip-label">Pop-Up</div><div class="help-tab-chip-desc">Create events, log sales in real-time, view history & best sellers</div></div></div>
       <div class="help-tab-chip"><div class="help-tab-chip-icon">💎</div><div><div class="help-tab-chip-label">Inventory</div><div class="help-tab-chip-desc">Add products, track stock levels, manage categories & photos</div></div></div>
       <div class="help-tab-chip"><div class="help-tab-chip-icon">🧾</div><div><div class="help-tab-chip-label">Expenses</div><div class="help-tab-chip-desc">Log costs, import CSV bank statements, track by category</div></div></div>
-      <div class="help-tab-chip"><div class="help-tab-chip-icon">⚙️</div><div><div class="help-tab-chip-label">Settings</div><div class="help-tab-chip-desc">Business name, categories, API keys, sign out</div></div></div>
+      <div class="help-tab-chip"><div class="help-tab-chip-icon">⚙️</div><div><div class="help-tab-chip-label">Profile</div><div class="help-tab-chip-desc">Business name, categories, API keys, sign out</div></div></div>
     </div>
 
     <div class="help-section-title">How To</div>
@@ -1469,7 +1500,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       </div>
       <div class="faq-item">
         <div class="faq-q">Is my payment/financial data secure?</div>
-        <div class="faq-a">Yes. Tarami uses Google Firebase with authentication — no one else can access your data. We don't process any payments; the app only tracks records you enter manually.</div>
+        <div class="faq-a">Yes. The app uses Google Firebase with authentication — no one else can access your data. We don't process any payments; the app only tracks records you enter manually.</div>
       </div>
     </div>
 
@@ -1544,7 +1575,16 @@ let CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 const DEFAULT_CATS = ["Rings","Necklaces","Earrings","Bangles","Bracelets","Anklets","Pendants","Other"];
 function getCategories() {
   try {
-    const saved = _currentUID ? localStorage.getItem(lsKey('sb_categories')) : null;
+    let saved = _currentUID ? localStorage.getItem(lsKey('sb_categories')) : null;
+    // One-time migration from old unscoped key
+    if (!saved && _currentUID) {
+      const legacy = localStorage.getItem('sb_categories');
+      if (legacy) {
+        localStorage.setItem(lsKey('sb_categories'), legacy);
+        localStorage.removeItem('sb_categories');
+        saved = legacy;
+      }
+    }
     return saved ? JSON.parse(saved) : DEFAULT_CATS;
   } catch(e) { return DEFAULT_CATS; }
 }
@@ -1667,8 +1707,11 @@ function openSheet(idOrEvent, id) {
   if (!el) { console.error('Sheet not found:', sheetId); return; }
   el.classList.add('open');
   document.body.style.overflow = 'hidden';
-  const di = el.querySelector('input[type="date"]');
-  if (di && !di.value) di.value = new Date().toISOString().split('T')[0];
+  const skipDateFill = ['sheet-create-event','sheet-edit-live-event'].includes(sheetId);
+  if (!skipDateFill) {
+    const di = el.querySelector('input[type="date"]');
+    if (di && !di.value) di.value = new Date().toISOString().split('T')[0];
+  }
 }
 function forceCloseSheet(id) {
   const el = document.getElementById(id);
@@ -1984,7 +2027,7 @@ function openItemDetail(id) {
   _detailItemId = id;
   const item = invItems.find(i => i.id === id);
   if (!item) return;
-  const margin = item.price && item.cost ? Math.round(((item.price-item.cost)/item.price)*100) : null;
+  const markup = item.price && item.cost ? Math.round(((item.price-item.cost)/item.cost)*100) : null;
   document.getElementById('item-detail-body').innerHTML = `
     <div class="item-detail-img">
       ${item.photoURL
@@ -1997,7 +2040,7 @@ function openItemDetail(id) {
       <div style="margin-top:20px">
         <div class="item-detail-row"><span class="item-detail-lbl">Category</span><span class="item-detail-val">${item.cat} · ${item.sub||'—'}</span></div>
         <div class="item-detail-row"><span class="item-detail-lbl">SKU</span><span class="item-detail-val" style="font-family:monospace">${item.sku||'—'}</span></div>
-        <div class="item-detail-row"><span class="item-detail-lbl">Cost price</span><span class="item-detail-val">₹${(item.cost||0).toLocaleString('en-IN')}${margin!==null?` <span style="font-size:11px;color:var(--green)">${margin}% margin</span>`:''}</span></div>
+        <div class="item-detail-row"><span class="item-detail-lbl">Cost price</span><span class="item-detail-val">₹${(item.cost||0).toLocaleString('en-IN')}${markup!==null?` <span style="font-size:11px;color:var(--green)">${markup}% markup</span>`:''}</span></div>
         ${item.notes?`<div class="item-detail-row"><span class="item-detail-lbl">Notes</span><span class="item-detail-val">${item.notes}</span></div>`:''}
         <div class="item-detail-row">
           <span class="item-detail-lbl">Quantity</span>
@@ -2235,14 +2278,14 @@ async function renderLive() {
   else {
     logEl.style.display='block'; emptyEl.style.display='none';
     logEl.innerHTML = [...sales].reverse().map(s => `
-      <div class="sale-row">
+      <div class="sale-row" onclick="openLiveSaleDetail('${s.id}')" style="cursor:pointer">
         <div>
           <div class="sale-row-name">${s.name||s.item||'Item'}${Object.keys(saleQtys).length&&Math.max(...Object.values(saleQtys))>0&&saleQtys[s.name||s.item]===Math.max(...Object.values(saleQtys))&&sales.length>=3?'<span class="bestseller-badge">🏆 Best</span>':''}</div>
           <div class="sale-row-meta">${s.category||s.cat||''} · ${s.paymentMethod||s.mode||'UPI'} · qty ${s.qty||1}${s.customerName?' · 👤 '+s.customerName:''} · ${new Date(s.timestamp||s.time||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="sale-row-amt">₹${((s.unitPrice||s.amount||0)*(s.qty||1)).toLocaleString('en-IN')}</div>
-          <button onclick="deleteSaleFromLive('${s.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:4px">✕</button>
+          <button onclick="event.stopPropagation();deleteSaleFromLive('${s.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:4px">✕</button>
         </div>
       </div>`).join('');
   }
@@ -2314,6 +2357,7 @@ async function deleteHistEvent(id) {
 }
 
 async function deleteSaleFromHistory(evId, saleId) {
+  if (!confirm('Remove this sale? This cannot be undone.')) return;
   const arr  = await DB.getEvents();
   const ev   = arr.find(e => e.id === evId);
   if (!ev) return;
@@ -2325,14 +2369,33 @@ async function deleteSaleFromHistory(evId, saleId) {
 }
 
 async function deleteSaleFromLive(saleId) {
+  if (!confirm('Remove this sale? This cannot be undone.')) return;
   const arr  = await DB.getEvents();
   const live = arr.find(e => e.status==='active'||e.status==='live');
   if (!live) return;
   live.sales   = (live.sales||[]).filter(s => s.id !== saleId);
   live.revenue = live.sales.reduce((s,x) => s+((x.unitPrice||x.amount||0)*(x.qty||1)), 0);
   await DB.saveEvents(arr);
+  forceCloseSheet('sheet-live-sale-detail');
   renderLive();
   showToast('Sale removed');
+}
+
+async function openLiveSaleDetail(saleId) {
+  const arr  = await DB.getEvents();
+  const live = arr.find(e => e.status==='active'||e.status==='live');
+  if (!live) return;
+  const s = (live.sales||[]).find(x => x.id === saleId);
+  if (!s) return;
+  const total = ((s.unitPrice||s.amount||0) * (s.qty||1));
+  const time  = new Date(s.timestamp||s.time||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('lsd-name').textContent    = s.name||s.item||'Item';
+  document.getElementById('lsd-amount').textContent  = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('lsd-meta').textContent    = [s.category||s.cat, 'qty '+(s.qty||1), s.paymentMethod||s.mode||'UPI', time].filter(Boolean).join(' · ');
+  document.getElementById('lsd-customer').textContent = s.customerName ? '👤 ' + s.customerName : '';
+  document.getElementById('lsd-customer').style.display = s.customerName ? 'block' : 'none';
+  document.getElementById('lsd-delete-btn').onclick   = () => deleteSaleFromLive(saleId);
+  openSheet('sheet-live-sale-detail');
 }
 
 async function createPopupEvent() {
@@ -2440,22 +2503,68 @@ function handleSalePhoto(input) {
 }
 
 // ── MANUAL LOG OPEN ──────────────────────────────────────────────
-let _mlSaleTab = 'nonpopup';
+let _mlSaleTab = 'popup';
+let _mlLiveEvent = null; // cached live event for the current log session
 
 function switchSaleTab(tab) {
   _mlSaleTab = tab;
-  const nonBtn = document.getElementById('ml-tab-nonpopup');
-  const popBtn = document.getElementById('ml-tab-popup');
+  const nonBtn    = document.getElementById('ml-tab-nonpopup');
+  const popBtn    = document.getElementById('ml-tab-popup');
   const popFields = document.getElementById('ml-popup-fields');
-  const activeStyle = 'padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--text-primary);background:var(--text-primary);color:#fff;cursor:pointer;font-family:\'DM Sans\',sans-serif;-webkit-tap-highlight-color:transparent';
+  const activeStyle   = 'padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--text-primary);background:var(--text-primary);color:#fff;cursor:pointer;font-family:\'DM Sans\',sans-serif;-webkit-tap-highlight-color:transparent';
   const inactiveStyle = 'padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:\'DM Sans\',sans-serif;-webkit-tap-highlight-color:transparent';
-  if (nonBtn) nonBtn.style.cssText = tab === 'nonpopup' ? activeStyle : inactiveStyle;
-  if (popBtn) popBtn.style.cssText = tab === 'popup' ? activeStyle : inactiveStyle;
+  if (popBtn)  popBtn.style.cssText  = tab === 'popup'    ? activeStyle : inactiveStyle;
+  if (nonBtn)  nonBtn.style.cssText  = tab === 'nonpopup' ? activeStyle : inactiveStyle;
   if (popFields) popFields.style.display = tab === 'popup' ? 'block' : 'none';
-  if (tab === 'popup') {
-    const pd = document.getElementById('ml-pop-date');
-    if (pd && !pd.value) pd.value = new Date().toISOString().split('T')[0];
+  if (tab === 'popup') _populateInventoryPicker();
+}
+
+function _populateInventoryPicker() {
+  const banner   = document.getElementById('ml-live-event-banner');
+  const nameEl   = document.getElementById('ml-live-event-name');
+  const pickerWrap = document.getElementById('ml-inv-picker-wrap');
+  const grid     = document.getElementById('ml-inv-grid');
+  if (_mlLiveEvent && banner && nameEl) {
+    nameEl.textContent = _mlLiveEvent.name || '';
+    banner.style.display = 'block';
+  } else if (banner) {
+    banner.style.display = 'none';
   }
+  const inStock = invItems.filter(i => (i.qty||0) > 0);
+  if (!inStock.length || !pickerWrap || !grid) { if (pickerWrap) pickerWrap.style.display = 'none'; return; }
+  pickerWrap.style.display = 'block';
+  grid.innerHTML = inStock.map(item => {
+    const imgHTML = item.photoURL
+      ? `<img src="${item.photoURL}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:10px">`
+      : `<span style="font-size:20px">${CAT_EMOJI[item.cat]||'💎'}</span>`;
+    return `<div onclick="selectFromInventory('${item.id}')" style="flex-shrink:0;width:72px;cursor:pointer;-webkit-tap-highlight-color:transparent" title="${item.name}">
+      <div style="width:72px;height:72px;border-radius:10px;background:var(--gold-soft);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid transparent;transition:border-color 0.15s" id="ml-inv-${item.id}">${imgHTML}</div>
+      <div style="font-size:10px;font-weight:600;color:var(--text-primary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+      <div style="font-size:10px;color:var(--gold)">₹${(item.price||0).toLocaleString('en-IN')}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectFromInventory(id) {
+  const item = invItems.find(i => i.id === id);
+  if (!item) return;
+  // Pre-fill form
+  const nameEl  = document.getElementById('ml-name');
+  const priceEl = document.getElementById('ml-price');
+  const catEl   = document.getElementById('ml-cat');
+  if (nameEl)  nameEl.value  = item.name;
+  if (priceEl) priceEl.value = item.price || '';
+  if (catEl) {
+    for (let i = 0; i < catEl.options.length; i++) {
+      if (catEl.options[i].value === item.cat) { catEl.selectedIndex = i; break; }
+    }
+  }
+  // Highlight selected card, clear others
+  document.querySelectorAll('[id^="ml-inv-"]').forEach(el => el.style.borderColor = 'transparent');
+  const card = document.getElementById('ml-inv-' + id);
+  if (card) card.style.borderColor = 'var(--gold)';
+  clearFieldError('ml-name-field');
+  clearFieldError('ml-price-field');
 }
 
 function _mlHasData() {
@@ -2472,22 +2581,46 @@ function closeManualLog(event, force) {
   forceCloseSheet('sheet-manual-log');
 }
 
-function openManualLog() {
-  // Populate category dropdown from user settings
+async function openManualLog() {
+  // Populate category dropdown
   const cats = getCategories();
   const sel  = document.getElementById('ml-cat');
   if (sel) sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
-  // Reset sale photo
+  // Reset photo
   _salePhotoFile = null;
   const spv = document.getElementById('sale-photo-preview');
   if (spv) { spv.style.display = 'none'; spv.src = ''; }
-  const spa = document.getElementById('sale-photo-area');
-  if (spa) spa.classList.remove('has-img');
+  document.getElementById('sale-photo-area')?.classList.remove('has-img');
   const spi = document.getElementById('sale-photo-input');
   if (spi) spi.value = '';
-  // Reset to non pop-up tab
-  switchSaleTab('nonpopup');
+  // Clear validation state
+  clearFieldError('ml-name-field');
+  clearFieldError('ml-price-field');
+  // Check for live event — default to popup tab if one exists
+  const events = await DB.getEvents();
+  _mlLiveEvent = events.find(e => e.status === 'active' || e.status === 'live') || null;
+  switchSaleTab(_mlLiveEvent ? 'popup' : 'nonpopup');
   openSheet('sheet-manual-log');
+}
+
+function clearFieldError(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+  field.querySelector('.form-input')?.style.removeProperty('border-color');
+  field.querySelector('[id$="-err"]').style.display = 'none';
+  const lbl = field.querySelector('.form-label');
+  if (lbl) lbl.style.color = '';
+}
+
+function showFieldError(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+  const input = field.querySelector('.form-input');
+  if (input) input.style.borderColor = 'var(--rose)';
+  const err = field.querySelector('[id$="-err"]');
+  if (err) err.style.display = 'block';
+  const lbl = field.querySelector('.form-label');
+  if (lbl) lbl.style.color = 'var(--rose)';
 }
 
 async function confirmManualSale() {
@@ -2498,7 +2631,11 @@ async function confirmManualSale() {
   const pay   = getChip('ml-pay-chips');
   const custName  = document.getElementById('ml-cust-name')?.value.trim()||'';
   const custPhone = document.getElementById('ml-cust-phone')?.value.trim()||'';
-  if (!name || !price) { showToast('Enter item name and price'); return; }
+  // Validate mandatory fields
+  let hasError = false;
+  if (!name)  { showFieldError('ml-name-field');  hasError = true; }
+  if (!price) { showFieldError('ml-price-field'); hasError = true; }
+  if (hasError) return;
   const isPopup = _mlSaleTab === 'popup';
   const popName = isPopup ? (document.getElementById('ml-pop-name')?.value.trim()||'') : '';
   const popDate = isPopup ? (document.getElementById('ml-pop-date')?.value||'') : '';
@@ -3438,7 +3575,8 @@ async function renderDashboard() {
 
   const totalRev = filtEvents.reduce((s,e) => s+(e.revenue||0), 0);
   const totalExp = filtExpenses.reduce((s,e) => s+e.amount, 0);
-  const net = totalRev - totalExp;
+  const totalStallRents = filtEvents.reduce((s,e) => s+(e.stallCost||e.stallRent||0), 0);
+  const net = totalRev - totalExp - totalStallRents;
 
   // Fix 1: Net loss label
   const isLoss = net < 0;
@@ -3762,9 +3900,9 @@ Object.assign(window, {
   renderInventory, setInvFilter, openItemDetail, adjustQty, deleteItem,
   saveInventoryItem, handlePhotoSelect, addToExisting, dismissDuplicate, updateItemSubcats,
   renderEvents, renderLive, renderHistory, toggleHistCard,
-  createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto, openManualLog, switchSaleTab, closeManualLog,
+  createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto, openManualLog, switchSaleTab, closeManualLog, selectFromInventory, clearFieldError, showFieldError,
   openEditLiveEvent, saveLiveEventEdit, confirmDeleteLiveEvent, endEventFromEdit, completeEvent,
-  deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
+  deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent, openLiveSaleDetail,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
   openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog, setHeroPeriod, renderGreeting,
