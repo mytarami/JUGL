@@ -481,7 +481,14 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   </div>
   <div style="margin:16px 24px 0;background:var(--text-primary);border-radius:var(--radius);padding:22px 24px;position:relative;overflow:hidden">
     <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:rgba(201,169,110,0.1)"></div>
-    <div id="dash-greeting" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin-bottom:14px;position:relative;z-index:1">Good morning!</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1">
+      <div id="dash-greeting" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff">Good morning!</div>
+      <button id="dash-eye-btn" onclick="toggleDashNumbers()" style="background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:background 0.15s" aria-label="Toggle numbers">
+        <svg id="dash-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
     <div id="dash-insights" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:8px"></div>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
       <div>
@@ -3319,6 +3326,28 @@ function toggleAccordion(btn) {
     b.previousElementSibling?.querySelector('.accordion-arrow')?.classList.remove('open');
   });
   if (!isOpen) { body.classList.add('open'); if(arrow) arrow.classList.add('open'); }
+}
+
+let _dashNumbersHidden = false;
+function toggleDashNumbers() {
+  _dashNumbersHidden = !_dashNumbersHidden;
+  const ids = ['dash-hero-revenue','dash-hero-orders','dash-hero-profit'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (_dashNumbersHidden) {
+      el.dataset.real = el.textContent;
+      el.textContent = '••••';
+      el.style.letterSpacing = '2px';
+    } else {
+      if (el.dataset.real) el.textContent = el.dataset.real;
+      el.style.letterSpacing = '';
+    }
+  });
+  const icon = document.getElementById('dash-eye-icon');
+  if (icon) icon.innerHTML = _dashNumbersHidden
+    ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
 }
 
 async function renderDashboard() {
