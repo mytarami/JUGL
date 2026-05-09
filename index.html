@@ -1528,6 +1528,14 @@ const FB   = { db:_db, storage:_st, collection, addDoc, getDocs, doc, updateDoc,
                deleteDoc, setDoc, query, orderBy, serverTimestamp, writeBatch,
                ref, uploadBytes, getDownloadURL, deleteObject };
 
+// ── USER SCOPE HELPERS ───────────────────────────────────────────
+// _currentUID is set by onAuthStateChanged before any data function runs.
+let _currentUID = null;
+function userColl(path)         { return collection(_db, 'users', _currentUID, path); }
+function userDocRef(path, id)   { return doc(_db, 'users', _currentUID, path, id); }
+function storagePath(path)      { return 'users/' + _currentUID + '/' + path; }
+function lsKey(key)             { return key + '_' + _currentUID; }
+
 // ── API KEYS ──────────────────────────────────────────────────────
 let GEMINI_API_KEY = localStorage.getItem('sb_gemini_key') || '';
 let CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
@@ -1536,12 +1544,12 @@ let CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 const DEFAULT_CATS = ["Rings","Necklaces","Earrings","Bangles","Bracelets","Anklets","Pendants","Other"];
 function getCategories() {
   try {
-    const saved = localStorage.getItem('sb_categories');
+    const saved = _currentUID ? localStorage.getItem(lsKey('sb_categories')) : null;
     return saved ? JSON.parse(saved) : DEFAULT_CATS;
   } catch(e) { return DEFAULT_CATS; }
 }
 function saveCategories(cats) {
-  localStorage.setItem('sb_categories', JSON.stringify(cats));
+  if (_currentUID) localStorage.setItem(lsKey('sb_categories'), JSON.stringify(cats));
 }
 // Legacy CATS kept as empty for compatibility
 const CATS = {};
@@ -1554,7 +1562,7 @@ const DB = {
 
   async getEvents() {
     try {
-      const snap = await getDocs(collection(_db, 'sb_events'));
+      const snap = await getDocs(userColl('events'));
       return snap.docs.map(d => ({...d.data(), id: d.id, _docId: d.id}))
         .sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
     } catch(e) { console.error('getEvents:', e); return []; }
@@ -1564,46 +1572,46 @@ const DB = {
     arr.forEach(ev => {
       const docId = ev._docId || ev.id;
       const {_docId, ...data} = ev;
-      batch.set(doc(_db,'sb_events', docId), {...data, updatedAt:serverTimestamp()});
+      batch.set(userDocRef('events', docId), {...data, updatedAt:serverTimestamp()});
     });
     await batch.commit();
   },
   async deleteEvent(id) {
     if (!id) throw new Error('No event ID provided');
-    await deleteDoc(doc(_db, 'sb_events', id));
+    await deleteDoc(userDocRef('events', id));
   },
   async deleteEventByDocId(docId) {
     if (!docId) throw new Error('No doc ID provided');
-    await deleteDoc(doc(_db, 'sb_events', docId));
+    await deleteDoc(userDocRef('events', docId));
   },
 
   async getExpenses() {
     try {
-      const snap = await getDocs(collection(_db, 'sb_expenses'));
+      const snap = await getDocs(userColl('expenses'));
       return snap.docs.map(d => ({id:d.id,...d.data()}))
         .sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
     } catch(e) { console.error('getExpenses:', e); return []; }
   },
   async addExpense(exp) {
-    await setDoc(doc(_db,'sb_expenses',exp.id), {...exp, updatedAt:serverTimestamp()});
+    await setDoc(userDocRef('expenses',exp.id), {...exp, updatedAt:serverTimestamp()});
   },
-  async deleteExpense(id) { await deleteDoc(doc(_db,'sb_expenses',id)); },
+  async deleteExpense(id) { await deleteDoc(userDocRef('expenses',id)); },
 
   async getCustomers() {
     try {
-      const snap = await getDocs(collection(_db, 'sb_customers'));
+      const snap = await getDocs(userColl('customers'));
       return snap.docs.map(d => ({id:d.id,...d.data()}))
         .sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
     } catch(e) { console.error('getCustomers:', e); return []; }
   },
   async addCustomer(cust) {
-    await setDoc(doc(_db,'sb_customers',cust.id), {...cust, updatedAt:serverTimestamp()});
+    await setDoc(userDocRef('customers',cust.id), {...cust, updatedAt:serverTimestamp()});
   },
-  async deleteCustomer(id) { await deleteDoc(doc(_db,'sb_customers',id)); },
+  async deleteCustomer(id) { await deleteDoc(userDocRef('customers',id)); },
 
   async isEmpty(col) {
     try {
-      const snap = await getDocs(collection(_db, col));
+      const snap = await getDocs(userColl(col));
       return snap.empty;
     } catch(e) { return true; }
   }
@@ -1719,10 +1727,10 @@ document.addEventListener('click', e => {
 // ── SETTINGS ──────────────────────────────────────────────────────
 function loadSettings() {
   try {
-    const s = localStorage.getItem('sb_settings');
+    const s = _currentUID ? localStorage.getItem(lsKey('sb_settings')) : null;
     if (s) appSettings = {...appSettings, ...JSON.parse(s)};
   } catch(e) {}
-  // Load API keys
+  // API keys are device-wide (not user-specific)
   GEMINI_API_KEY = localStorage.getItem('sb_gemini_key') || '';
   CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 }
@@ -1783,7 +1791,7 @@ function updateBulkBar() {
 async function bulkDelete() {
   if (!confirm(`Delete ${bulkSelected.size} item(s)? Cannot be undone.`)) return;
   for (const id of bulkSelected) {
-    try { const { db, doc, deleteDoc } = FB; await deleteDoc(doc(db, 'inventory', id)); } catch(e) {}
+    try { await deleteDoc(userDocRef('inventory', id)); } catch(e) {}
   }
   invItems = invItems.filter(i => !bulkSelected.has(i.id));
   exitBulkMode();
@@ -1794,7 +1802,7 @@ async function bulkDelete() {
 async function bulkMarkOutOfStock() {
   for (const id of bulkSelected) {
     try {
-      const { db:_db2, doc:_doc2, updateDoc, serverTimestamp } = FB; await updateDoc(_doc2(_db2, 'inventory', id), {qty:0, updatedAt:serverTimestamp()});
+      await updateDoc(userDocRef('inventory', id), {qty:0, updatedAt:serverTimestamp()});
       const item = invItems.find(i => i.id === id);
       if (item) item.qty = 0;
     } catch(e) {}
@@ -1827,7 +1835,7 @@ async function loadInventory() {
   document.getElementById('inv-grid').style.display = 'none';
   document.getElementById('inv-empty').style.display = 'none';
   try {
-    const snap = await getDocs(collection(_db, 'inventory'));
+    const snap = await getDocs(userColl('inventory'));
     invItems = snap.docs.map(d => ({id:d.id,...d.data()}));
     invItems.sort((a,b) => {
       const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt||0).getTime();
@@ -1999,7 +2007,7 @@ async function adjustQty(delta) {
   document.getElementById('detail-qty').textContent = newQty;
   item.qty = newQty;
   try {
-    await updateDoc(doc(_db,'inventory',item.id), {qty:newQty, updatedAt:serverTimestamp()});
+    await updateDoc(userDocRef('inventory',item.id), {qty:newQty, updatedAt:serverTimestamp()});
     renderInventory();
   } catch(e) { showToast('Error updating'); }
 }
@@ -2009,9 +2017,9 @@ async function deleteItem(id) {
   try {
     const item = invItems.find(i => i.id === id);
     if (item?.photoURL) {
-      try { await deleteObject(ref(_st, `inventory/${id}/photo.jpg`)); } catch(e) {}
+      try { await deleteObject(ref(_st, storagePath(`inventory/${id}/photo.jpg`))); } catch(e) {}
     }
-    await deleteDoc(doc(_db,'inventory',id));
+    await deleteDoc(userDocRef('inventory',id));
     invItems = invItems.filter(i => i.id !== id);
     forceCloseSheet('sheet-item-detail');
     renderInventory();
@@ -2102,7 +2110,7 @@ async function addToExisting(itemId) {
   const item = invItems.find(i => i.id === itemId);
   if (!item) return;
   const newQty = (item.qty||0) + 1;
-  await updateDoc(doc(_db,'inventory',itemId), {qty:newQty, updatedAt:serverTimestamp()});
+  await updateDoc(userDocRef('inventory',itemId), {qty:newQty, updatedAt:serverTimestamp()});
   item.qty = newQty;
   resetAddItemForm();
   forceCloseSheet('sheet-add-item');
@@ -2142,14 +2150,14 @@ async function saveInventoryItem() {
   const stat  = document.getElementById('save-item-status');
   btn.disabled = true; btn.textContent = 'Saving...';
   try {
-    const docRef = await addDoc(collection(_db,'inventory'), {name,cat,sub,price,cost,qty,sku,notes,photoURL:'',createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    const docRef = await addDoc(userColl('inventory'), {name,cat,sub,price,cost,qty,sku,notes,photoURL:'',createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
     let photoURL = '';
     if (photoFile) {
       stat.textContent = 'Uploading photo...';
-      const storageRef = ref(_st, `inventory/${docRef.id}/photo.jpg`);
+      const storageRef = ref(_st, storagePath(`inventory/${docRef.id}/photo.jpg`));
       await uploadBytes(storageRef, photoFile);
       photoURL = await getDownloadURL(storageRef);
-      await updateDoc(doc(_db,'inventory',docRef.id), {photoURL});
+      await updateDoc(userDocRef('inventory',docRef.id), {photoURL});
     }
     invItems.unshift({id:docRef.id, name,cat,sub,price,cost,qty,sku,notes,photoURL, createdAt:new Date()});
     resetAddItemForm();
@@ -2285,7 +2293,7 @@ async function deleteHistEvent(id) {
   if (!confirm('Delete this event and all its sales?')) return;
   try {
     // id here is already the Firestore doc ID from renderHistory
-    await deleteDoc(doc(_db, 'sb_events', id));
+    await deleteDoc(userDocRef('events', id));
     await renderHistory();
     await renderLive();
     await renderDashboard();
@@ -2764,7 +2772,7 @@ async function importCSV() {
     for (let i=0; i<parsedCSVRows.length; i+=chunkSize) {
       const chunk = parsedCSVRows.slice(i, i+chunkSize);
       const batch = writeBatch(_db);
-      chunk.forEach(exp => batch.set(doc(_db,'sb_expenses',exp.id), exp));
+      chunk.forEach(exp => batch.set(userDocRef('expenses',exp.id), exp));
       await batch.commit();
       imported += chunk.length;
       status.textContent = `Imported ${imported} of ${parsedCSVRows.length}...`;
@@ -2963,8 +2971,7 @@ async function saveEditExpense() {
   if (!amount) { showToast('Enter an amount'); return; }
   const exp = { id, cat, amount, desc, date, paidBy, updatedAt: new Date().toISOString() };
   try {
-    const { db, doc, updateDoc } = FB;
-    await updateDoc(doc(db, 'sb_expenses', id), exp);
+    await updateDoc(userDocRef('expenses', id), exp);
     forceCloseSheet('sheet-edit-expense');
     await renderExpenses();
     renderDashboard();
@@ -3029,16 +3036,15 @@ async function saveEditItem() {
   const sku   = document.getElementById('edit-item-sku').value.trim();
   const notes = document.getElementById('edit-item-notes').value.trim();
   try {
-    const { db, doc, updateDoc, serverTimestamp, ref, uploadBytes, getDownloadURL } = FB;
     const updates = { name, cat, sub, price, cost, qty, sku, notes, updatedAt: serverTimestamp() };
-    // Fix 10: Upload new photo if selected
+    // Upload new photo if selected
     if (_editPhotoFile) {
-      const storageRef = ref(FB.storage, `inventory/${id}/photo.jpg`);
+      const storageRef = ref(_st, storagePath(`inventory/${id}/photo.jpg`));
       await uploadBytes(storageRef, _editPhotoFile);
       updates.photoURL = await getDownloadURL(storageRef);
       _editPhotoFile = null;
     }
-    await updateDoc(doc(db, 'inventory', id), updates);
+    await updateDoc(userDocRef('inventory', id), updates);
     const idx = invItems.findIndex(i => i.id === id);
     if (idx !== -1) invItems[idx] = { ...invItems[idx], ...updates };
     _editItemDirty = false;
@@ -3056,11 +3062,9 @@ async function deleteItemFromEdit() {
   const item = invItems.find(i => i.id === id);
   try {
     if (item?.photoURL) {
-      try { await FB.deleteObject(FB.ref(FB.storage, `inventory/${id}/photo.jpg`)); } catch(e) {}
+      try { await deleteObject(ref(_st, storagePath(`inventory/${id}/photo.jpg`))); } catch(e) {}
     }
-    await FB.deleteObject; // no-op guard
-    const { db, doc, deleteDoc } = FB;
-    await deleteDoc(doc(db, 'inventory', id));
+    await deleteDoc(userDocRef('inventory', id));
     invItems = invItems.filter(i => i.id !== id);
     forceCloseSheet('sheet-edit-item');
     renderInventory();
@@ -3587,7 +3591,7 @@ function saveSettings() {
   appSettings.bizName     = document.getElementById('set-biz-name')?.value.trim()     || appSettings.bizName;
   appSettings.bizCategory = document.getElementById('set-biz-category')?.value        || appSettings.bizCategory;
   appSettings.currency    = document.getElementById('set-currency')?.value             || appSettings.currency;
-  localStorage.setItem('sb_settings', JSON.stringify(appSettings));
+  if (_currentUID) localStorage.setItem(lsKey('sb_settings'), JSON.stringify(appSettings));
 
   // API keys — save to localStorage
   const geminiKey = document.getElementById('set-gemini-key')?.value.trim();
@@ -3671,8 +3675,28 @@ async function signInWithGoogle() {
   }
 }
 
+function resetAppState() {
+  invItems           = [];
+  invFilter          = 'ALL';
+  photoFile          = null;
+  parsedCSVRows      = [];
+  expMonthFilter     = 'ALL';
+  currentPopupTab    = 'live';
+  expandedHistId     = null;
+  appSettings        = { theme: 'light', currency: 'INR', name: 'Tarami' };
+  _allCustomersCache = [];
+  _allSalesCache     = [];
+  _editingExpenses   = [];
+  _currentUID        = null;
+}
+
 async function signOutUser() {
   if (!confirm('Sign out of Tarami?')) return;
+  // Clear this user's cached localStorage data before resetting state
+  if (_currentUID) {
+    ['sb_settings', 'sb_categories'].forEach(k => localStorage.removeItem(lsKey(k)));
+  }
+  resetAppState();
   await signOut(_auth);
 }
 
@@ -3775,14 +3799,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // Start app — wait for auth state
 onAuthStateChanged(_auth, async (user) => {
   if (user) {
-    // Logged in — load app
+    // If a different user was previously logged in, fully reset in-memory state
+    if (_currentUID && _currentUID !== user.uid) {
+      resetAppState();
+    }
+    _currentUID = user.uid; // must be set BEFORE initApp() so all path helpers work
     document.getElementById('fb-loading').style.display = 'flex';
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app').style.display = 'none';
     await initApp();
     showApp();
   } else {
-    // Not logged in — show auth screen
+    // Logged out — wipe all state so next login starts clean
+    resetAppState();
     showAuthScreen();
   }
 });
