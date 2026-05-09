@@ -418,7 +418,115 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 </head>
 <body>
 
+<!-- Customer Checkout Screen (shown when ?storeId= is in URL) -->
+<div id="customer-screen" style="display:none;min-height:100vh;background:var(--bg);flex-direction:column;align-items:center;justify-content:flex-start;max-width:430px;margin:0 auto">
 
+  <!-- Checkout form -->
+  <div id="cust-form-view" style="width:100%;padding:40px 24px 40px">
+    <img src="logo-JUGL.svg" alt="JUGL" style="height:44px;object-fit:contain;display:block;margin-bottom:28px">
+    <div id="cust-store-name" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:4px">Store</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:28px">Enter your details to complete checkout</div>
+
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:6px">Full name <span style="color:var(--rose)">*</span></label>
+      <input id="cust-name" type="text" placeholder="Your name" autocomplete="name"
+        style="width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:'DM Sans',sans-serif;background:var(--card);color:var(--text-primary);outline:none;box-sizing:border-box">
+    </div>
+    <div style="margin-bottom:24px">
+      <label style="font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:6px">Phone or email <span style="color:var(--rose)">*</span></label>
+      <input id="cust-contact" type="text" placeholder="+91 9999999999 or email@example.com" autocomplete="tel email"
+        style="width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:'DM Sans',sans-serif;background:var(--card);color:var(--text-primary);outline:none;box-sizing:border-box">
+    </div>
+    <div id="cust-form-error" style="color:var(--rose);font-size:13px;margin-bottom:14px;display:none"></div>
+    <button onclick="submitCheckout()" style="width:100%;padding:15px;background:var(--text-primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;touch-action:manipulation">
+      Confirm checkout
+    </button>
+  </div>
+
+  <!-- Payment methods -->
+  <div id="cust-payment-view" style="display:none;width:100%;padding:32px 24px 40px">
+    <button onclick="document.getElementById('cust-payment-view').style.display='none';document.getElementById('cust-form-view').style.display='block'" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;display:flex;align-items:center;gap:4px;padding:0;margin-bottom:20px;touch-action:manipulation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg>
+      Back
+    </button>
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--text-primary);margin-bottom:4px">Choose payment</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:24px">Select how you'd like to pay</div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">UPI Apps</div>
+    <div style="background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);overflow:hidden;margin-bottom:12px">
+      <button onclick="openUPI('phonepe')" class="_pay-btn" style="width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;touch-action:manipulation;font-family:'DM Sans',sans-serif">
+        <div style="width:38px;height:38px;border-radius:10px;background:#5F259F;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#5F259F"/><text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="14" font-weight="700" font-family="sans-serif">Pe</text></svg>
+        </div>
+        <div style="flex:1;text-align:left"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">PhonePe</div></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+      <button onclick="openUPI('gpay')" class="_pay-btn" style="width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;touch-action:manipulation;font-family:'DM Sans',sans-serif">
+        <div style="width:38px;height:38px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.0 24.56c0-1.56-.14-3.06-.4-4.5H24v8.5h11.8C34.7 33.9 29.8 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6-6C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 20.5-7.3 22-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        </div>
+        <div style="flex:1;text-align:left"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">Google Pay</div></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+      <button onclick="openUPI('paytm')" class="_pay-btn" style="width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;touch-action:manipulation;font-family:'DM Sans',sans-serif">
+        <div style="width:38px;height:38px;border-radius:10px;background:#002B70;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:#00BAF2;font-family:sans-serif">Ptm</div>
+        <div style="flex:1;text-align:left"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">Paytm</div></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+      <button onclick="openUPI('bhim')" class="_pay-btn" style="width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;touch-action:manipulation;font-family:'DM Sans',sans-serif">
+        <div style="width:38px;height:38px;border-radius:10px;background:#00529A;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:#fff;font-family:sans-serif">BHIM</div>
+        <div style="flex:1;text-align:left"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">BHIM UPI</div></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+      <button onclick="openUPI('amazon')" class="_pay-btn" style="width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;touch-action:manipulation;font-family:'DM Sans',sans-serif">
+        <div style="width:38px;height:38px;border-radius:10px;background:#FF9900;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;color:#fff;font-family:sans-serif">amzn</div>
+        <div style="flex:1;text-align:left"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">Amazon Pay</div></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+      <button onclick="openUPI('supermoney')" class="_pay-btn" style="width:100%;padding:14px 16px;background:none;border:none;display:flex;align-items:center;gap:14px;cursor:pointer;touch-action:manipulation;font-family:'DM Sans',sans-serif">
+        <div style="width:38px;height:38px;border-radius:10px;background:#1DA462;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;color:#fff;font-family:sans-serif">SM</div>
+        <div style="flex:1;text-align:left"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">SuperMoney</div></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Other</div>
+    <div style="background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);overflow:hidden">
+      <button onclick="confirmPayment('Cash')" class="_pay-btn" style="width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;touch-action:manipulation;font-family:'DM Sans',sans-serif">
+        <div style="width:38px;height:38px;border-radius:10px;background:#6DB070;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="#fff"><path d="M128,72a56,56,0,1,0,56,56A56.06,56.06,0,0,0,128,72Zm0,96a40,40,0,1,1,40-40A40,40,0,0,1,128,168ZM240,56H16A8,8,0,0,0,8,64V192a8,8,0,0,0,8,8H240a8,8,0,0,0,8-8V64A8,8,0,0,0,240,56Zm-8,128H24V72H232Z"/></svg>
+        </div>
+        <div style="flex:1;text-align:left"><div style="font-size:14px;font-weight:600;color:var(--text-primary)">Cash</div></div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+      <div style="width:100%;padding:14px 16px;display:flex;align-items:center;gap:14px;opacity:0.4">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="var(--text-muted)"><path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,144H32V64H224ZM48,136a8,8,0,0,1,8-8H72a8,8,0,0,1,0,16H56A8,8,0,0,1,48,136Zm48,0a8,8,0,0,1,8-8h16a8,8,0,0,1,0,16H104A8,8,0,0,1,96,136Z"/></svg>
+        </div>
+        <div style="flex:1;text-align:left">
+          <div style="font-size:14px;font-weight:600;color:var(--text-primary)">Card</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:1px">Coming soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success state -->
+  <div id="cust-success-view" style="display:none;width:100%;padding:40px 24px;text-align:center">
+    <img src="logo-JUGL.svg" alt="JUGL" style="height:44px;object-fit:contain;display:block;margin:0 auto 36px">
+    <div style="width:68px;height:68px;border-radius:50%;background:rgba(109,176,112,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 256 256" fill="#6DB070"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:500;color:var(--text-primary);margin-bottom:6px">You're all set!</div>
+    <div id="cust-success-msg" style="font-size:14px;color:var(--text-muted);margin-bottom:32px;line-height:1.5"></div>
+    <div style="background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);padding:18px;text-align:left">
+      <div id="cust-receipt-name" style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:2px"></div>
+      <div id="cust-receipt-contact" style="font-size:13px;color:var(--text-muted)"></div>
+    </div>
+    <button onclick="document.getElementById('cust-success-view').style.display='none';document.getElementById('cust-form-view').style.display='block'" style="margin-top:20px;width:100%;padding:14px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-secondary);touch-action:manipulation">Back</button>
+  </div>
+
+</div>
 
 <!-- Auth Screen -->
 <div id="auth-screen" class="auth-screen" style="display:none">
@@ -1177,6 +1285,12 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
           <option value="Accessories">Accessories</option>
           <option value="Other">Other</option>
         </select>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">UPI ID</label>
+        <input class="form-input" id="set-upi-id" placeholder="yourname@upi" type="text">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Used on your QR checkout page for payments</div>
       </div>
 
       <div class="form-field">
@@ -3860,6 +3974,8 @@ function openSettingsSheet() {
   if (ownerEl)  ownerEl.value  = appSettings.name        || '';
   if (bizEl)    bizEl.value    = appSettings.bizName      || '';
   if (currEl)   currEl.value   = appSettings.currency     || '₹';
+  const upiEl = document.getElementById('set-upi-id');
+  if (upiEl) upiEl.value = appSettings.upiId || '';
   const bizCatEl = document.getElementById('set-biz-category');
   if (bizCatEl) bizCatEl.value = appSettings.bizCategory  || '';
   if (geminiEl) geminiEl.value = GEMINI_API_KEY       || '';
@@ -3873,6 +3989,7 @@ function saveSettings() {
   appSettings.bizName     = document.getElementById('set-biz-name')?.value.trim()     || appSettings.bizName;
   appSettings.bizCategory = document.getElementById('set-biz-category')?.value        || appSettings.bizCategory;
   appSettings.currency    = document.getElementById('set-currency')?.value             || appSettings.currency;
+  appSettings.upiId       = document.getElementById('set-upi-id')?.value.trim()       || appSettings.upiId || '';
   if (_currentUID) localStorage.setItem(lsKey('sb_settings'), JSON.stringify(appSettings));
 
   // API keys — save to localStorage
@@ -4056,6 +4173,64 @@ Object.assign(window, {
   mlQtyAdj, recalcMarkup, applyMarkup, recalcEditMarkup, applyEditMarkup
 });
 
+// ── CUSTOMER MODE ─────────────────────────────────────────────────
+const _urlParams   = new URLSearchParams(window.location.search);
+const _custStoreId   = _urlParams.get('storeId');
+const _custStoreName = decodeURIComponent(_urlParams.get('name') || 'Store');
+const _custUpiId     = decodeURIComponent(_urlParams.get('upi')  || '');
+const _isCustomerMode = !!_custStoreId;
+
+function showCustomerScreen() {
+  document.getElementById('fb-loading').style.display  = 'none';
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display         = 'none';
+  document.getElementById('customer-screen').style.display = 'flex';
+  document.getElementById('cust-store-name').textContent   = _custStoreName;
+}
+
+function submitCheckout() {
+  const name    = document.getElementById('cust-name').value.trim();
+  const contact = document.getElementById('cust-contact').value.trim();
+  const errEl   = document.getElementById('cust-form-error');
+  errEl.style.display = 'none';
+  if (!name)    { errEl.textContent = 'Please enter your name.';           errEl.style.display = 'block'; return; }
+  if (!contact) { errEl.textContent = 'Please enter your phone or email.'; errEl.style.display = 'block'; return; }
+  document.getElementById('cust-form-view').style.display    = 'none';
+  document.getElementById('cust-payment-view').style.display = 'block';
+}
+
+function openUPI(app) {
+  const upi  = _custUpiId;
+  const name = encodeURIComponent(_custStoreName);
+  const schemes = {
+    phonepe:    `phonepe://pay?pa=${upi}&pn=${name}&cu=INR`,
+    gpay:       `tez://upi/pay?pa=${upi}&pn=${name}&cu=INR`,
+    paytm:      `paytmmp://pay?pa=${upi}&pn=${name}&cu=INR`,
+    bhim:       `upi://pay?pa=${upi}&pn=${name}&cu=INR`,
+    amazon:     `amz://upi/pay?pa=${upi}&pn=${name}&cu=INR`,
+    supermoney: `supermoney://upi/pay?pa=${upi}&pn=${name}&cu=INR`,
+  };
+  window.location.href = schemes[app] || `upi://pay?pa=${upi}&pn=${name}&cu=INR`;
+  setTimeout(() => confirmPayment(app), 1500);
+}
+
+async function confirmPayment(method) {
+  const name    = document.getElementById('cust-name').value.trim();
+  const contact = document.getElementById('cust-contact').value.trim();
+  const label   = { phonepe:'PhonePe', gpay:'Google Pay', paytm:'Paytm', bhim:'BHIM UPI', amazon:'Amazon Pay', supermoney:'SuperMoney', Cash:'Cash' }[method] || method;
+  try {
+    const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await addDoc(collection(_db, 'users', _custStoreId, 'customers'), { name, contact, paymentMethod: label, source: 'QR Checkout', createdAt: serverTimestamp() });
+  } catch(e) { console.warn('Firestore save failed:', e.message); }
+  document.getElementById('cust-payment-view').style.display  = 'none';
+  document.getElementById('cust-success-view').style.display  = 'block';
+  document.getElementById('cust-success-msg').textContent     = `Thanks, ${name}! Your payment via ${label} has been noted.`;
+  document.getElementById('cust-receipt-name').textContent    = name;
+  document.getElementById('cust-receipt-contact').textContent = contact;
+}
+
+Object.assign(window, { submitCheckout, openUPI, confirmPayment });
+
 // ── BOOT ──────────────────────────────────────────────────────────
 document.getElementById('fb-loading').style.display = 'flex';
 document.getElementById('app').style.display = 'none';
@@ -4081,6 +4256,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Start app — wait for auth state
 onAuthStateChanged(_auth, async (user) => {
+  // Customer mode: storeId in URL — always show checkout, never the owner app
+  if (_isCustomerMode) {
+    showCustomerScreen();
+    return;
+  }
+
   if (user) {
     // If a different user was previously logged in, fully reset in-memory state
     if (_currentUID && _currentUID !== user.uid) {
@@ -4103,7 +4284,8 @@ onAuthStateChanged(_auth, async (user) => {
 function openQRModal() {
   const storeId   = _currentUID || 'unknown';
   const storeName = encodeURIComponent(appSettings.bizName || appSettings.name || 'My Store');
-  const url       = `${window.location.origin}/?storeId=${storeId}&name=${storeName}`;
+  const upi       = encodeURIComponent(appSettings.upiId || '');
+  const url       = `${window.location.origin}/?storeId=${storeId}&name=${storeName}&upi=${upi}`;
 
   document.getElementById('qr-modal-url').textContent = decodeURIComponent(url);
   document.getElementById('qr-canvas-wrap').innerHTML  = '';
