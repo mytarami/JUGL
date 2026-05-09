@@ -484,17 +484,17 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <div id="dash-greeting" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin-bottom:14px;position:relative;z-index:1">Good morning!</div>
     <div id="dash-insights" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:8px"></div>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
-      <div style="cursor:pointer" onclick="openSalesLog()">
-        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Sales</div>
-        <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-sales">0</div>
+      <div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Revenue</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-revenue">₹0</div>
       </div>
       <div style="cursor:pointer" onclick="switchTab('popup')">
         <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Orders</div>
         <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-orders">0</div>
       </div>
-      <div style="cursor:pointer" onclick="switchTab('customers')">
-        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Customers</div>
-        <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-customers">0</div>
+      <div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Profit</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-profit">₹0</div>
       </div>
     </div>
     <!-- Hidden inputs kept for JS compatibility -->
@@ -3361,14 +3361,17 @@ async function renderDashboard() {
   if (obEl) obEl.style.display = totalSales === 0 ? 'block' : 'none';
   renderGreeting(events, expenses, totalSales);
 
-  // Update hero card Sales / Orders / Customers
-  const heroSalesEl = document.getElementById('dash-hero-sales');
-  if (heroSalesEl) heroSalesEl.textContent = totalSales;
+  // Update hero card Revenue / Orders / Profit
+  const heroRevenueEl = document.getElementById('dash-hero-revenue');
+  if (heroRevenueEl) heroRevenueEl.textContent = '₹' + totalRev.toLocaleString('en-IN');
   const totalOrders = events.filter(e => e.status === 'done' || e.status === 'active' || e.status === 'live').length;
   const heroOrdersEl = document.getElementById('dash-hero-orders');
   if (heroOrdersEl) heroOrdersEl.textContent = totalOrders;
-  const heroCustomersEl = document.getElementById('dash-hero-customers');
-  if (heroCustomersEl) heroCustomersEl.textContent = customers.length;
+  const heroProfitEl = document.getElementById('dash-hero-profit');
+  if (heroProfitEl) {
+    heroProfitEl.textContent = (net < 0 ? '–₹' : '₹') + Math.abs(net).toLocaleString('en-IN');
+    heroProfitEl.style.color = net < 0 ? 'var(--rose)' : '#fff';
+  }
 
   // Update mini net display
   const netMini = totalRev - totalExp;
