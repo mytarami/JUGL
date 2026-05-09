@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SoloBiz — Tarami</title>
+<title>Tarami</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -535,7 +535,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
 <div id="dash-onboarding" style="display:none;margin:16px 24px 0">
     <div class="onboarding-card">
-      <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px">Get started with SoloBiz</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px">Get started with Tarami</div>
       <div class="onboarding-step">
         <div class="onboarding-num">1</div>
         <div><div class="onboarding-text">Add your first inventory item</div>
@@ -715,15 +715,21 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div style="margin:20px 24px 0">
     <div class="card">
       <div class="stat-label">Total expenses · All time</div>
-      <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:500;margin:6px 0 16px;letter-spacing:-0.5px">₹<span id="exp-total">0</span></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="exp-by-cat"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:500;margin:6px 0 0;letter-spacing:-0.5px">₹<span id="exp-total">0</span></div>
     </div>
   </div>
   <div id="exp-month-pills" class="filter-scroll"></div>
-  <div class="section-header"><span class="section-title">Transactions</span><div style="display:flex;gap:12px;align-items:center">
-        <span class="section-action" onclick="openSheet('sheet-import-csv')" style="color:var(--text-muted)">📥 Import</span>
-        <span class="section-action" onclick="openSheet('sheet-add-expense')">+ Add</span>
-      </div></div>
+  <div class="section-header"><span class="section-title">Transactions</span></div>
+  <div style="display:flex;gap:10px;margin:0 24px 12px">
+    <button onclick="openSheet('sheet-import-csv')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-secondary);transition:transform 0.15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" style="flex-shrink:0"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-40-64a8,8,0,0,1-8,8H136v16a8,8,0,0,1-16,0V160H104a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,160,152Z"/></svg>
+      Import CSV
+    </button>
+    <button onclick="openSheet('sheet-add-expense')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;background:var(--text-primary);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:#fff;transition:transform 0.15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
+      <svg viewBox="0 0 256 256" width="16" height="16" style="fill:#fff;flex-shrink:0"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></svg>
+      Add Expense
+    </button>
+  </div>
   <div style="background:var(--card);border-radius:var(--radius-sm);margin:0 24px;border:1px solid var(--border);overflow:hidden"><div id="expense-list"></div></div>
   <div id="expense-empty" class="empty-state" style="display:none"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div><div class="empty-desc">Add travel, rent, setup costs and more</div><br><button class="btn-primary" style="width:auto;padding:12px 28px" onclick="openSheet('sheet-add-expense')">Log expense</button></div>
   <div style="height:80px"></div>
@@ -1439,7 +1445,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       </div>
       <div class="faq-item">
         <div class="faq-q">Is my payment/financial data secure?</div>
-        <div class="faq-a">Yes. SoloBiz uses Google Firebase with authentication — no one else can access your data. We don't process any payments; the app only tracks records you enter manually.</div>
+        <div class="faq-a">Yes. Tarami uses Google Firebase with authentication — no one else can access your data. We don't process any payments; the app only tracks records you enter manually.</div>
       </div>
     </div>
 
@@ -1466,7 +1472,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <!-- ═══ FIREBASE SDK ═══ -->
 <script type="module">
 // ════════════════════════════════════════════════════════════════
-// SOLOBIZ — Clean single-module script
+// TARAMI — Clean single-module script
 // All functions defined once, in order, no duplicates possible
 // ════════════════════════════════════════════════════════════════
 
@@ -1867,10 +1873,7 @@ function handleEditPhoto(input) {
 function updateSearchPlaceholder() {
   const el = document.getElementById('inv-search');
   if (!el) return;
-  // Use business category (e.g. "Jewellery", "Clothing") not the business name
-  const cat = appSettings.bizCategory || '';
-  const catLower = cat ? cat.toLowerCase() : 'items';
-  el.placeholder = `Search ${catLower}...`;
+  el.placeholder = 'Search items...';
 }
 
 function renderInventory() {
@@ -2645,10 +2648,6 @@ async function renderExpenses() {
   document.getElementById('exp-month-pills').innerHTML = months.slice(0,10).map(m =>
     `<div class="filter-pill ${expMonthFilter===m?'active':''}" onclick="setExpMonth('${m}')">${m==='ALL'?'All time':fmtMonth(m)}</div>`).join('');
   const expenses = expMonthFilter==='ALL' ? all : all.filter(e => (e.date||'').startsWith(expMonthFilter));
-  const byCat = {};
-  expenses.forEach(e => { byCat[e.cat] = (byCat[e.cat]||0)+e.amount; });
-  document.getElementById('exp-by-cat').innerHTML = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([cat,amt]) =>
-    `<div style="text-align:center;padding:10px 8px;background:var(--bg);border-radius:10px"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px">${cat}</div><div style="font-size:14px;font-weight:600;margin-top:3px">₹${amt.toLocaleString('en-IN')}</div></div>`).join('');
   const list  = document.getElementById('expense-list');
   const empty = document.getElementById('expense-empty');
   if (!expenses.length) { list.innerHTML=''; list.style.display='none'; empty.style.display='flex'; return; }
@@ -3571,7 +3570,7 @@ async function signInWithGoogle() {
 }
 
 async function signOutUser() {
-  if (!confirm('Sign out of SoloBiz?')) return;
+  if (!confirm('Sign out of Tarami?')) return;
   await signOut(_auth);
 }
 
