@@ -481,24 +481,22 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <div id="dash-insights" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:8px"></div>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1">
       <div style="display:flex;gap:16px">
-        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Revenue</div><div style="font-size:13px;font-weight:600;color:#fff">₹<span id="dash-rev">0</span></div></div>
-        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Expenses</div><div style="font-size:13px;font-weight:600;color:#fff">₹<span id="dash-exp">0</span></div></div>
-        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Net</div><div style="font-size:13px;font-weight:600;color:#fff" id="dash-net-mini">₹0</div></div>
+        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Revenue</div><div style="font-size:13px;font-weight:600;color:#fff" class="rev-hideable">₹<span id="dash-rev">0</span></div></div>
+        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Expenses</div><div style="font-size:13px;font-weight:600;color:#fff" class="rev-hideable">₹<span id="dash-exp">0</span></div></div>
+        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Net</div><div style="font-size:13px;font-weight:600;color:#fff" id="dash-net-mini" class="rev-hideable">₹0</div></div>
       </div>
-      <div style="font-size:10px;font-weight:600;color:rgba(201,169,110,0.8);cursor:pointer" onclick="switchTab('expenses')">Details →</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button id="rev-toggle-btn" onclick="toggleRevVisibility(event)" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;touch-action:manipulation">
+          <svg id="rev-eye-icon" viewBox="0 0 24 24" width="16" height="16" style="stroke:rgba(255,255,255,0.4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg id="rev-eye-off-icon" viewBox="0 0 24 24" width="16" height="16" style="stroke:rgba(255,255,255,0.4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+        <div style="font-size:10px;font-weight:600;color:rgba(201,169,110,0.8);cursor:pointer" onclick="switchTab('expenses')">Details →</div>
+      </div>
     </div>
     <!-- Hidden inputs kept for JS compatibility -->
     <span id="dash-net-sign" style="display:none">₹</span>
     <span id="dash-net-val" style="display:none">0</span>
     <span id="dash-hero-label" style="display:none"></span>
-  </div>
-  <!-- Upcoming events horizontal scroll -->
-  <div id="home-upcoming-section" style="display:none;margin:16px 0 0">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:0 24px;margin-bottom:10px">
-      <div style="font-size:13px;font-weight:600;color:var(--text-primary)">Upcoming events</div>
-      <div style="font-size:12px;color:var(--gold);cursor:pointer" onclick="switchTab('popup');switchPopupTab('upcoming')">See all</div>
-    </div>
-    <div id="home-upcoming-scroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 24px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch"></div>
   </div>
 
   <!-- Stats tiles: Inventory, Pop-Ups, Customers, Deadstock -->
@@ -546,7 +544,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="onboarding-step">
         <div class="onboarding-num">3</div>
         <div><div class="onboarding-text">Log your first sale</div>
-        <div class="onboarding-action" onclick="openSheet('sheet-log-method')">Log sale →</div></div>
+        <div class="onboarding-action" onclick="openManualLog()">Log sale →</div></div>
       </div>
     </div>
   </div>
@@ -649,7 +647,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
           <div class="lec-stat" style="border-left:1px solid rgba(255,255,255,0.12)"><div class="lec-stat-val" id="lec-rent">₹0</div><div class="lec-stat-lbl">Stall rent</div></div>
           <div class="lec-stat" style="border-left:1px solid rgba(255,255,255,0.12)"><div class="lec-stat-val" id="lec-net">₹0</div><div class="lec-stat-lbl">Net so far</div></div>
         </div>
-        <button class="lec-log-btn" onclick="openSheet('sheet-log-method')">+ Log Sale</button>
+        <button class="lec-log-btn" onclick="openManualLog()">+ Log Sale</button>
       </div>
 
       <!-- Recent sales list -->
@@ -946,8 +944,18 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <!-- SHEET: Manual log -->
 <div class="sheet-overlay" id="sheet-manual-log" onclick="closeSheet(event,'sheet-manual-log')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">Log manually</div>
+  <div class="sheet-title">Log sale</div>
   <div class="sheet-body">
+    <!-- Optional photo -->
+    <div class="form-field">
+      <label class="form-label">Photo (optional)</label>
+      <div class="photo-upload-area" id="sale-photo-area" onclick="document.getElementById('sale-photo-input').click()" style="aspect-ratio:2.2">
+        <span class="upload-icon">📷</span>
+        <span class="upload-hint">Tap to add a photo</span>
+        <img id="sale-photo-preview" src="" alt="" style="display:none">
+      </div>
+      <input type="file" id="sale-photo-input" accept="image/*" style="display:none" onchange="handleSalePhoto(this)">
+    </div>
     <div class="form-field"><label class="form-label">Category</label>
       <select class="form-input" id="ml-cat"></select>
     </div>
@@ -1124,21 +1132,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       </div>
 
       <div style="height:1px;background:var(--border);margin:20px 0"></div>
-      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">AI & API keys</div>
-
-      <div class="form-field" style="display:none">
-        <label class="form-label">Gemini API key</label>
-        <input class="form-input" id="set-gemini-key" placeholder="For inventory duplicate detection" type="password" autocomplete="off">
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Get from <a href="https://aistudio.google.com" target="_blank" style="color:var(--gold)">aistudio.google.com</a> · used for photo duplicate detection</div>
-      </div>
-
-      <div class="form-field">
-        <label class="form-label">Anthropic API key</label>
-        <input class="form-input" id="set-claude-key" placeholder="For AI scan at pop-ups" type="password" autocomplete="off">
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Get from <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold)">console.anthropic.com</a> · used for scan-to-log sales</div>
-      </div>
-
-      <div style="height:1px;background:var(--border);margin:20px 0"></div>
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Inventory categories</div>
       <div id="cat-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
       <div style="display:flex;gap:8px">
@@ -1173,7 +1166,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
   <div class="sheet-title" style="margin-bottom:20px">Add</div>
   <div class="sheet-body" style="padding-top:0">
     <div class="quick-add-grid">
-      <button class="quick-add-btn" onclick="forceCloseSheet('sheet-quick-add');openSheet('sheet-log-method')">
+      <button class="quick-add-btn" onclick="forceCloseSheet('sheet-quick-add');openManualLog()">
         <div class="quick-add-icon">🛒</div>
         <div class="quick-add-label">Log Sale</div>
       </button>
@@ -1657,13 +1650,17 @@ function switchTab(tab) {
 function switchPopupTab(tab) {
   currentPopupTab = tab;
   document.getElementById('ptab-live')?.classList.toggle('active', tab === 'live');
+  document.getElementById('ptab-upcoming')?.classList.toggle('active', tab === 'upcoming');
   document.getElementById('ptab-history')?.classList.toggle('active', tab === 'history');
   const lv = document.getElementById('popup-live-view');
+  const uv = document.getElementById('popup-upcoming-view');
   const hv = document.getElementById('popup-history-view');
   if (lv) lv.style.display = tab === 'live' ? 'block' : 'none';
+  if (uv) uv.style.display = tab === 'upcoming' ? 'block' : 'none';
   if (hv) hv.style.display = tab === 'history' ? 'block' : 'none';
   if (tab === 'history') renderHistory();
   if (tab === 'live') renderLive();
+  if (tab === 'upcoming') renderUpcoming();
 }
 
 // ── CHIP SELECTION ────────────────────────────────────────────────
@@ -2130,6 +2127,9 @@ async function renderEvents() {
   if (currentPopupTab === 'history') {
     await renderHistory();
   }
+  if (currentPopupTab === 'upcoming') {
+    await renderUpcoming();
+  }
 }
 
 async function renderLive() {
@@ -2344,10 +2344,43 @@ function closeSaleSuccess() {
 
 function logAnotherSale() {
   forceCloseSheet('sheet-sale-success');
-  // Re-open the log method picker
-  openSheet('sheet-log-method');
+  // Re-open the manual log directly
+  openManualLog();
 }
 
+
+// ── REVENUE VISIBILITY TOGGLE ────────────────────────────────────
+let _revHidden = false;
+function toggleRevVisibility(e) {
+  e.stopPropagation();
+  _revHidden = !_revHidden;
+  document.querySelectorAll('.rev-hideable').forEach(el => {
+    if (_revHidden) {
+      el.dataset.original = el.textContent;
+      el.textContent = '•••••';
+    } else {
+      // Re-render dashboard to restore real values
+    }
+  });
+  document.getElementById('rev-eye-icon').style.display = _revHidden ? 'none' : 'block';
+  document.getElementById('rev-eye-off-icon').style.display = _revHidden ? 'block' : 'none';
+  if (!_revHidden) renderDashboard();
+}
+
+// ── SALE PHOTO HANDLER ──────────────────────────────────────────
+let _salePhotoFile = null;
+function handleSalePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  _salePhotoFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('sale-photo-preview');
+    if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+    document.getElementById('sale-photo-area')?.classList.add('has-img');
+  };
+  reader.readAsDataURL(file);
+}
 
 // ── MANUAL LOG OPEN ──────────────────────────────────────────────
 function openManualLog() {
@@ -2355,6 +2388,14 @@ function openManualLog() {
   const cats = getCategories();
   const sel  = document.getElementById('ml-cat');
   if (sel) sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+  // Reset sale photo
+  _salePhotoFile = null;
+  const spv = document.getElementById('sale-photo-preview');
+  if (spv) { spv.style.display = 'none'; spv.src = ''; }
+  const spa = document.getElementById('sale-photo-area');
+  if (spa) spa.classList.remove('has-img');
+  const spi = document.getElementById('sale-photo-input');
+  if (spi) spi.value = '';
   openSheet('sheet-manual-log');
 }
 
@@ -2372,8 +2413,12 @@ async function confirmManualSale() {
     if (custName) await DB.addCustomer({id:DB.newId(), name:custName, phone:custPhone, source:'Pop-Up', notes:`Bought: ${name}`, createdAt:new Date().toISOString()});
     ['ml-name','ml-price','ml-cust-name','ml-cust-phone'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('ml-qty').value = '1';
+    _salePhotoFile = null;
+    const spv = document.getElementById('sale-photo-preview');
+    if (spv) { spv.style.display = 'none'; spv.src = ''; }
+    const spa = document.getElementById('sale-photo-area');
+    if (spa) spa.classList.remove('has-img');
     forceCloseSheet('sheet-manual-log');
-    forceCloseSheet('sheet-log-method');
     renderLive();
     renderDashboard();
     showToast('✅ ' + name + ' · ₹' + (price*qty).toLocaleString('en-IN'));
@@ -2392,7 +2437,7 @@ async function handleScanPhoto(input) {
     document.getElementById('scan-form').style.display = 'none';
     document.getElementById('scan-status').textContent = '🔍 Identifying item...';
     if (!CLAUDE_API_KEY) {
-      document.getElementById('scan-status').textContent = 'Add Claude API key to enable AI scan';
+      document.getElementById('scan-status').textContent = '';
       document.getElementById('scan-form').style.display = 'block';
       return;
     }
@@ -3134,11 +3179,10 @@ function renderGreeting(events, expenses, totalSales) {
   const greetEl = document.getElementById('dash-greeting');
   if (greetEl) greetEl.textContent = `Good ${tod}${name ? ', ' + name : ''}!`;
 
-  // Build insights
+  // Build a single insight
   const insights = [];
   const now      = new Date();
   const thisWeek = new Date(now); thisWeek.setDate(now.getDate() - 7);
-  const thisMonth= new Date(now.getFullYear(), now.getMonth(), 1);
 
   // Weekly revenue
   const weekEvents = events.filter(e => new Date(e.date||e.createdAt||0) >= thisWeek);
@@ -3147,40 +3191,24 @@ function renderGreeting(events, expenses, totalSales) {
     insights.push({ icon:'📈', text:`₹${weekRev.toLocaleString('en-IN')} revenue this week — keep it up!` });
   }
 
-  // Active/upcoming events
-  const upcoming = events.filter(e => e.status==='upcoming').length;
-  const active   = events.filter(e => e.status==='active'||e.status==='live').length;
-  if (active > 0) {
+  // Active event
+  const active = events.filter(e => e.status==='active'||e.status==='live').length;
+  if (active > 0 && insights.length === 0) {
     insights.push({ icon:'🟢', text:`You have a live event running right now` });
-  } else if (upcoming > 0) {
-    insights.push({ icon:'📅', text:`${upcoming} upcoming event${upcoming>1?'s':''} scheduled` });
   }
 
-  // Top seller from all sales
-  const salesCount = {};
-  events.forEach(ev => (ev.sales||[]).forEach(s => {
-    const n = s.name||s.item||'';
-    if (n) salesCount[n] = (salesCount[n]||0) + ((s.unitPrice||s.amount||0)*(s.qty||1));
-  }));
-  const topSeller = Object.entries(salesCount).sort((a,b)=>b[1]-a[1])[0];
-  if (topSeller) {
-    insights.push({ icon:'⭐', text:`Top seller: ${topSeller[0]} — ₹${topSeller[1].toLocaleString('en-IN')}` });
-  }
-
-  // New customers this month
   // Fallback: total sales count
-  if (insights.length < 2 && totalSales > 0) {
+  if (insights.length === 0 && totalSales > 0) {
     insights.push({ icon:'🛍️', text:`${totalSales} total sale${totalSales>1?'s':''} logged across all events` });
   }
 
   // No data state
   if (insights.length === 0) {
     insights.push({ icon:'✨', text:'Create your first event to start tracking sales' });
-    insights.push({ icon:'💎', text:'Add inventory items to get started' });
   }
 
   const insEl = document.getElementById('dash-insights');
-  if (insEl) insEl.innerHTML = insights.slice(0,3).map(i =>
+  if (insEl) insEl.innerHTML = insights.slice(0,1).map(i =>
     `<div style="display:flex;align-items:center;gap:8px">
       <span style="font-size:13px">${i.icon}</span>
       <span style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.4">${i.text}</span>
@@ -3319,7 +3347,6 @@ async function renderDashboard() {
   const obEl = document.getElementById('dash-onboarding');
   if (obEl) obEl.style.display = totalSales === 0 ? 'block' : 'none';
   renderGreeting(events, expenses, totalSales);
-  renderHomeUpcoming();
 
   // Update mini net display in new hero card
   const netMini = totalRev - totalExp;
@@ -3350,7 +3377,7 @@ async function renderDashboard() {
 }
 
 async function renderAll() {
-  await Promise.all([renderExpenses(), renderEvents(), renderCustomers()]);
+  await Promise.all([renderExpenses(), renderEvents(), renderCustomers(), renderUpcoming()]);
   renderDashboard();
 }
 
@@ -3604,7 +3631,8 @@ Object.assign(window, {
   addCategory, removeCategory,
   handleAuth, switchAuthTab, signOutUser, signInWithGoogle,
   showSaleSuccess, closeSaleSuccess, logAnotherSale, openSaleDetail,
-  renderDashboard, renderAll
+  renderDashboard, renderAll,
+  toggleRevVisibility, handleSalePhoto
 });
 
 // ── BOOT ──────────────────────────────────────────────────────────
