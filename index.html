@@ -1625,7 +1625,7 @@ let parsedCSVRows = [];
 let expMonthFilter    = 'ALL';
 let currentPopupTab   = 'live';
 let expandedHistId    = null;
-let appSettings       = { theme: 'light', currency: 'INR', name: 'Tarami' };
+let appSettings       = { theme: 'light', currency: 'INR', name: '' };
 
 // ── UTILITIES ─────────────────────────────────────────────────────
 function showToast(msg) {
@@ -1727,7 +1727,16 @@ document.addEventListener('click', e => {
 // ── SETTINGS ──────────────────────────────────────────────────────
 function loadSettings() {
   try {
-    const s = _currentUID ? localStorage.getItem(lsKey('sb_settings')) : null;
+    let s = _currentUID ? localStorage.getItem(lsKey('sb_settings')) : null;
+    // One-time migration: move old unscoped key to UID-scoped key
+    if (!s && _currentUID) {
+      const legacy = localStorage.getItem('sb_settings');
+      if (legacy) {
+        localStorage.setItem(lsKey('sb_settings'), legacy);
+        localStorage.removeItem('sb_settings');
+        s = legacy;
+      }
+    }
     if (s) appSettings = {...appSettings, ...JSON.parse(s)};
   } catch(e) {}
   // API keys are device-wide (not user-specific)
