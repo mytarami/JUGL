@@ -34,11 +34,12 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .screen.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;justify-content:space-around;padding:0 4px;z-index:100}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;border-radius:14px;cursor:pointer;transition:background 0.15s;min-width:48px;border:none;background:transparent}
-.nav-btn.active{background:var(--text-primary);color:#fff}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;border-radius:0;cursor:pointer;transition:all 0.15s;min-width:48px;border:none;background:transparent;position:relative;color:var(--text-muted);opacity:0.45}
+.nav-btn.active{opacity:1;color:var(--text-primary)}
+.nav-btn.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:2.5px;background:var(--text-primary);border-radius:2px}
 .nav-icon{font-size:18px;line-height:1}
-.nav-label{font-size:9px;font-weight:600;letter-spacing:0.03em;color:var(--text-muted)}
-.nav-btn.active .nav-label{color:#fff}
+.nav-label{font-size:9px;font-weight:600;letter-spacing:0.03em;color:inherit}
+.nav-btn.active .nav-label{color:var(--text-primary)}
 .card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:20px}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 24px 0}
 .stat-card{background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--border);padding:16px}
@@ -301,7 +302,8 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .auth-footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:20px}
 
 /* ── NAV PLUS BUTTON ── */
-.nav-plus{width:52px;height:52px;border-radius:50% !important;background:var(--text-primary) !important;margin-top:-16px;box-shadow:0 4px 16px rgba(0,0,0,0.2);padding:0 !important;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.nav-plus{width:52px;height:52px;border-radius:50% !important;background:var(--text-primary) !important;margin-top:-16px;box-shadow:0 4px 16px rgba(0,0,0,0.2);padding:0 !important;display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:1 !important}
+.nav-plus::after{display:none !important}
 .nav-plus-icon{font-size:26px;color:#fff;line-height:1;font-weight:300}
 .nav-plus .nav-label{display:none}
 
@@ -365,8 +367,8 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .upcoming-list-card:active{opacity:0.85}
 
 /* ── LOG EXPENSE FIXED BUTTON ── */
-.log-expense-fixed{position:fixed;bottom:calc(var(--nav-h) + 12px);left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:382px;background:var(--gold);color:#fff;border:none;border-radius:var(--radius-sm);padding:15px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(201,169,110,0.4);z-index:100;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.log-expense-fixed:active{transform:translateX(-50%) scale(0.98);box-shadow:0 2px 10px rgba(201,169,110,0.3)}
+.log-expense-fixed{position:fixed;bottom:calc(var(--nav-h) + 12px);left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:382px;background:var(--text-primary);color:#fff;border:none;border-radius:var(--radius-sm);padding:15px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:100;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.log-expense-fixed:active{transform:translateX(-50%) scale(0.98);box-shadow:0 2px 10px rgba(0,0,0,0.1)}
 
 /* ── HELP BUTTON ── */
 .help-fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:24px;width:44px;height:44px;border-radius:50%;background:var(--gold);border:none;color:#fff;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(201,169,110,0.4);z-index:120;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;touch-action:manipulation}
@@ -481,21 +483,24 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:rgba(201,169,110,0.1)"></div>
     <div id="dash-greeting" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin-bottom:14px;position:relative;z-index:1">Good morning!</div>
     <div id="dash-insights" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:8px"></div>
-    <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1">
-      <div style="display:flex;gap:16px">
-        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Revenue</div><div style="font-size:13px;font-weight:600;color:#fff" class="rev-hideable">₹<span id="dash-rev">0</span></div></div>
-        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Expenses</div><div style="font-size:13px;font-weight:600;color:#fff" class="rev-hideable">₹<span id="dash-exp">0</span></div></div>
-        <div><div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Net</div><div style="font-size:13px;font-weight:600;color:#fff" id="dash-net-mini" class="rev-hideable">₹0</div></div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
+      <div style="cursor:pointer" onclick="openSalesLog()">
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Sales</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-sales">0</div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <button id="rev-toggle-btn" onclick="toggleRevVisibility(event)" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;touch-action:manipulation">
-          <svg id="rev-eye-icon" viewBox="0 0 24 24" width="16" height="16" style="stroke:rgba(255,255,255,0.4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          <svg id="rev-eye-off-icon" viewBox="0 0 24 24" width="16" height="16" style="stroke:rgba(255,255,255,0.4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-        </button>
-        <div style="font-size:10px;font-weight:600;color:rgba(201,169,110,0.8);cursor:pointer" onclick="switchTab('expenses')">Details →</div>
+      <div style="cursor:pointer" onclick="switchTab('popup')">
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Orders</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-orders">0</div>
+      </div>
+      <div style="cursor:pointer" onclick="switchTab('customers')">
+        <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Customers</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-customers">0</div>
       </div>
     </div>
     <!-- Hidden inputs kept for JS compatibility -->
+    <span id="dash-rev" style="display:none">0</span>
+    <span id="dash-exp" style="display:none">0</span>
+    <span id="dash-net-mini" style="display:none">0</span>
     <span id="dash-net-sign" style="display:none">₹</span>
     <span id="dash-net-val" style="display:none">0</span>
     <span id="dash-hero-label" style="display:none"></span>
@@ -719,26 +724,22 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
     </div>
   </div>
   <div id="exp-month-pills" class="filter-scroll"></div>
-  <div class="section-header"><span class="section-title">Transactions</span></div>
-  <div style="display:flex;gap:10px;margin:0 24px 12px">
-    <button onclick="openSheet('sheet-import-csv')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-secondary);transition:transform 0.15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" style="flex-shrink:0"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-40-64a8,8,0,0,1-8,8H136v16a8,8,0,0,1-16,0V160H104a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,160,152Z"/></svg>
-      Import CSV
-    </button>
-    <button onclick="openSheet('sheet-add-expense')" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;background:var(--text-primary);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:#fff;transition:transform 0.15s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
-      <svg viewBox="0 0 256 256" width="16" height="16" style="fill:#fff;flex-shrink:0"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></svg>
-      Add Expense
-    </button>
+  <div class="section-header">
+    <span class="section-title">Transactions</span>
+    <span class="section-action" onclick="openSheet('sheet-import-csv')" style="display:flex;align-items:center;gap:5px;color:var(--text-muted)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256" style="flex-shrink:0"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-40-64a8,8,0,0,1-8,8H136v16a8,8,0,0,1-16,0V160H104a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,160,152Z"/></svg>
+      Import
+    </span>
   </div>
   <div style="background:var(--card);border-radius:var(--radius-sm);margin:0 24px;border:1px solid var(--border);overflow:hidden"><div id="expense-list"></div></div>
   <div id="expense-empty" class="empty-state" style="display:none"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div><div class="empty-desc">Add travel, rent, setup costs and more</div><br><button class="btn-primary" style="width:auto;padding:12px 28px" onclick="openSheet('sheet-add-expense')">Log expense</button></div>
   <div style="height:80px"></div>
 </div>
 
-<!-- Log Expense fixed button -->
+<!-- Add Expense fixed button -->
 <button class="log-expense-fixed" id="log-expense-btn" style="display:none" onclick="openSheet('sheet-add-expense')">
-  <svg viewBox="0 0 256 256" width="18" height="18" style="fill:#fff;flex-shrink:0"><path d="M216,72H56a8,8,0,0,1,0-16H192a8,8,0,0,0,0-16H56A24,24,0,0,0,32,64V192a24,24,0,0,0,24,24H216a16,16,0,0,0,16-16V88A16,16,0,0,0,216,72Zm0,120H56a8,8,0,0,1,0-16H216Zm0-32H56a8,8,0,0,1,0-16H216Zm-36-52a12,12,0,1,1,12,12A12,12,0,0,1,180,108Z"/></svg>
-  Log Expense
+  <svg viewBox="0 0 256 256" width="18" height="18" style="fill:#fff;flex-shrink:0"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></svg>
+  Add Expense
 </button>
 
 <!-- NAV -->
@@ -3360,7 +3361,16 @@ async function renderDashboard() {
   if (obEl) obEl.style.display = totalSales === 0 ? 'block' : 'none';
   renderGreeting(events, expenses, totalSales);
 
-  // Update mini net display in new hero card
+  // Update hero card Sales / Orders / Customers
+  const heroSalesEl = document.getElementById('dash-hero-sales');
+  if (heroSalesEl) heroSalesEl.textContent = totalSales;
+  const totalOrders = events.filter(e => e.status === 'done' || e.status === 'active' || e.status === 'live').length;
+  const heroOrdersEl = document.getElementById('dash-hero-orders');
+  if (heroOrdersEl) heroOrdersEl.textContent = totalOrders;
+  const heroCustomersEl = document.getElementById('dash-hero-customers');
+  if (heroCustomersEl) heroCustomersEl.textContent = customers.length;
+
+  // Update mini net display
   const netMini = totalRev - totalExp;
   const miniEl = document.getElementById('dash-net-mini');
   if (miniEl) miniEl.textContent = (netMini<0?'–':'') + '₹' + Math.abs(netMini).toLocaleString('en-IN');
