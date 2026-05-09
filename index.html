@@ -324,7 +324,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 .hero-filter{background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.5);font-size:10px;font-weight:600;padding:4px 8px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap}
 .hero-filter.active{background:rgba(255,255,255,0.2);color:#fff}
 .hero-filter:active{transform:scale(0.95)}
-.onboarding-card{background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--radius-sm);padding:16px;margin:0 24px}
+.onboarding-card{background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:var(--radius-sm);padding:16px}
 .onboarding-step{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--gold-border)}
 .onboarding-step:last-child{border-bottom:none}
 .onboarding-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -482,16 +482,17 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
   </div>
   <div style="margin:16px 24px 0;background:var(--text-primary);border-radius:var(--radius);padding:22px 24px;position:relative;overflow:hidden">
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1">
+    <div style="margin-bottom:14px;position:relative;z-index:1">
       <div id="dash-greeting" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff">Good morning!</div>
-      <button id="dash-eye-btn" onclick="toggleDashNumbers()" style="background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:background 0.15s" aria-label="Toggle numbers">
-        <svg id="dash-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
-      </button>
     </div>
     <div id="dash-insights" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:8px"></div>
-    <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);position:relative;z-index:1">
+    <button id="dash-eye-btn" onclick="toggleDashNumbers()" style="position:absolute;top:14px;right:0;background:none;border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent" aria-label="Toggle numbers">
+      <svg id="dash-eye-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+      </svg>
+    </button>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
       <div>
         <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Revenue</div>
         <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-revenue">₹0</div>
@@ -504,6 +505,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
         <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px">Profit</div>
         <div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px" id="dash-hero-profit">₹0</div>
       </div>
+    </div>
     </div>
     <!-- Hidden inputs kept for JS compatibility -->
     <span id="dash-rev" style="display:none">0</span>
@@ -535,7 +537,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
       <div class="stat-sub">total</div>
     </div>
     <div class="stat-card" style="cursor:pointer" onclick="openDeadstock()">
-      <div class="stat-label">Deadstock</div>
+      <div class="stat-label">Low stock</div>
       <div class="stat-value" id="dash-deadstock">0</div>
       <div class="stat-sub">out of stock items</div>
     </div>
@@ -548,7 +550,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 
 <div id="dash-onboarding" style="display:none;margin:16px 24px 0">
     <div class="onboarding-card">
-      <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px">Get started with Tarami</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px">Get started with JUGL</div>
       <div class="onboarding-step">
         <div class="onboarding-num">1</div>
         <div><div class="onboarding-text">Add your first inventory item</div>
@@ -597,7 +599,6 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
     <div class="empty-title">No items yet</div>
     <div class="empty-desc">Add your first inventory item with a photo and let AI do the rest</div>
     <br>
-    <button class="btn-primary btn-gold" style="width:auto;padding:12px 28px" onclick="openSheet('sheet-add-item')">Add first item</button>
   </div>
   <div id="inv-loading" class="empty-state">
     <div class="inv-spinner" style="width:28px;height:28px"></div>
@@ -779,7 +780,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 
       <div class="form-field">
         <label class="form-label">Item name</label>
-        <input class="form-input" id="item-name" placeholder="e.g. Gold cuff bangle" type="text">
+        <input class="form-input" id="item-name" placeholder="e.g. Item name" type="text">
       </div>
 
       <div class="form-row">
@@ -789,7 +790,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
         </div>
         <div class="form-field">
           <label class="form-label">Sub-category</label>
-          <input class="form-input" id="item-sub" placeholder="e.g. Gold, Silver..." type="text">
+          <input class="form-input" id="item-sub" placeholder="e.g. Material, finish..." type="text">
         </div>
       </div>
 
@@ -863,7 +864,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
       <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="exp-date" type="date"></div>
     </div>
     <div class="form-field"><label class="form-label">Description</label><input class="form-input" id="exp-note" placeholder="Description" type="text"></div>
-    <div class="form-field"><label class="form-label">Paid by</label><input class="form-input" id="exp-paidby" placeholder="e.g. Swati" type="text"></div>
+    <div class="form-field"><label class="form-label">Paid by</label><input class="form-input" id="exp-paidby" placeholder="e.g. Owner / Team" type="text"></div>
     <button class="btn-primary" onclick="saveExpense()" style="margin-top:8px">Save expense</button>
   </div></div>
 </div>
@@ -876,10 +877,10 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
     <button onclick="forceCloseSheet('sheet-create-event')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
   </div>
   <div class="sheet-body">
-    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ce-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
+    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ce-name" placeholder="e.g. Weekend Market" type="text"></div>
     <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ce-date" type="date"></div>
-    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="ce-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
-    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ce-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
+    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="ce-venue" placeholder="e.g. Mall, park, studio..." type="text"></div>
+    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ce-organiser" placeholder="e.g. Organiser name" type="text"></div>
     <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ce-rent" placeholder="0" type="number" inputmode="numeric"></div>
     <div class="form-field"><label class="form-label">Status</label>
       <div class="chip-row" id="ce-status-chips">
@@ -945,7 +946,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
       <div style="height:1px;background:var(--border);margin:16px 0"></div>
       <div style="font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:10px">Customer (optional)</div>
       <div class="form-row">
-        <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="scan-cust-name" placeholder="Priya Sharma" type="text"></div>
+        <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="scan-cust-name" placeholder="Customer name" type="text"></div>
         <div class="form-field"><label class="form-label">Phone</label><input class="form-input" id="scan-cust-phone" placeholder="+91 98765..." type="tel"></div>
       </div>
       <button class="btn-primary btn-gold" onclick="confirmScanSale()" style="margin-top:8px">Confirm Sale</button>
@@ -968,10 +969,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
   <div class="sheet-body">
     <!-- Pop-Up fields: live event banner + inventory picker -->
     <div id="ml-popup-fields">
-      <div id="ml-live-event-banner" style="background:rgba(109,176,112,0.1);border:1px solid rgba(109,176,112,0.3);border-radius:var(--radius-xs);padding:10px 14px;margin-bottom:14px;font-size:13px;color:#276749;display:none">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--green);text-transform:uppercase">Live</span>
-        <span id="ml-live-event-name" style="font-weight:600;margin-left:6px"></span>
-      </div>
+      <div id="ml-live-event-banner" style="margin-bottom:14px"></div>
       <!-- Inventory quick-pick -->
       <div id="ml-inv-picker-wrap" style="display:none;margin-bottom:14px">
         <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px">Pick from inventory</div>
@@ -994,7 +992,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
     </div>
     <div class="form-field" id="ml-name-field">
       <label class="form-label" id="ml-name-label">Item name <span style="color:var(--rose)">*</span></label>
-      <input class="form-input" id="ml-name" placeholder="e.g. Gold cuff bangle" type="text" oninput="clearFieldError('ml-name-field')">
+      <input class="form-input" id="ml-name" placeholder="e.g. Item name" type="text" oninput="clearFieldError('ml-name-field')">
       <div id="ml-name-err" style="display:none;font-size:11px;color:var(--rose);margin-top:4px">This field is required</div>
     </div>
     <div class="form-row">
@@ -1016,7 +1014,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
     <div style="height:1px;background:var(--border);margin:16px 0"></div>
     <div style="font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:10px">Customer (optional)</div>
     <div class="form-row">
-      <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="ml-cust-name" placeholder="Priya Sharma" type="text"></div>
+      <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="ml-cust-name" placeholder="Customer name" type="text"></div>
       <div class="form-field"><label class="form-label">Phone</label><input class="form-input" id="ml-cust-phone" placeholder="+91 98765..." type="tel"></div>
     </div>
     <button class="btn-primary btn-gold" onclick="confirmManualSale()" style="margin-top:8px">Confirm Sale</button>
@@ -1031,10 +1029,10 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
     <button onclick="forceCloseSheet('sheet-edit-live-event')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:22px;padding:4px 8px;line-height:1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
   </div>
   <div class="sheet-body">
-    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="edit-live-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
+    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="edit-live-name" placeholder="e.g. Weekend Market" type="text"></div>
     <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="edit-live-date" type="date"></div>
-    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="edit-live-venue" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
-    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="edit-live-organiser" placeholder="Bliss Pop Up, Dufa..." type="text"></div>
+    <div class="form-field"><label class="form-label">Venue</label><input class="form-input" id="edit-live-venue" placeholder="e.g. Mall, park, studio..." type="text"></div>
+    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="edit-live-organiser" placeholder="e.g. Organiser name" type="text"></div>
     <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="edit-live-rent" placeholder="0" type="text" inputmode="numeric" pattern="[0-9]*"></div>
     <div class="form-field"><label class="form-label">Status</label>
       <div class="chip-row" id="edit-live-status-chips">
@@ -1051,13 +1049,13 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 <!-- SHEET: New Event -->
 <div class="sheet-overlay" id="sheet-new-event" onclick="closeSheet(event,'sheet-new-event')">
   <div class="sheet"><div class="sheet-handle"></div><div class="sheet-title">New pop-up event</div><div class="sheet-body">
-    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ev-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
+    <div class="form-field"><label class="form-label">Event name</label><input class="form-input" id="ev-name" placeholder="e.g. Weekend Market" type="text"></div>
     <div class="form-row">
       <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ev-date" type="date"></div>
       <div class="form-field"><label class="form-label">Stall rent (₹)</label><input class="form-input" id="ev-cost" placeholder="0" type="number"></div>
     </div>
-    <div class="form-field"><label class="form-label">Location</label><input class="form-input" id="ev-location" placeholder="Ecoworld, Safina Plaza..." type="text"></div>
-    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ev-organiser" placeholder="Bliss pop up, Dufa..." type="text"></div>
+    <div class="form-field"><label class="form-label">Location</label><input class="form-input" id="ev-location" placeholder="e.g. Mall, park, studio..." type="text"></div>
+    <div class="form-field"><label class="form-label">Organiser</label><input class="form-input" id="ev-organiser" placeholder="e.g. Organiser name" type="text"></div>
     <div class="form-field"><label class="form-label">Status</label>
       <div class="chip-row" id="ev-status-chips">
         <div class="chip active" data-val="upcoming">Upcoming</div>
@@ -1072,7 +1070,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 <!-- SHEET: Add Customer -->
 <div class="sheet-overlay" id="sheet-add-customer" onclick="closeSheet(event,'sheet-add-customer')">
   <div class="sheet"><div class="sheet-handle"></div><div class="sheet-title">Add customer</div><div class="sheet-body">
-    <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="cust-name" placeholder="e.g. Priya Sharma" type="text"></div>
+    <div class="form-field"><label class="form-label">Name</label><input class="form-input" id="cust-name" placeholder="e.g. Customer name" type="text"></div>
     <div class="form-field"><label class="form-label">Phone</label><input class="form-input" id="cust-phone" placeholder="+91 98765 43210" type="tel"></div>
     <div class="form-field"><label class="form-label">Address (optional)</label><input class="form-input" id="cust-address" placeholder="City or full address" type="text"></div>
     <div class="form-field"><label class="form-label">Source</label>
@@ -1084,7 +1082,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
         <div class="chip" data-val="Other">Other</div>
       </div>
     </div>
-    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="cust-notes" placeholder="Bought bangles, prefers gold..." type="text"></div>
+    <div class="form-field"><label class="form-label">Notes</label><input class="form-input" id="cust-notes" placeholder="Preferences, past purchases..." type="text"></div>
     <button class="btn-primary btn-gold" onclick="saveCustomer()" style="margin-top:8px">Save customer</button>
   </div></div>
 </div>
@@ -1142,12 +1140,12 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 
       <div class="form-field">
         <label class="form-label">Business name</label>
-        <input class="form-input" id="set-biz-name" placeholder="e.g. Tarami Jewellery" type="text">
+        <input class="form-input" id="set-biz-name" placeholder="e.g. Your Business Name" type="text">
       </div>
 
       <div class="form-field">
         <label class="form-label">Owner name</label>
-        <input class="form-input" id="set-owner-name" placeholder="e.g. Swati" type="text">
+        <input class="form-input" id="set-owner-name" placeholder="e.g. Owner / Team" type="text">
       </div>
 
       <div class="form-field">
@@ -1185,7 +1183,6 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
       </div>
 
       <div style="height:1px;background:var(--border);margin:20px 0"></div>
-      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:14px">Data</div>
 
       <div class="form-field" style="display:none">
         <label class="form-label">Firebase Project ID</label>
@@ -1230,11 +1227,11 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
 <!-- SHEET: Deadstock -->
 <div class="sheet-overlay" id="sheet-deadstock" onclick="closeSheet(event,'sheet-deadstock')">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">Deadstock</div>
+  <div class="sheet-title">Low Stock</div>
   <div class="sheet-body">
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Items with 0 quantity in stock</div>
     <div id="deadstock-list"></div>
-    <div id="deadstock-empty" style="display:none;text-align:center;padding:24px 0;font-size:13px;color:var(--text-muted)">🎉 No deadstock — all items have stock</div>
+    <div id="deadstock-empty" style="display:none;text-align:center;padding:24px 0;font-size:13px;color:var(--text-muted)">🎉 All items have sufficient stock</div>
   </div></div>
 </div>
 
@@ -1262,7 +1259,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
       <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="edit-exp-date" type="date"></div>
     </div>
     <div class="form-field"><label class="form-label">Description</label><input class="form-input" id="edit-exp-note" placeholder="Description" type="text"></div>
-    <div class="form-field"><label class="form-label">Paid by</label><input class="form-input" id="edit-exp-paidby" placeholder="e.g. Swati" type="text"></div>
+    <div class="form-field"><label class="form-label">Paid by</label><input class="form-input" id="edit-exp-paidby" placeholder="e.g. Owner / Team" type="text"></div>
     <button class="btn-primary btn-gold" onclick="saveEditExpense()" style="margin-top:8px">Save changes</button>
     <button onclick="deleteExpenseFromEdit()" style="width:100%;margin-top:10px;padding:14px;background:none;border:1px solid rgba(224,118,118,0.3);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--rose)">Delete expense</button>
   </div></div>
@@ -1497,6 +1494,24 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
         <div class="faq-q">Is my payment/financial data secure?</div>
         <div class="faq-a">Yes. The app uses Google Firebase with authentication — no one else can access your data. We don't process any payments; the app only tracks records you enter manually.</div>
       </div>
+    </div>
+
+    <div class="help-section-title">Contact & Feedback</div>
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/919011779517" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;background:#25D366;border-radius:var(--radius-sm);padding:14px 16px;text-decoration:none;margin-bottom:16px">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="#fff"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72,24,24,0,0,1,19.29-23.54l11.48,22.95L101,117.11a8,8,0,0,0-.73,7.65,56.56,56.56,0,0,0,31,31,8,8,0,0,0,7.65-.73l13.7-9.16,22.95,11.47A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a88,88,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216l12.47-37.4a8,8,0,0,0-.67-6.54A88,88,0,1,1,128,216Z"/></svg>
+      <div>
+        <div style="color:#fff;font-size:14px;font-weight:700">Chat on WhatsApp</div>
+        <div style="color:rgba(255,255,255,0.8);font-size:12px;margin-top:1px">Need help? We're here.</div>
+      </div>
+    </a>
+
+    <!-- Feedback form -->
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px">
+      <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px">Share feedback</div>
+      <textarea id="feedback-text" placeholder="What could be better? Any bugs or ideas..." style="width:100%;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);font-size:14px;color:var(--text-primary);font-family:'DM Sans',sans-serif;resize:none;outline:none;box-sizing:border-box;min-height:80px;transition:border-color 0.15s" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      <button onclick="submitFeedback()" style="margin-top:10px;width:100%;padding:12px;background:var(--text-primary);color:#fff;border:none;border-radius:var(--radius-xs);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Send feedback</button>
     </div>
 
   </div>
@@ -1970,7 +1985,7 @@ function renderInventory() {
   document.getElementById('inv-section-title').textContent = `${invFilter==='ALL'?'All items':invFilter} (${filtered.length})`;
 
   const totalQty  = invItems.reduce((s,i) => s + (i.qty||0), 0);
-  const lowStock  = invItems.filter(i => (i.qty||0) > 0 && (i.qty||0) <= 2).length;
+  const lowStock  = invItems.filter(i => (i.qty||0) > 0 && (i.qty||0) <= 3).length;
   document.getElementById('inv-total-items').textContent = invItems.length;
   document.getElementById('inv-total-qty').textContent   = totalQty;
   document.getElementById('inv-low-stock').textContent   = lowStock;
@@ -1986,7 +2001,7 @@ function renderInventory() {
     const qty = item.qty || 0;
     let stockClass = 'inv-stock-ok', stockLabel = `${qty} left`;
     if (qty === 0)     { stockClass = 'inv-stock-zero'; stockLabel = 'Out'; }
-    else if (qty <= 2) { stockClass = 'inv-stock-low';  stockLabel = `${qty} low`; }
+    else if (qty <= 3) { stockClass = 'inv-stock-low';  stockLabel = `${qty} low`; }
     const imgHTML = item.photoURL
       ? `<div class="inv-img-loading"><div class="inv-spinner"></div></div><img src="${item.photoURL}" alt="${item.name}" onload="this.previousSibling.remove()" onerror="this.style.display='none'">`
       : `<span style="font-size:32px">${CAT_EMOJI[item.cat]||'💎'}</span>`;
@@ -2511,15 +2526,36 @@ function switchSaleTab(tab) {
 }
 
 function _populateInventoryPicker() {
-  const banner   = document.getElementById('ml-live-event-banner');
-  const nameEl   = document.getElementById('ml-live-event-name');
+  const banner     = document.getElementById('ml-live-event-banner');
   const pickerWrap = document.getElementById('ml-inv-picker-wrap');
-  const grid     = document.getElementById('ml-inv-grid');
-  if (_mlLiveEvent && banner && nameEl) {
-    nameEl.textContent = _mlLiveEvent.name || '';
-    banner.style.display = 'block';
-  } else if (banner) {
-    banner.style.display = 'none';
+  const grid       = document.getElementById('ml-inv-grid');
+  if (banner) {
+    if (_mlLiveEvent) {
+      const meta = [
+        _mlLiveEvent.date ? formatDate(_mlLiveEvent.date) : '',
+        _mlLiveEvent.venue || _mlLiveEvent.location || ''
+      ].filter(Boolean).join(' · ');
+      banner.innerHTML = `
+        <div style="background:rgba(109,176,112,0.1);border:1px solid rgba(109,176,112,0.3);border-radius:var(--radius-xs);padding:12px 14px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 1.8s infinite"></span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--green);text-transform:uppercase">Live event</span>
+          </div>
+          <div style="font-size:15px;font-weight:700;color:var(--text-primary)">${_mlLiveEvent.name || ''}</div>
+          ${meta ? `<div style="font-size:12px;color:var(--text-muted);margin-top:2px">${meta}</div>` : ''}
+        </div>`;
+    } else {
+      banner.innerHTML = `
+        <button onclick="forceCloseSheet('sheet-manual-log');openSheet('sheet-create-event')" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg);border:1.5px dashed var(--border);border-radius:var(--radius-xs);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="font-size:18px;line-height:1;color:var(--gold);font-weight:300">+</span>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text-primary)">Create a live event</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:1px">No active event — tap to set one up</div>
+          </div>
+        </button>`;
+    }
   }
   const inStock = invItems.filter(i => (i.qty||0) > 0);
   if (!inStock.length || !pickerWrap || !grid) { if (pickerWrap) pickerWrap.style.display = 'none'; return; }
@@ -2594,7 +2630,7 @@ async function openManualLog() {
   // Check for live event — default to popup tab if one exists
   const events = await DB.getEvents();
   _mlLiveEvent = events.find(e => e.status === 'active' || e.status === 'live') || null;
-  switchSaleTab(_mlLiveEvent ? 'popup' : 'nonpopup');
+  switchSaleTab('popup');
   openSheet('sheet-manual-log');
 }
 
@@ -3068,7 +3104,7 @@ async function deleteCustomer(id) {
 function openQuickAdd() { openSheet('sheet-quick-add'); }
 
 function openDeadstock() {
-  const dead = invItems.filter(i => (i.qty||0) === 0);
+  const dead = invItems.filter(i => (i.qty||0) <= 3);
   const listEl  = document.getElementById('deadstock-list');
   const emptyEl = document.getElementById('deadstock-empty');
   if (!dead.length) {
@@ -3087,7 +3123,7 @@ function openDeadstock() {
           <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
           <div style="font-size:12px;color:var(--text-muted);margin-top:2px">${item.cat} · ₹${(item.price||0).toLocaleString('en-IN')}</div>
         </div>
-        <div style="font-size:11px;font-weight:700;color:var(--rose);background:var(--rose-soft);padding:3px 10px;border-radius:20px">Out</div>
+        <div style="font-size:11px;font-weight:700;color:var(--rose);background:var(--rose-soft);padding:3px 10px;border-radius:20px">${item.qty===0?'Out':`${item.qty} left`}</div>
       </div>`).join('');
   }
   openSheet('sheet-deadstock');
@@ -3527,6 +3563,16 @@ async function renderHomeUpcoming() {
 
 
 // ── HELP ACCORDION ───────────────────────────────────────────────
+function submitFeedback() {
+  const text = document.getElementById('feedback-text')?.value.trim();
+  if (!text) { showToast('Please type your feedback first'); return; }
+  const encoded = encodeURIComponent('App feedback: ' + text);
+  window.open('https://wa.me/919011779517?text=' + encoded, '_blank');
+  document.getElementById('feedback-text').value = '';
+  forceCloseSheet('sheet-help');
+  showToast('Opening WhatsApp…');
+}
+
 function toggleAccordion(btn) {
   const item  = btn.closest('.accordion-item');
   const body  = item.querySelector('.accordion-body');
@@ -3629,7 +3675,7 @@ async function renderDashboard() {
   document.getElementById('dash-products').textContent  = invItems.length;
   document.getElementById('dash-sales').textContent     = totalSales;
   document.getElementById('dash-customers').textContent = customers.length;
-  document.getElementById('dash-deadstock').textContent = invItems.filter(i => (i.qty||0) === 0).length;
+  document.getElementById('dash-deadstock').textContent = invItems.filter(i => (i.qty||0) <= 3).length;
   const last = events[0];
   const el   = document.getElementById('dash-last-event');
   if (last) {
@@ -3915,7 +3961,7 @@ Object.assign(window, {
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
   saveCustomer, deleteCustomer,
   openSettingsSheet, saveSettings, openQuickAdd, openDeadstock, openSalesLog, setHeroPeriod, renderGreeting,
-  renderUpcoming, renderHomeUpcoming, toggleAccordion,
+  renderUpcoming, renderHomeUpcoming, toggleAccordion, submitFeedback,
   openCustomerDetail, filterCustomers,
   cycleSort, tryCloseEditItem, markEditDirty, handleEditPhoto, updateSearchPlaceholder,
   startLongPress, cancelLongPress, toggleBulkSelect, exitBulkMode, bulkDelete, bulkMarkOutOfStock,
