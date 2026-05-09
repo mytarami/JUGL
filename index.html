@@ -139,6 +139,8 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 .inv-stock-zero{background:rgba(0,0,0,0.06);color:var(--text-muted)}
 .inv-fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:24px;width:52px;height:52px;border-radius:50%;background:var(--text-primary);border:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(201,169,110,0.4);transition:transform 0.15s;z-index:50}
 .inv-fab:active{transform:scale(0.92)}
+.inv-add-fixed{position:fixed;bottom:calc(var(--nav-h) + 12px);left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:382px;background:var(--text-primary);color:#fff;border:none;border-radius:var(--radius-sm);padding:15px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:100;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.inv-add-fixed:active{transform:translateX(-50%) scale(0.98);box-shadow:0 2px 10px rgba(0,0,0,0.1)}
 .inv-stats-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 24px 0}
 .inv-stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);padding:12px;text-align:center}
 .inv-stat-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:500}
@@ -511,8 +513,11 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <div class="stat-value" id="dash-sales">0</div>
       <div class="stat-sub">total logged</div>
     </div>
-    <div class="stat-card" style="cursor:pointer" onclick="switchTab('customers')">
-      <div class="stat-label">Customers</div>
+    <div class="stat-card" style="cursor:pointer;position:relative" onclick="switchTab('customers')">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="stat-label">Customers</div>
+        <button onclick="event.stopPropagation();openSheet('sheet-add-customer')" style="background:var(--gold);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;font-weight:300;touch-action:manipulation">+</button>
+      </div>
       <div class="stat-value" id="dash-customers">0</div>
       <div class="stat-sub">total</div>
     </div>
@@ -594,7 +599,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 
   <div class="scroll-end"></div>
 
-  <!-- FAB -->
+  <!-- Bulk select bar -->
   <div id="bulk-bar" style="display:none" class="bulk-bar">
     <span id="bulk-count-label" style="font-size:13px;font-weight:600">0 selected</span>
     <div class="bulk-bar-actions">
@@ -603,7 +608,12 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
       <button class="bulk-action-btn" onclick="exitBulkMode()">Cancel</button>
     </div>
   </div>
-  <button class="inv-fab" onclick="openSheet('sheet-add-item')">+</button>
+
+  <!-- Add item fixed button -->
+  <button class="inv-add-fixed" id="inv-add-btn" onclick="openSheet('sheet-add-item')" style="display:none">
+    <svg viewBox="0 0 256 256" width="18" height="18" style="fill:#fff;flex-shrink:0"><path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"/></svg>
+    Add Item
+  </button>
 </div>
 
 <!-- POP-UP -->
@@ -729,7 +739,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 <nav class="bottom-nav">
   <button class="nav-btn active" data-tab="home" onclick="switchTab('home')"><svg viewBox="0 0 256 256" width="22" height="22" style="fill:currentColor;display:block;flex-shrink:0"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8H216a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H48V120l80-80,80,80Z"/></svg><span class="nav-label">Home</span></button>
   <button class="nav-btn" data-tab="inventory" onclick="switchTab('inventory')"><svg viewBox="0 0 256 256" width="22" height="22" style="fill:currentColor;display:block;flex-shrink:0"><path d="M230.91,172A8,8,0,0,1,228,182.91l-96,56a8,8,0,0,1-8.06,0l-96-56A8,8,0,0,1,36,169.09l92,53.65,92-53.65A8,8,0,0,1,230.91,172ZM220,121.09l-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09ZM24,80a8,8,0,0,1,4-6.91l96-56a8,8,0,0,1,8.06,0l96,56a8,8,0,0,1,0,13.82l-96,56a8,8,0,0,1-8.06,0l-96-56A8,8,0,0,1,24,80Zm23.88,0L128,126.74,208.12,80,128,33.26Z"/></svg><span class="nav-label">Inventory</span></button>
-  <button class="nav-btn nav-plus" onclick="openQuickAdd()"><span class="nav-plus-icon">+</span></button>
+  <button class="nav-btn nav-plus" onclick="openManualLog()"><span class="nav-plus-icon">+</span></button>
   <button class="nav-btn" data-tab="popup" onclick="switchTab('popup')"><svg viewBox="0 0 256 256" width="22" height="22" style="fill:currentColor;display:block;flex-shrink:0"><path d="M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z"/></svg><span class="nav-label">Pop-Up</span></button>
   <button class="nav-btn" data-tab="expenses" onclick="switchTab('expenses')"><svg viewBox="0 0 256 256" width="22" height="22" style="fill:currentColor;display:block;flex-shrink:0"><path d="M244.24,60a8,8,0,0,0-7.75-.4c-42.93,21-73.59,11.16-106,.78-34-10.89-69.25-22.14-117.95,1.64A8,8,0,0,0,8,69.24V189.17a8,8,0,0,0,11.51,7.19c42.93-21,73.59-11.16,106.05-.78,19.24,6.15,38.84,12.42,61,12.42,17.09,0,35.73-3.72,56.91-14.06a8,8,0,0,0,4.49-7.18V66.83A8,8,0,0,0,244.24,60ZM232,181.67c-40.6,18.17-70.25,8.69-101.56-1.32-19.24-6.15-38.84-12.42-61-12.42a122,122,0,0,0-45.4,9V74.33c40.6-18.17,70.25-8.69,101.56,1.32S189.14,96,232,79.09ZM128,96a32,32,0,1,0,32,32A32,32,0,0,0,128,96Zm0,48a16,16,0,1,1,16-16A16,16,0,0,1,128,144ZM56,96v48a8,8,0,0,1-16,0V96a8,8,0,1,1,16,0Zm144,64V112a8,8,0,1,1,16,0v48a8,8,0,1,1-16,0Z"/></svg><span class="nav-label">Expenses</span></button>
 </nav>
@@ -1641,6 +1651,9 @@ function switchTab(tab) {
   // Show/hide Log Expense button
   const expBtn = document.getElementById('log-expense-btn');
   if (expBtn) expBtn.style.display = tab === 'expenses' ? 'flex' : 'none';
+  // Show/hide Add Item button
+  const invAddBtn = document.getElementById('inv-add-btn');
+  if (invAddBtn) invAddBtn.style.display = tab === 'inventory' ? 'flex' : 'none';
   // Show/hide help FAB
   const helpFab = document.getElementById('help-fab');
   if (helpFab) helpFab.style.display = tab === 'home' ? 'flex' : 'none';
