@@ -1153,6 +1153,7 @@ input[type="date"].form-input{font-size:13px;padding:12px 10px;-webkit-appearanc
       <div class="form-field">
         <label class="form-label">Business category</label>
         <select class="form-input" id="set-biz-category">
+          <option value="">Select a category</option>
           <option value="Jewellery">Jewellery</option>
           <option value="Fashion & Clothing">Fashion & Clothing</option>
           <option value="Food & Beverages">Food & Beverages</option>
@@ -1569,16 +1570,7 @@ let CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 const DEFAULT_CATS = ["Rings","Necklaces","Earrings","Bangles","Bracelets","Anklets","Pendants","Other"];
 function getCategories() {
   try {
-    let saved = _currentUID ? localStorage.getItem(lsKey('sb_categories')) : null;
-    // One-time migration from old unscoped key
-    if (!saved && _currentUID) {
-      const legacy = localStorage.getItem('sb_categories');
-      if (legacy) {
-        localStorage.setItem(lsKey('sb_categories'), legacy);
-        localStorage.removeItem('sb_categories');
-        saved = legacy;
-      }
-    }
+    const saved = _currentUID ? localStorage.getItem(lsKey('sb_categories')) : null;
     return saved ? JSON.parse(saved) : DEFAULT_CATS;
   } catch(e) { return DEFAULT_CATS; }
 }
@@ -3736,7 +3728,7 @@ function openSettingsSheet() {
   if (bizEl)    bizEl.value    = appSettings.bizName      || '';
   if (currEl)   currEl.value   = appSettings.currency     || '₹';
   const bizCatEl = document.getElementById('set-biz-category');
-  if (bizCatEl) bizCatEl.value = appSettings.bizCategory  || 'Jewellery';
+  if (bizCatEl) bizCatEl.value = appSettings.bizCategory  || '';
   if (geminiEl) geminiEl.value = GEMINI_API_KEY       || '';
   if (claudeEl) claudeEl.value = CLAUDE_API_KEY       || '';
   if (fbEl)     fbEl.value     = 'solobiz-tarami';
