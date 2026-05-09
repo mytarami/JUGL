@@ -1568,11 +1568,15 @@ let CLAUDE_API_KEY = localStorage.getItem('sb_claude_key') || '';
 
 // ── CATEGORIES ────────────────────────────────────────────────────
 const DEFAULT_CATS = ["Rings","Necklaces","Earrings","Bangles","Bracelets","Anklets","Pendants","Other"];
-function getCategories() {
+function getSavedCategories() {
   try {
     const saved = _currentUID ? localStorage.getItem(lsKey('sb_categories')) : null;
-    return saved ? JSON.parse(saved) : DEFAULT_CATS;
-  } catch(e) { return DEFAULT_CATS; }
+    return saved ? JSON.parse(saved) : [];
+  } catch(e) { return []; }
+}
+function getCategories() {
+  const saved = getSavedCategories();
+  return saved.length ? saved : DEFAULT_CATS;
 }
 function saveCategories(cats) {
   if (_currentUID) localStorage.setItem(lsKey('sb_categories'), JSON.stringify(cats));
@@ -3223,9 +3227,13 @@ async function deleteItemFromEdit() {
 
 // ── FIX 3: CATEGORY MANAGEMENT ───────────────────────────────────
 function renderCatTags() {
-  const cats = getCategories();
+  const cats = getSavedCategories();
   const el = document.getElementById('cat-tags');
   if (!el) return;
+  if (!cats.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text-muted);padding:4px 0">No custom categories yet. Add one below.</div>';
+    return;
+  }
   el.innerHTML = cats.map((c,i) => `
     <div style="display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 10px 5px 14px;font-size:13px;font-weight:500">
       ${c}
@@ -3237,7 +3245,7 @@ function addCategory() {
   const input = document.getElementById('new-cat-input');
   const name  = input.value.trim();
   if (!name) return;
-  const cats = getCategories();
+  const cats = getSavedCategories();
   if (cats.includes(name)) { showToast('Category already exists'); return; }
   cats.push(name);
   saveCategories(cats);
@@ -3248,8 +3256,7 @@ function addCategory() {
 }
 
 function removeCategory(idx) {
-  const cats = getCategories();
-  if (cats.length <= 1) { showToast('Need at least one category'); return; }
+  const cats = getSavedCategories();
   cats.splice(idx, 1);
   saveCategories(cats);
   renderCatTags();
