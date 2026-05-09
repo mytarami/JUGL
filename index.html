@@ -1732,6 +1732,7 @@ function saveCategories(cats) {
 // Legacy CATS kept as empty for compatibility
 const CATS = {};
 const CAT_EMOJI = {"Rings":"💍","Necklaces":"📿","Earrings":"✨","Bangles":"💛","Bracelets":"🔗","Anklets":"🌙","Pendants":"💎","Other":"🏷️"};
+const EMPTY_PROD_IMG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzAwMDAwMCIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0xODQsMzJhNy44MSw3LjgxLDAsMCwwLTIuMy4zNGwtMTYwLDQ4aDBBOCw4LDAsMCwwLDE2LDg4djI0YTgsOCwwLDAsMCw4LDhoOGExNi4wOCwxNi4wOCwwLDAsMSwxNiwxNS42OUExNS42LDE1LjYsMCwwLDEsNDMuNDIsMTQ3YTE2Ljg3LDE2Ljg3LDAsMCwxLTEyLDUuMDVIMjRhOCw4LDAsMCwwLTgsOHYzMmE4LDgsMCwwLDAsOCw4SDIyNGExNiwxNiwwLDAsMCwxNi0xNlY4OEE1Ni4wNiw1Ni4wNiwwLDAsMCwxODQsMzJabTEuMTIsMTZhNDAuMDYsNDAuMDYsMCwwLDEsMzguMDcsMzJINzguNTFaTTE5MiwxMDRhMjQsMjQsMCwxLDEtNDYuNjItOGg0NS4yNEEyMy44NiwyMy44NiwwLDAsMSwxOTIsMTA0Wk04OCwxODRhMjQsMjQsMCwwLDEsNDgsMFptMTM2LDBIMTUyYTQwLDQwLDAsMCwwLTgwLDBIMzJWMTY4YTMzLDMzLDAsMCwwLDIyLjg0LTkuODVBMzEuMzksMzEuMzksMCwwLDAsNjQsMTM1LjM4LDMyLjE1LDMyLjE1LDAsMCwwLDMyLDEwNFY5Nmg5Ni44MWE0MCw0MCwwLDEsMCw3OC4zOCwwSDIyNFoiPjwvcGF0aD48L3N2Zz4=';
 
 
 // ── DB LAYER ──────────────────────────────────────────────────────
@@ -2137,7 +2138,7 @@ function renderInventory() {
     else if (qty <= 3) { stockClass = 'inv-stock-low';  stockLabel = `${qty} low`; }
     const imgHTML = item.photoURL
       ? `<div class="inv-img-loading"><div class="inv-spinner"></div></div><img src="${item.photoURL}" alt="${item.name}" onload="this.previousSibling.remove()" onerror="this.style.display='none'">`
-      : `<span style="font-size:32px">${CAT_EMOJI[item.cat]||'💎'}</span>`;
+      : `<img src="${EMPTY_PROD_IMG}" style="width:36px;height:36px;opacity:0.25">`;
     const addedDate = item.createdAt?.toDate ? item.createdAt.toDate() : new Date(item.createdAt||0);
     const dateStr = addedDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
     const cardClick = bulkMode ? `toggleBulkSelect('${item.id}')` : `openItemDetail('${item.id}')`;
@@ -2169,7 +2170,7 @@ function openItemDetail(id) {
     <div class="item-detail-img">
       ${item.photoURL
         ? `<img src="${item.photoURL}" alt="${item.name}">`
-        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:64px">${CAT_EMOJI[item.cat]||'💎'}</div>`}
+        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:32px"><img src="${EMPTY_PROD_IMG}" style="width:80px;height:80px;opacity:0.25"></div>`}
     </div>
     <div class="item-detail-body">
       <div class="item-detail-name">${item.name}</div>
@@ -2744,7 +2745,7 @@ function _populateInventoryPicker() {
   grid.innerHTML = inStock.map(item => {
     const imgHTML = item.photoURL
       ? `<img src="${item.photoURL}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:10px">`
-      : `<span style="font-size:20px">${CAT_EMOJI[item.cat]||'💎'}</span>`;
+      : `<img src="${EMPTY_PROD_IMG}" style="width:24px;height:24px;opacity:0.25">`;
     return `<div onclick="selectFromInventory('${item.id}')" style="flex-shrink:0;width:72px;cursor:pointer;-webkit-tap-highlight-color:transparent" title="${item.name}">
       <div style="width:72px;height:72px;border-radius:10px;background:var(--gold-soft);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid transparent;transition:border-color 0.15s" id="ml-inv-${item.id}">${imgHTML}</div>
       <div style="font-size:10px;font-weight:600;color:var(--text-primary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
@@ -3308,7 +3309,7 @@ function openDeadstock() {
         <div class="deadstock-thumb">
           ${item.photoURL
             ? `<img src="${item.photoURL}" alt="${item.name}">`
-            : `<span>${CAT_EMOJI[item.cat]||'💎'}</span>`}
+            : `<img src="${EMPTY_PROD_IMG}" style="width:28px;height:28px;opacity:0.25">`}
         </div>
         <div style="flex:1;min-width:0">
           <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
