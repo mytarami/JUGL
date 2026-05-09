@@ -966,10 +966,26 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text
 </div>
 
 <!-- SHEET: Manual log -->
-<div class="sheet-overlay" id="sheet-manual-log" onclick="closeSheet(event,'sheet-manual-log')">
+<div class="sheet-overlay" id="sheet-manual-log" onclick="closeManualLog(event)">
   <div class="sheet"><div class="sheet-handle"></div>
-  <div class="sheet-title">Log sale</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px 0">
+    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500">Log sale</div>
+    <button onclick="closeManualLog(null,true)" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:26px;padding:4px 8px;line-height:1;-webkit-tap-highlight-color:transparent">×</button>
+  </div>
+  <!-- Sale type tabs -->
+  <div style="display:flex;gap:8px;padding:12px 24px 0">
+    <button id="ml-tab-nonpopup" onclick="switchSaleTab('nonpopup')" style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--text-primary);background:var(--text-primary);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent">Non Pop-Up</button>
+    <button id="ml-tab-popup" onclick="switchSaleTab('popup')" style="padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent">Pop-Up</button>
+  </div>
   <div class="sheet-body">
+    <!-- Pop-Up extra fields -->
+    <div id="ml-popup-fields" style="display:none">
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Pop name</label><input class="form-input" id="ml-pop-name" placeholder="e.g. Bliss Pop Up" type="text"></div>
+        <div class="form-field"><label class="form-label">Date</label><input class="form-input" id="ml-pop-date" type="date"></div>
+      </div>
+      <div style="height:1px;background:var(--border);margin-bottom:16px"></div>
+    </div>
     <!-- Optional photo -->
     <div class="form-field">
       <label class="form-label">Photo (optional)</label>
@@ -2407,6 +2423,38 @@ function handleSalePhoto(input) {
 }
 
 // ── MANUAL LOG OPEN ──────────────────────────────────────────────
+let _mlSaleTab = 'nonpopup';
+
+function switchSaleTab(tab) {
+  _mlSaleTab = tab;
+  const nonBtn = document.getElementById('ml-tab-nonpopup');
+  const popBtn = document.getElementById('ml-tab-popup');
+  const popFields = document.getElementById('ml-popup-fields');
+  const activeStyle = 'padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--text-primary);background:var(--text-primary);color:#fff;cursor:pointer;font-family:\'DM Sans\',sans-serif;-webkit-tap-highlight-color:transparent';
+  const inactiveStyle = 'padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--text-secondary);cursor:pointer;font-family:\'DM Sans\',sans-serif;-webkit-tap-highlight-color:transparent';
+  if (nonBtn) nonBtn.style.cssText = tab === 'nonpopup' ? activeStyle : inactiveStyle;
+  if (popBtn) popBtn.style.cssText = tab === 'popup' ? activeStyle : inactiveStyle;
+  if (popFields) popFields.style.display = tab === 'popup' ? 'block' : 'none';
+  if (tab === 'popup') {
+    const pd = document.getElementById('ml-pop-date');
+    if (pd && !pd.value) pd.value = new Date().toISOString().split('T')[0];
+  }
+}
+
+function _mlHasData() {
+  const name  = document.getElementById('ml-name')?.value.trim();
+  const price = document.getElementById('ml-price')?.value.trim();
+  return !!(name || price);
+}
+
+function closeManualLog(event, force) {
+  if (event && event.target !== event.currentTarget) return;
+  if (_mlHasData()) {
+    if (!confirm('Are you sure you want to close? Your sale info will be lost.')) return;
+  }
+  forceCloseSheet('sheet-manual-log');
+}
+
 function openManualLog() {
   // Populate category dropdown from user settings
   const cats = getCategories();
@@ -2420,6 +2468,8 @@ function openManualLog() {
   if (spa) spa.classList.remove('has-img');
   const spi = document.getElementById('sale-photo-input');
   if (spi) spi.value = '';
+  // Reset to non pop-up tab
+  switchSaleTab('nonpopup');
   openSheet('sheet-manual-log');
 }
 
@@ -2432,10 +2482,13 @@ async function confirmManualSale() {
   const custName  = document.getElementById('ml-cust-name')?.value.trim()||'';
   const custPhone = document.getElementById('ml-cust-phone')?.value.trim()||'';
   if (!name || !price) { showToast('Enter item name and price'); return; }
-  const ok = await addSaleToLiveEvent({name, category:cat, unitPrice:price, qty, paymentMethod:pay, customerName:custName, customerPhone:custPhone});
+  const isPopup = _mlSaleTab === 'popup';
+  const popName = isPopup ? (document.getElementById('ml-pop-name')?.value.trim()||'') : '';
+  const popDate = isPopup ? (document.getElementById('ml-pop-date')?.value||'') : '';
+  const ok = await addSaleToLiveEvent({name, category:cat, unitPrice:price, qty, paymentMethod:pay, customerName:custName, customerPhone:custPhone, saleType: isPopup ? 'popup' : 'nonpopup', popupName:popName, popupDate:popDate});
   if (ok) {
     if (custName) await DB.addCustomer({id:DB.newId(), name:custName, phone:custPhone, source:'Pop-Up', notes:`Bought: ${name}`, createdAt:new Date().toISOString()});
-    ['ml-name','ml-price','ml-cust-name','ml-cust-phone'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    ['ml-name','ml-price','ml-cust-name','ml-cust-phone','ml-pop-name'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('ml-qty').value = '1';
     _salePhotoFile = null;
     const spv = document.getElementById('sale-photo-preview');
@@ -3669,7 +3722,7 @@ Object.assign(window, {
   renderInventory, setInvFilter, openItemDetail, adjustQty, deleteItem,
   saveInventoryItem, handlePhotoSelect, addToExisting, dismissDuplicate, updateItemSubcats,
   renderEvents, renderLive, renderHistory, toggleHistCard,
-  createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto, openManualLog,
+  createPopupEvent, confirmManualSale, confirmScanSale, handleScanPhoto, openManualLog, switchSaleTab, closeManualLog,
   openEditLiveEvent, saveLiveEventEdit, confirmDeleteLiveEvent, endEventFromEdit, completeEvent,
   deleteSaleFromLive, deleteSaleFromHistory, deleteHistEvent,
   saveEvent, saveExpense, deleteExpense, setExpMonth, handleCSVSelect, importCSV,
