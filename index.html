@@ -1724,7 +1724,7 @@ import { getFirestore, collection, addDoc, getDocs, doc, updateDoc,
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup }
+         signOut, onAuthStateChanged, GoogleAuthProvider, signInWithRedirect, getRedirectResult }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 // ── FIREBASE INIT ─────────────────────────────────────────────────
@@ -4174,16 +4174,11 @@ async function signInWithGoogle() {
   loading.style.display = 'block';
   document.getElementById('auth-error').style.display = 'none';
   try {
-    await signInWithPopup(_auth, provider);
-    // onAuthStateChanged handles the rest
+    await signInWithRedirect(_auth, provider);
+    // page will reload; onAuthStateChanged + getRedirectResult handle the rest
   } catch(e) {
     loading.style.display = 'none';
-    const msgs = {
-      'auth/popup-closed-by-user': 'Sign-in cancelled',
-      'auth/popup-blocked': 'Popup blocked — please allow popups for this site',
-      'auth/cancelled-popup-request': 'Sign-in cancelled',
-    };
-    showAuthError(msgs[e.code] || 'Google sign-in failed — try again');
+    showAuthError('Google sign-in failed — try again');
   }
 }
 
@@ -4367,6 +4362,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Handle Google redirect result on page load
+getRedirectResult(_auth).catch(() => {});
 
 // Start app — wait for auth state
 onAuthStateChanged(_auth, async (user) => {
