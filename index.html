@@ -4364,7 +4364,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Handle Google redirect result on page load
-getRedirectResult(_auth).catch(() => {});
+getRedirectResult(_auth).catch((e) => {
+  if (e && e.code) {
+    const msgs = {
+      'auth/unauthorized-domain': 'This domain is not authorised in Firebase — add jugl.vercel.app to Firebase → Authentication → Authorized domains',
+      'auth/operation-not-allowed': 'Google sign-in is not enabled in Firebase',
+    };
+    const authScreen = document.getElementById('auth-screen');
+    const authError = document.getElementById('auth-error');
+    if (authScreen) authScreen.style.display = 'flex';
+    if (authError) { authError.textContent = msgs[e.code] || ('Google sign-in failed: ' + e.code); authError.style.display = 'block'; }
+  }
+});
 
 // Start app — wait for auth state
 onAuthStateChanged(_auth, async (user) => {
