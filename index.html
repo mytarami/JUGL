@@ -4364,15 +4364,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Handle Google redirect result on page load
-getRedirectResult(_auth).catch((e) => {
+// Wait for redirect result before allowing onAuthStateChanged to show the sign-in screen
+let _redirectChecked = false;
+const _redirectPromise = getRedirectResult(_auth).then(() => {
+  _redirectChecked = true;
+}).catch((e) => {
+  _redirectChecked = true;
   if (e && e.code) {
     const msgs = {
-      'auth/unauthorized-domain': 'This domain is not authorised in Firebase — add jugl.vercel.app to Firebase → Authentication → Authorized domains',
+      'auth/unauthorized-domain': 'Domain not authorised — add jugl.vercel.app in Firebase → Authentication → Authorized domains',
       'auth/operation-not-allowed': 'Google sign-in is not enabled in Firebase',
     };
-    const authScreen = document.getElementById('auth-screen');
     const authError = document.getElementById('auth-error');
-    if (authScreen) authScreen.style.display = 'flex';
+    document.getElementById('fb-loading').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'flex';
     if (authError) { authError.textContent = msgs[e.code] || ('Google sign-in failed: ' + e.code); authError.style.display = 'block'; }
   }
 });
@@ -4397,9 +4402,11 @@ onAuthStateChanged(_auth, async (user) => {
     await initApp();
     showApp();
   } else {
-    // Logged out — wipe all state so next login starts clean
-    resetAppState();
-    showAuthScreen();
+    // Wait for redirect result before showing sign-in (avoids flash on Google redirect)
+    _redirectPromise.then(() => {
+      resetAppState();
+      showAuthScreen();
+    });
   }
 });
 
